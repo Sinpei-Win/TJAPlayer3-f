@@ -38,7 +38,7 @@ namespace FDK
 
 		public void tポーリング(bool bWindowがアクティブ中)
 		{
-			for (int i = 0; i < Enum.GetNames(typeof(OpenTK.Input.Key)).Length; i++)
+			for (int i = 0; i < 256; i++)
 			{
 				this.bKeyPushDown[i] = false;
 				this.bKeyPullUp[i] = false;
@@ -177,9 +177,9 @@ namespace FDK
 		#region [ private ]
 		//-----------------
 		private bool bDispose完了済み;
-		private bool[] bKeyPullUp = new bool[Enum.GetNames(typeof(OpenTK.Input.Key)).Length];
-		private bool[] bKeyPushDown = new bool[Enum.GetNames(typeof(OpenTK.Input.Key)).Length];
-		private bool[] bKeyState = new bool[Enum.GetNames(typeof(OpenTK.Input.Key)).Length];
+		private bool[] bKeyPullUp = new bool[256];
+		private bool[] bKeyPushDown = new bool[256];
+		private bool[] bKeyState = new bool[256];
 		//private CTimer timer;
 		//private CTimer ct;
 		//-----------------

@@ -138,34 +138,19 @@ namespace FDK
 
 			if (bWindowがアクティブ中)
 			{
-				/*
+				
 				this.list入力イベント.Clear();
 
-				OpenTK.Input.JoystickState currentState = OpenTK.Input.Joystick.GetState(0);//--------メモ  ジョイスティックの数ごとに変えましょう------------------------------
 				#region [ 入力 ]
-				if (currentState.IsConnected) 
+
+				OpenTK.Input.JoystickState ButtonState = OpenTK.Input.Joystick.GetState(0);//--------メモ  ジョイスティックの数ごとに変えましょう------------------------------
+
+				OpenTK.Input.GamePadState gamePadState = OpenTK.Input.GamePad.GetState(0);
+
+				if (ButtonState.IsConnected) 
 				{
-					if (currentState.IsButtonDown((int)OpenTK.Input.Buttons.A)) { 
-					
-					}
-				}
-                #endregion
-				*/
-
-                this.devJoystick.Acquire();
-				this.devJoystick.Poll();
-
-				// this.list入力イベント = new List<STInputEvent>( 32 );
-				this.list入力イベント.Clear();                        // #xxxxx 2012.6.11 yyagi; To optimize, I removed new();
-
-					#region [ 入力 ]
-					//-----------------------------
-					JoystickState currentState = this.devJoystick.GetCurrentState();
-					//if( Result.Last.IsSuccess && currentState != null )
-					{
-					#region [ X軸－ ]
-					//-----------------------------
-					if (currentState.X < -500)
+					#region[X軸]
+					if (ButtonState.GetAxis(0) < -0.5) //JoystickAxisがない？ので数値指定
 					{
 						if (this.bButtonState[0] == false)
 						{
@@ -182,7 +167,7 @@ namespace FDK
 							this.bButtonPushDown[0] = true;
 						}
 					}
-					else
+					else 
 					{
 						if (this.bButtonState[0] == true)
 						{
@@ -199,11 +184,7 @@ namespace FDK
 							this.bButtonPullUp[0] = true;
 						}
 					}
-					//-----------------------------
-					#endregion
-					#region [ X軸＋ ]
-					//-----------------------------
-					if (currentState.X > 500)
+					if (ButtonState.GetAxis(0) > 0.5)
 					{
 						if (this.bButtonState[1] == false)
 						{
@@ -224,24 +205,23 @@ namespace FDK
 					{
 						if (this.bButtonState[1] == true)
 						{
-							STInputEvent event7 = new STInputEvent()
+							STInputEvent ev = new STInputEvent()
 							{
 								nKey = 1,
 								b押された = false,
 								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
 								nVelocity = CInput管理.n通常音量
 							};
-							this.list入力イベント.Add(event7);
+							this.list入力イベント.Add(ev);
 
 							this.bButtonState[1] = false;
 							this.bButtonPullUp[1] = true;
 						}
 					}
-					//-----------------------------
 					#endregion
-					#region [ Y軸－ ]
-					//-----------------------------
-					if (currentState.Y < -500)
+
+					#region[Y軸]
+					if (ButtonState.GetAxis(1) < -0.5) //JoystickAxisがない？ので数値指定
 					{
 						if (this.bButtonState[2] == false)
 						{
@@ -275,11 +255,7 @@ namespace FDK
 							this.bButtonPullUp[2] = true;
 						}
 					}
-					//-----------------------------
-					#endregion
-					#region [ Y軸＋ ]
-					//-----------------------------
-					if (currentState.Y > 500)
+					if (ButtonState.GetAxis(1) > 0.5)
 					{
 						if (this.bButtonState[3] == false)
 						{
@@ -313,11 +289,10 @@ namespace FDK
 							this.bButtonPullUp[3] = true;
 						}
 					}
-					//-----------------------------
 					#endregion
-					#region [ Z軸－ ]
-					//-----------------------------
-					if (currentState.Z < -500)
+
+					#region[Z軸]
+					if (ButtonState.GetAxis(2) < -0.5) //JoystickAxisがない？ので数値指定
 					{
 						if (this.bButtonState[4] == false)
 						{
@@ -351,11 +326,7 @@ namespace FDK
 							this.bButtonPullUp[4] = true;
 						}
 					}
-					//-----------------------------
-					#endregion
-					#region [ Z軸＋ ]
-					//-----------------------------
-					if (currentState.Z > 500)
+					if (ButtonState.GetAxis(2) > 0.5)
 					{
 						if (this.bButtonState[5] == false)
 						{
@@ -376,24 +347,23 @@ namespace FDK
 					{
 						if (this.bButtonState[5] == true)
 						{
-							STInputEvent event15 = new STInputEvent()
+							STInputEvent ev = new STInputEvent()
 							{
 								nKey = 5,
 								b押された = false,
 								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
 								nVelocity = CInput管理.n通常音量
 							};
-							this.list入力イベント.Add(event15);
+							this.list入力イベント.Add(ev);
 
 							this.bButtonState[5] = false;
 							this.bButtonPullUp[5] = true;
 						}
 					}
-					//-----------------------------
 					#endregion
-					#region [ Z軸回転－ ]
-					//-----------------------------
-					if (currentState.RotationZ < -500)
+
+					#region[Z軸回転]
+					if (ButtonState.GetAxis(3) < -0.5) //JoystickAxisがない？ので数値指定
 					{
 						if (this.bButtonState[6] == false)
 						{
@@ -412,7 +382,7 @@ namespace FDK
 					}
 					else
 					{
-						if (this.bButtonState[4] == true)
+						if (this.bButtonState[6] == true)
 						{
 							STInputEvent ev = new STInputEvent()
 							{
@@ -427,11 +397,7 @@ namespace FDK
 							this.bButtonPullUp[6] = true;
 						}
 					}
-					//-----------------------------
-					#endregion
-					#region [ Z軸回転＋ ]
-					//-----------------------------
-					if (currentState.RotationZ > 500)
+					if (ButtonState.GetAxis(3) > 0.5)
 					{
 						if (this.bButtonState[7] == false)
 						{
@@ -452,21 +418,42 @@ namespace FDK
 					{
 						if (this.bButtonState[7] == true)
 						{
-							STInputEvent event15 = new STInputEvent()
+							STInputEvent ev = new STInputEvent()
 							{
 								nKey = 7,
 								b押された = false,
 								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
 								nVelocity = CInput管理.n通常音量
 							};
-							this.list入力イベント.Add(event15);
+							this.list入力イベント.Add(ev);
 
 							this.bButtonState[7] = false;
 							this.bButtonPullUp[7] = true;
 						}
 					}
-					//-----------------------------
 					#endregion
+
+					/*if (ButtonState.IsButtonDown((int)OpenTK.Input.Buttons.)
+
+
+					if (ButtonState.IsButtonDown((int)OpenTK.Input.Buttons.A)) { 
+					
+					}*/
+				}
+				#endregion
+
+
+				this.devJoystick.Acquire();
+				this.devJoystick.Poll();
+
+				// this.list入力イベント = new List<STInputEvent>( 32 );
+				this.list入力イベント.Clear();                        // #xxxxx 2012.6.11 yyagi; To optimize, I removed new();
+
+				#region [ 入力 ]
+					//-----------------------------
+				JoystickState currentState = this.devJoystick.GetCurrentState();
+				//if( Result.Last.IsSuccess && currentState != null )
+				{
 					#region [ ボタン ]
 					//-----------------------------
 					bool bIsButtonPressedReleased = false;
@@ -504,8 +491,8 @@ namespace FDK
 							bIsButtonPressedReleased = true;
 						}
 					}
-					//-----------------------------
 					#endregion
+					//-----------------------------
 					// #24341 2011.3.12 yyagi: POV support
 					#region [ POV HAT 4/8way (only single POV switch is supported)]
 					int[] povs = currentState.PointOfViewControllers;
