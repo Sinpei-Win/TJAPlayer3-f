@@ -209,16 +209,6 @@ namespace FDK
 					//-----------------------------
 					#endregion
 				}
-				#region [#23708 2011.4.8 yyagi Altが押されているときは、Enter押下情報を削除する -> 副作用が見つかり削除]
-				//if ( this.bKeyState[ (int) SlimDXKey.RightAlt ] ||
-				//     this.bKeyState[ (int) SlimDXKey.LeftAlt ] )
-				//{
-				//    int cr = (int) SlimDXKey.Return;
-				//    this.bKeyPushDown[ cr ] = false;
-				//    this.bKeyPullUp[ cr ] = false;
-				//    this.bKeyState[ cr ] = false;
-				//}
-				#endregion
 			}
 		}
 
