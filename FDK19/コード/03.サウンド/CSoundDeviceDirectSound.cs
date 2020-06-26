@@ -4,7 +4,7 @@ using System.Text;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using SharpDX.DirectSound;
+//using SharpDX.DirectSound;
 
 namespace FDK
 {

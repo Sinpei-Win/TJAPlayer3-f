@@ -107,6 +107,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <Content Include="コード\スコア、曲\approved\expected_case_couple_only.0.tja">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
