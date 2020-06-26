@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
-using SharpDX.DirectInput;
 
 using SlimDXKey = SlimDXKeys.Key;
 using SharpDXKey = SharpDX.DirectInput.Key;
@@ -13,7 +12,7 @@ namespace FDK
 	{
 		// コンストラクタ
 
-		public CInputKeyboard(IntPtr hWnd, DirectInput directInput)
+		public CInputKeyboard()
 		{
 			this.e入力デバイス種別 = E入力デバイス種別.Keyboard;
 			this.GUID = "";
@@ -37,9 +36,9 @@ namespace FDK
 		public int ID { get; private set; }
 		public List<STInputEvent> list入力イベント { get; private set; }
 
-		public void tポーリング(bool bWindowがアクティブ中, bool bバッファ入力を使用する)
+		public void tポーリング(bool bWindowがアクティブ中)
 		{
-			for (int i = 0; i < 256; i++)
+			for (int i = 0; i < Enum.GetNames(typeof(OpenTK.Input.Key)).Length; i++)
 			{
 				this.bKeyPushDown[i] = false;
 				this.bKeyPullUp[i] = false;
@@ -56,57 +55,63 @@ namespace FDK
 				//-----------------------------
 				OpenTK.Input.KeyboardState currentState = OpenTK.Input.Keyboard.GetState();
 
-				for (int index = 0; index < Enum.GetNames(typeof(OpenTK.Input.Key)).Length; index++) {
-					if (currentState[(OpenTK.Input.Key)index]) {
-						var key = DeviceConstantConverter.TKKtoKey((OpenTK.Input.Key)index);
-						if (SlimDXKey.Unknown == key)
-							continue;   // 未対応キーは無視。
+				if (currentState.IsConnected)
+				{
 
-
-						if (this.bKeyState[(int)key] == false)
+					for (int index = 0; index < Enum.GetNames(typeof(OpenTK.Input.Key)).Length; index++)
+					{
+						if (currentState[(OpenTK.Input.Key)index])
 						{
-							if (key != SlimDXKey.Return || (bKeyState[(int)SlimDXKey.LeftAlt] == false && bKeyState[(int)SlimDXKey.RightAlt] == false))    // #23708 2016.3.19 yyagi
+							var key = DeviceConstantConverter.TKKtoKey((OpenTK.Input.Key)index);
+							if (SlimDXKey.Unknown == key)
+								continue;   // 未対応キーは無視。
+
+
+							if (this.bKeyState[(int)key] == false)
+							{
+								if (key != SlimDXKey.Return || (bKeyState[(int)SlimDXKey.LeftAlt] == false && bKeyState[(int)SlimDXKey.RightAlt] == false))    // #23708 2016.3.19 yyagi
+								{
+									var ev = new STInputEvent()
+									{
+										nKey = (int)key,
+										b押された = true,
+										b離された = false,
+										nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+										nVelocity = CInput管理.n通常音量,
+									};
+									this.list入力イベント.Add(ev);
+
+									this.bKeyState[(int)key] = true;
+									this.bKeyPushDown[(int)key] = true;
+								}
+
+								//if ( (int) key == (int) SlimDXKey.Space )
+								//{
+								//    Trace.TraceInformation( "FDK(direct): SPACE key registered. " + ct.nシステム時刻 );
+								//}
+							}
+						}
+						{
+							// #xxxxx: 2017.5.7: from: DIK (SharpDX.DirectInput.Key) を SlimDX.DirectInput.Key に変換。
+							var key = DeviceConstantConverter.TKKtoKey((OpenTK.Input.Key)index);
+							if (SlimDXKey.Unknown == key)
+								continue;   // 未対応キーは無視。
+
+							if (this.bKeyState[(int)key] == true && !currentState.IsKeyDown((OpenTK.Input.Key)index)) // 前回は押されているのに今回は押されていない → 離された
 							{
 								var ev = new STInputEvent()
 								{
 									nKey = (int)key,
-									b押された = true,
-									b離された = false,
+									b押された = false,
+									b離された = true,
 									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
 									nVelocity = CInput管理.n通常音量,
 								};
 								this.list入力イベント.Add(ev);
 
-								this.bKeyState[(int)key] = true;
-								this.bKeyPushDown[(int)key] = true;
+								this.bKeyState[(int)key] = false;
+								this.bKeyPullUp[(int)key] = true;
 							}
-
-							//if ( (int) key == (int) SlimDXKey.Space )
-							//{
-							//    Trace.TraceInformation( "FDK(direct): SPACE key registered. " + ct.nシステム時刻 );
-							//}
-						}
-					}
-					{
-						// #xxxxx: 2017.5.7: from: DIK (SharpDX.DirectInput.Key) を SlimDX.DirectInput.Key に変換。
-						var key = DeviceConstantConverter.TKKtoKey((OpenTK.Input.Key)index);
-						if (SlimDXKey.Unknown == key)
-							continue;   // 未対応キーは無視。
-
-						if (this.bKeyState[(int)key] == true && !currentState.IsKeyDown((OpenTK.Input.Key)index)) // 前回は押されているのに今回は押されていない → 離された
-						{
-							var ev = new STInputEvent()
-							{
-								nKey = (int)key,
-								b押された = false,
-								b離された = true,
-								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-								nVelocity = CInput管理.n通常音量,
-							};
-							this.list入力イベント.Add(ev);
-
-							this.bKeyState[(int)key] = false;
-							this.bKeyPullUp[(int)key] = true;
 						}
 					}
 				}
@@ -172,9 +177,9 @@ namespace FDK
 		#region [ private ]
 		//-----------------
 		private bool bDispose完了済み;
-		private bool[] bKeyPullUp = new bool[256];
-		private bool[] bKeyPushDown = new bool[256];
-		private bool[] bKeyState = new bool[256];
+		private bool[] bKeyPullUp = new bool[Enum.GetNames(typeof(OpenTK.Input.Key)).Length];
+		private bool[] bKeyPushDown = new bool[Enum.GetNames(typeof(OpenTK.Input.Key)).Length];
+		private bool[] bKeyState = new bool[Enum.GetNames(typeof(OpenTK.Input.Key)).Length];
 		//private CTimer timer;
 		//private CTimer ct;
 		//-----------------

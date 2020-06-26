@@ -15,7 +15,7 @@ namespace FDK
 
 		// コンストラクタ
 
-		public CInputMouse(IntPtr hWnd)
+		public CInputMouse()
 		{
 			this.e入力デバイス種別 = E入力デバイス種別.Mouse;
 			this.GUID = "";
@@ -38,7 +38,7 @@ namespace FDK
 		public int ID { get; private set; }
 		public List<STInputEvent> list入力イベント { get; private set; }
 
-		public void tポーリング(bool bWindowがアクティブ中, bool bバッファ入力を使用する)
+		public void tポーリング(bool bWindowがアクティブ中)
 		{
 			for (int i = 0; i < Enum.GetNames(typeof(MouseButton)).Length; i++)
 			{
@@ -57,41 +57,42 @@ namespace FDK
 				//-----------------------------
 
 				OpenTK.Input.MouseState currentState = OpenTK.Input.Mouse.GetState();
-
-				for (int j = 0; (j < Enum.GetNames(typeof(MouseButton)).Length); j++)
+				if (currentState.IsConnected)
 				{
-					if (this.bMouseState[j] == false && currentState[(MouseButton)j] == true)
+					for (int j = 0; (j < Enum.GetNames(typeof(MouseButton)).Length); j++)
 					{
-						var ev = new STInputEvent()
+						if (this.bMouseState[j] == false && currentState[(MouseButton)j] == true)
 						{
-							nKey = j,
-							b押された = true,
-							b離された = false,
-							nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-							nVelocity = CInput管理.n通常音量,
-						};
-						this.list入力イベント.Add(ev);
+							var ev = new STInputEvent()
+							{
+								nKey = j,
+								b押された = true,
+								b離された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量,
+							};
+							this.list入力イベント.Add(ev);
 
-						this.bMouseState[j] = true;
-						this.bMousePushDown[j] = true;
-					}
-					else if (this.bMouseState[j] == true && currentState[(MouseButton)j] == false)
-					{
-						var ev = new STInputEvent()
+							this.bMouseState[j] = true;
+							this.bMousePushDown[j] = true;
+						}
+						else if (this.bMouseState[j] == true && currentState[(MouseButton)j] == false)
 						{
-							nKey = j,
-							b押された = false,
-							b離された = true,
-							nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-							nVelocity = CInput管理.n通常音量,
-						};
-						this.list入力イベント.Add(ev);
+							var ev = new STInputEvent()
+							{
+								nKey = j,
+								b押された = false,
+								b離された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量,
+							};
+							this.list入力イベント.Add(ev);
 
-						this.bMouseState[j] = false;
-						this.bMousePullUp[j] = true;
+							this.bMouseState[j] = false;
+							this.bMousePullUp[j] = true;
+						}
 					}
 				}
-
 				//-----------------------------
 				#endregion
 

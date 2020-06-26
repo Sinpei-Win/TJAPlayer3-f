@@ -22,7 +22,6 @@ namespace FDK
 				this.devJoystick.SetCooperativeLevel(hWnd, CooperativeLevel.Foreground | CooperativeLevel.Exclusive);
 				this.devJoystick.Properties.BufferSize = 32;
 				Trace.TraceInformation(this.devJoystick.Information.InstanceName + "を生成しました。");
-				this.strDeviceName = this.devJoystick.Information.InstanceName;
 			}
 			catch
 			{
@@ -91,11 +90,6 @@ namespace FDK
 			get;
 			private set;
 		}
-		public string strDeviceName
-		{
-			get;
-			set;
-		}
 
 		#region [ ローカル関数 ]
 		private void POVの処理(int p, JoystickUpdate data)
@@ -132,7 +126,7 @@ namespace FDK
 		}
 		#endregion
 
-		public void tポーリング(bool bWindowがアクティブ中, bool bバッファ入力を使用する)
+		public void tポーリング(bool bWindowがアクティブ中)
 		{
 			#region [ bButtonフラグ初期化 ]
 			for (int i = 0; i < 256; i++)
@@ -144,549 +138,429 @@ namespace FDK
 
 			if (bWindowがアクティブ中)
 			{
-				this.devJoystick.Acquire();
+				/*
+				this.list入力イベント.Clear();
+
+				OpenTK.Input.JoystickState currentState = OpenTK.Input.Joystick.GetState(0);//--------メモ  ジョイスティックの数ごとに変えましょう------------------------------
+				#region [ 入力 ]
+				if (currentState.IsConnected) 
+				{
+					if (currentState.IsButtonDown((int)OpenTK.Input.Buttons.A)) { 
+					
+					}
+				}
+                #endregion
+				*/
+
+                this.devJoystick.Acquire();
 				this.devJoystick.Poll();
 
 				// this.list入力イベント = new List<STInputEvent>( 32 );
 				this.list入力イベント.Clear();                        // #xxxxx 2012.6.11 yyagi; To optimize, I removed new();
 
-
-				if (bバッファ入力を使用する)
-				{
-					#region [ a.バッファ入力 ]
-					//-----------------------------
-					var bufferedData = this.devJoystick.GetBufferedData();
-					//if( Result.Last.IsSuccess && bufferedData != null )
-					{
-						foreach (JoystickUpdate data in bufferedData)
-						{
-							switch (data.Offset)
-							{
-								case JoystickOffset.X:
-									#region [ X軸－ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 0, 1);
-									//-----------------------------
-									#endregion
-									#region [ X軸＋ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 1, 0);
-									//-----------------------------
-									#endregion
-									break;
-								case JoystickOffset.Y:
-									#region [ Y軸－ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 2, 3);
-									//-----------------------------
-									#endregion
-									#region [ Y軸＋ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 3, 2);
-									//-----------------------------
-									#endregion
-									break;
-								case JoystickOffset.Z:
-									#region [ Z軸－ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 4, 5);
-									//-----------------------------
-									#endregion
-									#region [ Z軸＋ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 5, 4);
-									//-----------------------------
-									#endregion
-									break;
-								case JoystickOffset.RotationZ:
-									#region [ Z軸－ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 6, 7);
-									//-----------------------------
-									#endregion
-									#region [ Z軸＋ ]
-									//-----------------------------
-									bButtonUpDown(data, data.Value, 7, 6);
-									//-----------------------------
-									#endregion
-									break;
-                                // #24341 2011.3.12 yyagi: POV support
-                                // #26880 2011.12.6 yyagi: improve to support "pullup" of POV buttons
-                                case JoystickOffset.PointOfViewControllers0:
-									#region [ POV HAT 4/8way ]
-									POVの処理(0, data);
-									#endregion
-									break;
-								case JoystickOffset.PointOfViewControllers1:
-									#region [ POV HAT 4/8way ]
-									POVの処理(1, data);
-									#endregion
-									break;
-								case JoystickOffset.PointOfViewControllers2:
-									#region [ POV HAT 4/8way ]
-									POVの処理(2, data);
-									#endregion
-									break;
-								case JoystickOffset.PointOfViewControllers3:
-									#region [ POV HAT 4/8way ]
-									POVの処理(3, data);
-									#endregion
-									break;
-								default:
-									#region [ ボタン ]
-									//-----------------------------
-
-									//for ( int i = 0; i < 32; i++ )
-									if (data.Offset >= JoystickOffset.Buttons0 && data.Offset <= JoystickOffset.Buttons31)
-									{
-										int i = data.Offset - JoystickOffset.Buttons0;
-
-										if ((data.Value & 0x80) != 0)
-										{
-											STInputEvent e = new STInputEvent()
-											{
-												nKey = 8 + i,
-												b押された = true,
-												b離された = false,
-												nTimeStamp = CSound管理.rc演奏用タイマ.nサウンドタイマーのシステム時刻msへの変換(data.Timestamp),
-												nVelocity = CInput管理.n通常音量
-											};
-											this.list入力イベント.Add(e);
-
-											this.bButtonState[8 + i] = true;
-											this.bButtonPushDown[8 + i] = true;
-										}
-										else //if ( ( data.Value & 0x80 ) == 0 )
-										{
-											var ev = new STInputEvent()
-											{
-												nKey = 8 + i,
-												b押された = false,
-												b離された = true,
-												nTimeStamp = CSound管理.rc演奏用タイマ.nサウンドタイマーのシステム時刻msへの変換(data.Timestamp),
-												nVelocity = CInput管理.n通常音量,
-											};
-											this.list入力イベント.Add(ev);
-
-											this.bButtonState[8 + i] = false;
-											this.bButtonPullUp[8 + i] = true;
-										}
-									}
-									//-----------------------------
-									#endregion
-									break;
-							}
-						}
-					}
-					//-----------------------------
-					#endregion
-				}
-				else
-				{
-					#region [ b.状態入力 ]
+					#region [ 入力 ]
 					//-----------------------------
 					JoystickState currentState = this.devJoystick.GetCurrentState();
 					//if( Result.Last.IsSuccess && currentState != null )
 					{
-						#region [ X軸－ ]
-						//-----------------------------
-						if (currentState.X < -500)
+					#region [ X軸－ ]
+					//-----------------------------
+					if (currentState.X < -500)
+					{
+						if (this.bButtonState[0] == false)
 						{
-							if (this.bButtonState[0] == false)
+							STInputEvent ev = new STInputEvent()
 							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 0,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
+								nKey = 0,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
 
-								this.bButtonState[0] = true;
-								this.bButtonPushDown[0] = true;
-							}
+							this.bButtonState[0] = true;
+							this.bButtonPushDown[0] = true;
 						}
-						else
-						{
-							if (this.bButtonState[0] == true)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 0,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[0] = false;
-								this.bButtonPullUp[0] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ X軸＋ ]
-						//-----------------------------
-						if (currentState.X > 500)
-						{
-							if (this.bButtonState[1] == false)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 1,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[1] = true;
-								this.bButtonPushDown[1] = true;
-							}
-						}
-						else
-						{
-							if (this.bButtonState[1] == true)
-							{
-								STInputEvent event7 = new STInputEvent()
-								{
-									nKey = 1,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(event7);
-
-								this.bButtonState[1] = false;
-								this.bButtonPullUp[1] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ Y軸－ ]
-						//-----------------------------
-						if (currentState.Y < -500)
-						{
-							if (this.bButtonState[2] == false)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 2,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[2] = true;
-								this.bButtonPushDown[2] = true;
-							}
-						}
-						else
-						{
-							if (this.bButtonState[2] == true)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 2,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[2] = false;
-								this.bButtonPullUp[2] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ Y軸＋ ]
-						//-----------------------------
-						if (currentState.Y > 500)
-						{
-							if (this.bButtonState[3] == false)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 3,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[3] = true;
-								this.bButtonPushDown[3] = true;
-							}
-						}
-						else
-						{
-							if (this.bButtonState[3] == true)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 3,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[3] = false;
-								this.bButtonPullUp[3] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ Z軸－ ]
-						//-----------------------------
-						if (currentState.Z < -500)
-						{
-							if (this.bButtonState[4] == false)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 4,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[4] = true;
-								this.bButtonPushDown[4] = true;
-							}
-						}
-						else
-						{
-							if (this.bButtonState[4] == true)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 4,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[4] = false;
-								this.bButtonPullUp[4] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ Z軸＋ ]
-						//-----------------------------
-						if (currentState.Z > 500)
-						{
-							if (this.bButtonState[5] == false)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 5,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[5] = true;
-								this.bButtonPushDown[5] = true;
-							}
-						}
-						else
-						{
-							if (this.bButtonState[5] == true)
-							{
-								STInputEvent event15 = new STInputEvent()
-								{
-									nKey = 5,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(event15);
-
-								this.bButtonState[5] = false;
-								this.bButtonPullUp[5] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ Z軸回転－ ]
-						//-----------------------------
-						if (currentState.RotationZ < -500)
-						{
-							if (this.bButtonState[6] == false)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 6,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[6] = true;
-								this.bButtonPushDown[6] = true;
-							}
-						}
-						else
-						{
-							if (this.bButtonState[4] == true)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 6,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[6] = false;
-								this.bButtonPullUp[6] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ Z軸回転＋ ]
-						//-----------------------------
-						if (currentState.RotationZ > 500)
-						{
-							if (this.bButtonState[7] == false)
-							{
-								STInputEvent ev = new STInputEvent()
-								{
-									nKey = 7,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(ev);
-
-								this.bButtonState[7] = true;
-								this.bButtonPushDown[7] = true;
-							}
-						}
-						else
-						{
-							if (this.bButtonState[7] == true)
-							{
-								STInputEvent event15 = new STInputEvent()
-								{
-									nKey = 7,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(event15);
-
-								this.bButtonState[7] = false;
-								this.bButtonPullUp[7] = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						#region [ ボタン ]
-						//-----------------------------
-						bool bIsButtonPressedReleased = false;
-						bool[] buttons = currentState.Buttons;
-						for (int j = 0; (j < buttons.Length) && (j < 128); j++)
-						{
-							if (this.bButtonState[8 + j] == false && buttons[j])
-							{
-								STInputEvent item = new STInputEvent()
-								{
-									nKey = 8 + j,
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(item);
-
-								this.bButtonState[8 + j] = true;
-								this.bButtonPushDown[8 + j] = true;
-								bIsButtonPressedReleased = true;
-							}
-							else if (this.bButtonState[8 + j] == true && !buttons[j])
-							{
-								STInputEvent item = new STInputEvent()
-								{
-									nKey = 8 + j,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(item);
-
-								this.bButtonState[8 + j] = false;
-								this.bButtonPullUp[8 + j] = true;
-								bIsButtonPressedReleased = true;
-							}
-						}
-						//-----------------------------
-						#endregion
-						// #24341 2011.3.12 yyagi: POV support
-						#region [ POV HAT 4/8way (only single POV switch is supported)]
-						int[] povs = currentState.PointOfViewControllers;
-						if (povs != null)
-						{
-							if (povs[0] >= 0)
-							{
-								int nPovDegree = povs[0];
-								int nWay = (nPovDegree + 2250) / 4500;
-								if (nWay == 8) nWay = 0;
-
-								if (this.bButtonState[8 + 128 + nWay] == false)
-								{
-									STInputEvent stevent = new STInputEvent()
-									{
-										nKey = 8 + 128 + nWay,
-										//Debug.WriteLine( "POVS:" + povs[ 0 ].ToString( CultureInfo.CurrentCulture ) + ", " +stevent.nKey );
-										b押された = true,
-										nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-										nVelocity = CInput管理.n通常音量
-									};
-									this.list入力イベント.Add(stevent);
-
-									this.bButtonState[stevent.nKey] = true;
-									this.bButtonPushDown[stevent.nKey] = true;
-								}
-							}
-							else if (bIsButtonPressedReleased == false) // #xxxxx 2011.12.3 yyagi 他のボタンが何も押され/離されてない＝POVが離された
-							{
-								int nWay = 0;
-								for (int i = 8 + 0x80; i < 8 + 0x80 + 8; i++)
-								{                                           // 離されたボタンを調べるために、元々押されていたボタンを探す。
-									if (this.bButtonState[i] == true)   // DirectInputを直接いじるならこんなことしなくて良いのに、あぁ面倒。
-									{                                       // この処理が必要なために、POVを1個しかサポートできない。無念。
-										nWay = i;
-										break;
-									}
-								}
-								if (nWay != 0)
-								{
-									STInputEvent stevent = new STInputEvent()
-									{
-										nKey = nWay,
-										b押された = false,
-										nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-										nVelocity = 0
-									};
-									this.list入力イベント.Add(stevent);
-
-									this.bButtonState[nWay] = false;
-									this.bButtonPullUp[nWay] = true;
-								}
-							}
-						}
-						#endregion
 					}
+					else
+					{
+						if (this.bButtonState[0] == true)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 0,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[0] = false;
+							this.bButtonPullUp[0] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ X軸＋ ]
+					//-----------------------------
+					if (currentState.X > 500)
+					{
+						if (this.bButtonState[1] == false)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 1,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[1] = true;
+							this.bButtonPushDown[1] = true;
+						}
+					}
+					else
+					{
+						if (this.bButtonState[1] == true)
+						{
+							STInputEvent event7 = new STInputEvent()
+							{
+								nKey = 1,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(event7);
+
+							this.bButtonState[1] = false;
+							this.bButtonPullUp[1] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ Y軸－ ]
+					//-----------------------------
+					if (currentState.Y < -500)
+					{
+						if (this.bButtonState[2] == false)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 2,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[2] = true;
+							this.bButtonPushDown[2] = true;
+						}
+					}
+					else
+					{
+						if (this.bButtonState[2] == true)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 2,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[2] = false;
+							this.bButtonPullUp[2] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ Y軸＋ ]
+					//-----------------------------
+					if (currentState.Y > 500)
+					{
+						if (this.bButtonState[3] == false)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 3,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[3] = true;
+							this.bButtonPushDown[3] = true;
+						}
+					}
+					else
+					{
+						if (this.bButtonState[3] == true)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 3,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[3] = false;
+							this.bButtonPullUp[3] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ Z軸－ ]
+					//-----------------------------
+					if (currentState.Z < -500)
+					{
+						if (this.bButtonState[4] == false)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 4,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[4] = true;
+							this.bButtonPushDown[4] = true;
+						}
+					}
+					else
+					{
+						if (this.bButtonState[4] == true)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 4,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[4] = false;
+							this.bButtonPullUp[4] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ Z軸＋ ]
+					//-----------------------------
+					if (currentState.Z > 500)
+					{
+						if (this.bButtonState[5] == false)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 5,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[5] = true;
+							this.bButtonPushDown[5] = true;
+						}
+					}
+					else
+					{
+						if (this.bButtonState[5] == true)
+						{
+							STInputEvent event15 = new STInputEvent()
+							{
+								nKey = 5,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(event15);
+
+							this.bButtonState[5] = false;
+							this.bButtonPullUp[5] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ Z軸回転－ ]
+					//-----------------------------
+					if (currentState.RotationZ < -500)
+					{
+						if (this.bButtonState[6] == false)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 6,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[6] = true;
+							this.bButtonPushDown[6] = true;
+						}
+					}
+					else
+					{
+						if (this.bButtonState[4] == true)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 6,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[6] = false;
+							this.bButtonPullUp[6] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ Z軸回転＋ ]
+					//-----------------------------
+					if (currentState.RotationZ > 500)
+					{
+						if (this.bButtonState[7] == false)
+						{
+							STInputEvent ev = new STInputEvent()
+							{
+								nKey = 7,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(ev);
+
+							this.bButtonState[7] = true;
+							this.bButtonPushDown[7] = true;
+						}
+					}
+					else
+					{
+						if (this.bButtonState[7] == true)
+						{
+							STInputEvent event15 = new STInputEvent()
+							{
+								nKey = 7,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(event15);
+
+							this.bButtonState[7] = false;
+							this.bButtonPullUp[7] = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					#region [ ボタン ]
+					//-----------------------------
+					bool bIsButtonPressedReleased = false;
+					bool[] buttons = currentState.Buttons;
+					for (int j = 0; (j < buttons.Length) && (j < 128); j++)
+					{
+						if (this.bButtonState[8 + j] == false && buttons[j])
+						{
+							STInputEvent item = new STInputEvent()
+							{
+								nKey = 8 + j,
+								b押された = true,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(item);
+
+							this.bButtonState[8 + j] = true;
+							this.bButtonPushDown[8 + j] = true;
+							bIsButtonPressedReleased = true;
+						}
+						else if (this.bButtonState[8 + j] == true && !buttons[j])
+						{
+							STInputEvent item = new STInputEvent()
+							{
+								nKey = 8 + j,
+								b押された = false,
+								nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+								nVelocity = CInput管理.n通常音量
+							};
+							this.list入力イベント.Add(item);
+
+							this.bButtonState[8 + j] = false;
+							this.bButtonPullUp[8 + j] = true;
+							bIsButtonPressedReleased = true;
+						}
+					}
+					//-----------------------------
+					#endregion
+					// #24341 2011.3.12 yyagi: POV support
+					#region [ POV HAT 4/8way (only single POV switch is supported)]
+					int[] povs = currentState.PointOfViewControllers;
+					if (povs != null)
+					{
+						if (povs[0] >= 0)
+						{
+							int nPovDegree = povs[0];
+							int nWay = (nPovDegree + 2250) / 4500;
+							if (nWay == 8) nWay = 0;
+
+							if (this.bButtonState[8 + 128 + nWay] == false)
+							{
+								STInputEvent stevent = new STInputEvent()
+								{
+									nKey = 8 + 128 + nWay,
+									//Debug.WriteLine( "POVS:" + povs[ 0 ].ToString( CultureInfo.CurrentCulture ) + ", " +stevent.nKey );
+									b押された = true,
+									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+									nVelocity = CInput管理.n通常音量
+								};
+								this.list入力イベント.Add(stevent);
+
+								this.bButtonState[stevent.nKey] = true;
+								this.bButtonPushDown[stevent.nKey] = true;
+							}
+						}
+						else if (bIsButtonPressedReleased == false) // #xxxxx 2011.12.3 yyagi 他のボタンが何も押され/離されてない＝POVが離された
+						{
+							int nWay = 0;
+							for (int i = 8 + 0x80; i < 8 + 0x80 + 8; i++)
+							{                                           // 離されたボタンを調べるために、元々押されていたボタンを探す。
+								if (this.bButtonState[i] == true)   // DirectInputを直接いじるならこんなことしなくて良いのに、あぁ面倒。
+								{                                       // この処理が必要なために、POVを1個しかサポートできない。無念。
+									nWay = i;
+									break;
+								}
+							}
+							if (nWay != 0)
+							{
+								STInputEvent stevent = new STInputEvent()
+								{
+									nKey = nWay,
+									b押された = false,
+									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+									nVelocity = 0
+								};
+								this.list入力イベント.Add(stevent);
+
+								this.bButtonState[nWay] = false;
+								this.bButtonPullUp[nWay] = true;
+							}
+						}
+					}
+					#endregion
 					//-----------------------------
 					#endregion
 				}

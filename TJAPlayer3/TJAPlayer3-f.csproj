@@ -343,7 +343,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>move /y "$(TargetDir)FDK.dll" "$(SolutionDir)Test\dll\"
+    <PostBuildEvent>move /y "$(TargetDir)FDK.dll*" "$(SolutionDir)Test\dll\"
 move /y "$(TargetDir)FDK.pdb" "$(SolutionDir)Test\dll\"
 move /y "$(TargetDir)Bass.Net.dll" "$(SolutionDir)Test\dll\"
 move /y "$(TargetDir)DirectShowLib-2005.dll" "$(SolutionDir)Test\dll\"

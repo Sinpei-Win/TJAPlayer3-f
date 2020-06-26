@@ -509,7 +509,7 @@ namespace TJAPlayer3
 			Sound管理?.t再生中の処理をする();
 			Timer?.t更新();
 			CSound管理.rc演奏用タイマ?.t更新();
-			Input管理?.tポーリング( this.bApplicationActive, TJAPlayer3.ConfigIni.bバッファ入力を行う );
+			Input管理?.tポーリング( this.bApplicationActive );
 			FPS?.tカウンタ更新();
 
 			if( this.Device == null )

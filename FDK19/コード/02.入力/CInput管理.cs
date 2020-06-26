@@ -73,8 +73,8 @@ namespace FDK
 			CInputMouse cinputmouse = null;
 			try
 			{
-				cinputkeyboard = new CInputKeyboard(hWnd, directInput);
-				cinputmouse = new CInputMouse(hWnd);
+				cinputkeyboard = new CInputKeyboard();
+				cinputmouse = new CInputMouse();
 			}
 			catch
 			{
@@ -91,7 +91,14 @@ namespace FDK
 			#region [ Enumerate joypad ]
 			foreach (DeviceInstance instance in this.directInput.GetDevices(DeviceClass.GameControl, DeviceEnumerationFlags.AttachedOnly))
 			{
-				this.list入力デバイス.Add(new CInputJoystick(hWnd, instance, directInput));
+				try
+				{
+					this.list入力デバイス.Add(new CInputJoystick(hWnd, instance, directInput));
+				}
+				catch 
+				{
+				}
+				
 			}
 			#endregion
 			this.proc = new CWin32.MidiInProc(this.MidiInCallback);
@@ -161,7 +168,7 @@ namespace FDK
 			}
 			return null;
 		}
-		public void tポーリング(bool bWindowがアクティブ中, bool bバッファ入力を使用する)
+		public void tポーリング(bool bWindowがアクティブ中)
 		{
 			lock (this.objMidiIn排他用)
 			{
@@ -171,7 +178,7 @@ namespace FDK
 					IInputDevice device = this.list入力デバイス[i];
 					try
 					{
-						device.tポーリング(bWindowがアクティブ中, bバッファ入力を使用する);
+						device.tポーリング(bWindowがアクティブ中);
 					}
 					catch (SharpDX.SharpDXException e)                                      // #24016 2011.1.6 yyagi: catch exception for unplugging USB joystick, and remove the device object from the polling items.
 					{
