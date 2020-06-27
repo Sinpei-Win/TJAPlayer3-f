@@ -446,9 +446,6 @@ namespace FDK
 				this.devJoystick.Acquire();
 				this.devJoystick.Poll();
 
-				// this.list入力イベント = new List<STInputEvent>( 32 );
-				this.list入力イベント.Clear();                        // #xxxxx 2012.6.11 yyagi; To optimize, I removed new();
-
 				#region [ 入力 ]
 					//-----------------------------
 				JoystickState currentState = this.devJoystick.GetCurrentState();
