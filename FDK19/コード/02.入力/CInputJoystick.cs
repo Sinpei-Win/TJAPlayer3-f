@@ -433,12 +433,49 @@ namespace FDK
 					}
 					#endregion
 
-					/*if (ButtonState.IsButtonDown((int)OpenTK.Input.Buttons.)
+					OpenTK.Input.JoystickHatState hatState = ButtonState.GetHat(OpenTK.Input.JoystickHat.Hat0);
 
+					if (hatState.Position != OpenTK.Input.HatPosition.Centered) {
+						for (int i = 0; i < Enum.GetNames(typeof(OpenTK.Input.HatPosition)).Length; i++)
+						{
+							if (hatState.Position == (OpenTK.Input.HatPosition)i + 1)
+							{
+								if (this.bButtonState[8 + 128 + i] == false)
+								{
+									STInputEvent stevent = new STInputEvent()
+									{
+										nKey = 8 + 128 + i,
+										//Debug.WriteLine( "POVS:" + povs[ 0 ].ToString( CultureInfo.CurrentCulture ) + ", " +stevent.nKey );
+										b押された = true,
+										nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+										nVelocity = CInput管理.n通常音量
+									};
+									this.list入力イベント.Add(stevent);
 
-					if (ButtonState.IsButtonDown((int)OpenTK.Input.Buttons.A)) { 
-					
-					}*/
+									this.bButtonState[stevent.nKey] = true;
+									this.bButtonPushDown[stevent.nKey] = true;
+								}
+							}
+							else 
+							{
+
+								if (this.bButtonState[8 + 128 + i] == true)
+								{
+									STInputEvent stevent = new STInputEvent()
+									{
+										nKey = 8 + 128 + i,
+										b押された = false,
+										nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
+										nVelocity = 0
+									};
+									this.list入力イベント.Add(stevent);
+
+									this.bButtonState[stevent.nKey] = false;
+									this.bButtonPullUp[stevent.nKey] = true;
+								}
+							}
+						}
+					}
 				}
 				#endregion
 
@@ -451,7 +488,7 @@ namespace FDK
 				JoystickState currentState = this.devJoystick.GetCurrentState();
 				//if( Result.Last.IsSuccess && currentState != null )
 				{
-					#region [ ボタン ]
+					/*#region [ ボタン ]
 					//-----------------------------
 					bool bIsButtonPressedReleased = false;
 					bool[] buttons = currentState.Buttons;
@@ -488,64 +525,7 @@ namespace FDK
 							bIsButtonPressedReleased = true;
 						}
 					}
-					#endregion
-					//-----------------------------
-					// #24341 2011.3.12 yyagi: POV support
-					#region [ POV HAT 4/8way (only single POV switch is supported)]
-					int[] povs = currentState.PointOfViewControllers;
-					if (povs != null)
-					{
-						if (povs[0] >= 0)
-						{
-							int nPovDegree = povs[0];
-							int nWay = (nPovDegree + 2250) / 4500;
-							if (nWay == 8) nWay = 0;
-
-							if (this.bButtonState[8 + 128 + nWay] == false)
-							{
-								STInputEvent stevent = new STInputEvent()
-								{
-									nKey = 8 + 128 + nWay,
-									//Debug.WriteLine( "POVS:" + povs[ 0 ].ToString( CultureInfo.CurrentCulture ) + ", " +stevent.nKey );
-									b押された = true,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = CInput管理.n通常音量
-								};
-								this.list入力イベント.Add(stevent);
-
-								this.bButtonState[stevent.nKey] = true;
-								this.bButtonPushDown[stevent.nKey] = true;
-							}
-						}
-						else if (bIsButtonPressedReleased == false) // #xxxxx 2011.12.3 yyagi 他のボタンが何も押され/離されてない＝POVが離された
-						{
-							int nWay = 0;
-							for (int i = 8 + 0x80; i < 8 + 0x80 + 8; i++)
-							{                                           // 離されたボタンを調べるために、元々押されていたボタンを探す。
-								if (this.bButtonState[i] == true)   // DirectInputを直接いじるならこんなことしなくて良いのに、あぁ面倒。
-								{                                       // この処理が必要なために、POVを1個しかサポートできない。無念。
-									nWay = i;
-									break;
-								}
-							}
-							if (nWay != 0)
-							{
-								STInputEvent stevent = new STInputEvent()
-								{
-									nKey = nWay,
-									b押された = false,
-									nTimeStamp = CSound管理.rc演奏用タイマ.nシステム時刻, // 演奏用タイマと同じタイマを使うことで、BGMと譜面、入力ずれを防ぐ。
-									nVelocity = 0
-								};
-								this.list入力イベント.Add(stevent);
-
-								this.bButtonState[nWay] = false;
-								this.bButtonPullUp[nWay] = true;
-							}
-						}
-					}
-					#endregion
-					//-----------------------------
+					#endregion*/
 					#endregion
 				}
 			}
