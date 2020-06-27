@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using SharpDX.DirectInput;
 
 namespace FDK
 {
@@ -62,9 +61,8 @@ namespace FDK
 
 
 		// コンストラクタ
-		public CInput管理(IntPtr hWnd)
+		public CInput管理()
 		{
-			this.directInput = new DirectInput();
 			// this.timer = new CTimer( CTimer.E種別.MultiMedia );
 
 			this.list入力デバイス = new List<IInputDevice>(10);
@@ -89,16 +87,17 @@ namespace FDK
 			}
 			#endregion
 			#region [ Enumerate joypad ]
-			foreach (DeviceInstance instance in this.directInput.GetDevices(DeviceClass.GameControl, DeviceEnumerationFlags.AttachedOnly))
+			try
 			{
-				try
+				for (int joynum = 0; joynum < 8; joynum++)//2020.06.28 Mr-Ojii joystickの検出数を返す関数が見つからないので適当に8個で
 				{
-					this.list入力デバイス.Add(new CInputJoystick(hWnd, instance, directInput));
+					if(OpenTK.Input.Joystick.GetState(joynum).IsConnected)
+						this.list入力デバイス.Add(new CInputJoystick(joynum));
 				}
-				catch 
-				{
-				}
-				
+			}
+			catch(Exception e) 
+			{
+			Trace.WriteLine(e.ToString());
 			}
 			#endregion
 			this.proc = new CWin32.MidiInProc(this.MidiInCallback);
@@ -146,17 +145,6 @@ namespace FDK
 			}
 			return null;
 		}
-		public IInputDevice Joystick(string GUID)
-		{
-			foreach (IInputDevice device in this.list入力デバイス)
-			{
-				if ((device.e入力デバイス種別 == E入力デバイス種別.Joystick) && device.GUID.Equals(GUID))
-				{
-					return device;
-				}
-			}
-			return null;
-		}
 		public IInputDevice MidiIn(int ID)
 		{
 			foreach (IInputDevice device in this.list入力デバイス)
@@ -180,19 +168,9 @@ namespace FDK
 					{
 						device.tポーリング(bWindowがアクティブ中);
 					}
-					catch (SharpDX.SharpDXException e)                                      // #24016 2011.1.6 yyagi: catch exception for unplugging USB joystick, and remove the device object from the polling items.
+					catch (Exception e)                                      // #24016 2011.1.6 yyagi: catch exception for unplugging USB joystick, and remove the device object from the polling items.
 					{
-						if (e.ResultCode == ResultCode.OtherApplicationHasPriority)
-						{
-							// #xxxxx: 2017.5.9: from: このエラーの時は、何もしない。
-						}
-						else
-						{
-							// #xxxxx: 2017.5.9: from: その他のエラーの場合は、デバイスが外されたと想定してRemoveする。
-							this.list入力デバイス.Remove(device);
-							device.Dispose();
-							Trace.TraceError("tポーリング時に対象deviceが抜かれており例外発生。同deviceをポーリング対象からRemoveしました。");
-						}
+						Trace.WriteLine(e.ToString());//2020.06.28 isconnectを使用しているので、デバイスを消さない。
 					}
 				}
 			}
@@ -230,8 +208,6 @@ namespace FDK
 						this.list入力デバイス.Clear();
 					}
 
-					this.directInput.Dispose();
-
 					//if( this.timer != null )
 					//{
 					//    this.timer.Dispose();
@@ -254,7 +230,6 @@ namespace FDK
 
 		#region [ private ]
 		//-----------------
-		private DirectInput directInput;
 		private IInputDevice _Keyboard;
 		private IInputDevice _Mouse;
 		private bool bDisposed済み;

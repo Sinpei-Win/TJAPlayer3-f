@@ -1684,7 +1684,7 @@ for (int i = 0; i < 3; i++) {
 			Trace.Indent();
 			try
 			{
-				Input管理 = new CInput管理( base.Window.Handle);
+				Input管理 = new CInput管理();
 				foreach( IInputDevice device in Input管理.list入力デバイス )
 				{
 					if( ( device.e入力デバイス種別 == E入力デバイス種別.Joystick ) && !ConfigIni.dicJoystick.ContainsValue( device.GUID ) )
@@ -1695,21 +1695,6 @@ for (int i = 0; i < 3; i++) {
 							key++;
 						}
 						ConfigIni.dicJoystick.Add( key, device.GUID );
-					}
-				}
-				foreach( IInputDevice device2 in Input管理.list入力デバイス )
-				{
-					if( device2.e入力デバイス種別 == E入力デバイス種別.Joystick )
-					{
-						foreach( KeyValuePair<int, string> pair in ConfigIni.dicJoystick )
-						{
-							if( device2.GUID.Equals( pair.Value ) )
-							{
-								( (CInputJoystick) device2 ).SetID( pair.Key );
-								break;
-							}
-						}
-						continue;
 					}
 				}
 				Trace.TraceInformation( "DirectInput の初期化を完了しました。" );

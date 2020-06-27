@@ -38,6 +38,12 @@ GitHub IssuesやDiscord鯖で連絡していただけれると、修正できる
 "TJAPlayer3-f"を使用していると概要欄などに明記していただき、
 "PC版 太鼓の達人"などのような アーケード/家庭用ゲーム "太鼓の達人"で遊んでいると誤解するような表記をしないでいただければ大丈夫です。
 
+=== 各連絡先 ===
+不具合報告、新規機能追加のリクエスト等、大歓迎です。
+Twitter: @Mr_Ojii
+Discord: Mr.おじい#1869
+GitHub: https://github.com/Mr-Ojii/TJAPlayer3-f
+
 以下はAioiLight様作成のReadmeです。
 
 == はじめに ==

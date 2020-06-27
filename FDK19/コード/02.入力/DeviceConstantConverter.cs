@@ -6,7 +6,6 @@ using SlimDXKeys;
 
 using WindowsKey = System.Windows.Forms.Keys;
 using SlimDXKey = SlimDXKeys.Key;
-using SharpDXKey = SharpDX.DirectInput.Key;
 
 namespace FDK
 {
@@ -1332,21 +1331,6 @@ namespace FDK
 		/// <returns>
 		///		対応する値がなければ SlimDX.DirectInput.Unknown を返す。
 		/// </returns>
-		public static SlimDXKey DIKtoKey(SharpDXKey key)
-		{
-			if (_DIKtoKey.ContainsKey(key))
-			{
-				return _DIKtoKey[key];
-			}
-			else
-			{
-				return SlimDXKey.Unknown;
-			}
-		}
-
-		/// <returns>
-		///		対応する値がなければ SlimDX.DirectInput.Unknown を返す。
-		/// </returns>
 		public static SlimDXKey TKKtoKey(OpenTK.Input.Key key)
 		{
 			if (_TKKtoKey.ContainsKey(key))
@@ -1490,157 +1474,6 @@ namespace FDK
 			#endregion
 		};
 
-
-		/// <summary>
-		///		DIK (SharpDX.DirectInput.Key) から SlimDX.DirectInput.Key への変換表。
-		/// </summary>
-		private static readonly Dictionary<SharpDXKey, SlimDXKey> _DIKtoKey = new Dictionary<SharpDXKey, SlimDXKey>() {
-			#region [ *** ]
-			{ SharpDXKey.Unknown, SlimDXKey.Unknown },
-			{ SharpDXKey.Escape, SlimDXKey.Escape },
-			{ SharpDXKey.D1, SlimDXKey.D1 },
-			{ SharpDXKey.D2, SlimDXKey.D2 },
-			{ SharpDXKey.D3, SlimDXKey.D3 },
-			{ SharpDXKey.D4, SlimDXKey.D4 },
-			{ SharpDXKey.D5, SlimDXKey.D5 },
-			{ SharpDXKey.D6, SlimDXKey.D6 },
-			{ SharpDXKey.D7, SlimDXKey.D7 },
-			{ SharpDXKey.D8, SlimDXKey.D8 },
-			{ SharpDXKey.D9, SlimDXKey.D9 },
-			{ SharpDXKey.D0, SlimDXKey.D0 },
-			{ SharpDXKey.Minus, SlimDXKey.Minus },
-			{ SharpDXKey.Equals, SlimDXKey.Equals },
-			{ SharpDXKey.Back, SlimDXKey.Backspace },
-			{ SharpDXKey.Tab, SlimDXKey.Tab },
-			{ SharpDXKey.Q, SlimDXKey.Q },
-			{ SharpDXKey.W, SlimDXKey.W },
-			{ SharpDXKey.E, SlimDXKey.E },
-			{ SharpDXKey.R, SlimDXKey.R },
-			{ SharpDXKey.T, SlimDXKey.T },
-			{ SharpDXKey.Y, SlimDXKey.Y },
-			{ SharpDXKey.U, SlimDXKey.U },
-			{ SharpDXKey.I, SlimDXKey.I },
-			{ SharpDXKey.O, SlimDXKey.O },
-			{ SharpDXKey.P, SlimDXKey.P },
-			{ SharpDXKey.LeftBracket, SlimDXKey.LeftBracket },
-			{ SharpDXKey.RightBracket, SlimDXKey.RightBracket },
-			{ SharpDXKey.Return, SlimDXKey.Return },
-			{ SharpDXKey.LeftControl, SlimDXKey.LeftControl },
-			{ SharpDXKey.A, SlimDXKey.A },
-			{ SharpDXKey.S, SlimDXKey.S },
-			{ SharpDXKey.D, SlimDXKey.D },
-			{ SharpDXKey.F, SlimDXKey.F },
-			{ SharpDXKey.G, SlimDXKey.G },
-			{ SharpDXKey.H, SlimDXKey.H },
-			{ SharpDXKey.J, SlimDXKey.J },
-			{ SharpDXKey.K, SlimDXKey.K },
-			{ SharpDXKey.L, SlimDXKey.L },
-			{ SharpDXKey.Semicolon, SlimDXKey.Semicolon },
-			{ SharpDXKey.Apostrophe, SlimDXKey.Apostrophe },
-			{ SharpDXKey.Grave, SlimDXKey.Grave },
-			{ SharpDXKey.LeftShift, SlimDXKey.LeftShift },
-			{ SharpDXKey.Backslash, SlimDXKey.Backslash },
-			{ SharpDXKey.Z, SlimDXKey.Z },
-			{ SharpDXKey.X, SlimDXKey.X },
-			{ SharpDXKey.C, SlimDXKey.C },
-			{ SharpDXKey.V, SlimDXKey.V },
-			{ SharpDXKey.B, SlimDXKey.B },
-			{ SharpDXKey.N, SlimDXKey.N },
-			{ SharpDXKey.M, SlimDXKey.M },
-			{ SharpDXKey.Comma, SlimDXKey.Comma },
-			{ SharpDXKey.Period, SlimDXKey.Period },
-			{ SharpDXKey.Slash, SlimDXKey.Slash },
-			{ SharpDXKey.RightShift, SlimDXKey.RightShift },
-			{ SharpDXKey.Multiply, SlimDXKey.NumberPadStar },
-			{ SharpDXKey.LeftAlt, SlimDXKey.LeftAlt },
-			{ SharpDXKey.Space, SlimDXKey.Space },
-			{ SharpDXKey.Capital, SlimDXKey.CapsLock },
-			{ SharpDXKey.F1, SlimDXKey.F1 },
-			{ SharpDXKey.F2, SlimDXKey.F2 },
-			{ SharpDXKey.F3, SlimDXKey.F3 },
-			{ SharpDXKey.F4, SlimDXKey.F4 },
-			{ SharpDXKey.F5, SlimDXKey.F5 },
-			{ SharpDXKey.F6, SlimDXKey.F6 },
-			{ SharpDXKey.F7, SlimDXKey.F7 },
-			{ SharpDXKey.F8, SlimDXKey.F8 },
-			{ SharpDXKey.F9, SlimDXKey.F9 },
-			{ SharpDXKey.F10, SlimDXKey.F10 },
-			{ SharpDXKey.NumberLock, SlimDXKey.NumberLock },
-			{ SharpDXKey.ScrollLock, SlimDXKey.ScrollLock },
-			{ SharpDXKey.NumberPad7, SlimDXKey.NumberPad7 },
-			{ SharpDXKey.NumberPad8, SlimDXKey.NumberPad8 },
-			{ SharpDXKey.NumberPad9, SlimDXKey.NumberPad9 },
-			{ SharpDXKey.Subtract, SlimDXKey.NumberPadMinus },
-			{ SharpDXKey.NumberPad4, SlimDXKey.NumberPad4 },
-			{ SharpDXKey.NumberPad5, SlimDXKey.NumberPad5 },
-			{ SharpDXKey.NumberPad6, SlimDXKey.NumberPad6 },
-			{ SharpDXKey.Add, SlimDXKey.NumberPadPlus },
-			{ SharpDXKey.NumberPad1, SlimDXKey.NumberPad1 },
-			{ SharpDXKey.NumberPad2, SlimDXKey.NumberPad2 },
-			{ SharpDXKey.NumberPad3, SlimDXKey.NumberPad3 },
-			{ SharpDXKey.NumberPad0, SlimDXKey.NumberPad0 },
-			{ SharpDXKey.Decimal, SlimDXKey.NumberPadPeriod },
-			{ SharpDXKey.Oem102, SlimDXKey.Oem102 },
-			{ SharpDXKey.F11, SlimDXKey.F11 },
-			{ SharpDXKey.F12, SlimDXKey.F12 },
-			{ SharpDXKey.F13, SlimDXKey.F13 },
-			{ SharpDXKey.F14, SlimDXKey.F14 },
-			{ SharpDXKey.F15, SlimDXKey.F15 },
-			{ SharpDXKey.Kana, SlimDXKey.Kana },
-			{ SharpDXKey.AbntC1, SlimDXKey.AbntC1 },
-			{ SharpDXKey.Convert, SlimDXKey.Convert },
-			{ SharpDXKey.NoConvert, SlimDXKey.NoConvert },
-			{ SharpDXKey.Yen, SlimDXKey.Yen },
-			{ SharpDXKey.AbntC2, SlimDXKey.AbntC2 },
-			{ SharpDXKey.NumberPadEquals, SlimDXKey.NumberPadEquals },
-			{ SharpDXKey.PreviousTrack, SlimDXKey.PreviousTrack },
-			{ SharpDXKey.AT, SlimDXKey.AT },
-			{ SharpDXKey.Colon, SlimDXKey.Colon },
-			{ SharpDXKey.Underline, SlimDXKey.Underline },
-			{ SharpDXKey.Kanji, SlimDXKey.Kanji },
-			{ SharpDXKey.Stop, SlimDXKey.Stop },
-			{ SharpDXKey.AX, SlimDXKey.AX },
-			{ SharpDXKey.Unlabeled, SlimDXKey.Unlabeled },
-			{ SharpDXKey.NextTrack, SlimDXKey.NextTrack },
-			{ SharpDXKey.NumberPadEnter, SlimDXKey.NumberPadEnter },
-			{ SharpDXKey.RightControl, SlimDXKey.RightControl },
-			{ SharpDXKey.Mute, SlimDXKey.Mute },
-			{ SharpDXKey.Calculator, SlimDXKey.Calculator },
-			{ SharpDXKey.PlayPause, SlimDXKey.PlayPause },
-			{ SharpDXKey.MediaStop, SlimDXKey.MediaStop },
-			{ SharpDXKey.VolumeDown, SlimDXKey.VolumeDown },
-			{ SharpDXKey.VolumeUp, SlimDXKey.VolumeUp },
-			{ SharpDXKey.WebHome, SlimDXKey.WebHome },
-			{ SharpDXKey.PrintScreen, SlimDXKey.PrintScreen },
-			{ SharpDXKey.RightAlt, SlimDXKey.RightAlt },
-			{ SharpDXKey.Pause, SlimDXKey.Pause },
-			{ SharpDXKey.Home, SlimDXKey.Home },
-			{ SharpDXKey.Up, SlimDXKey.UpArrow },
-			{ SharpDXKey.PageUp, SlimDXKey.PageUp },
-			{ SharpDXKey.Left, SlimDXKey.LeftArrow },
-			{ SharpDXKey.Right, SlimDXKey.RightArrow },
-			{ SharpDXKey.End, SlimDXKey.End },
-			{ SharpDXKey.Down, SlimDXKey.DownArrow },
-			{ SharpDXKey.PageDown, SlimDXKey.PageDown },
-			{ SharpDXKey.Insert, SlimDXKey.Insert },
-			{ SharpDXKey.Delete, SlimDXKey.Delete },
-			{ SharpDXKey.LeftWindowsKey, SlimDXKey.LeftWindowsKey },
-			{ SharpDXKey.RightWindowsKey, SlimDXKey.RightWindowsKey },
-			{ SharpDXKey.Applications, SlimDXKey.Applications },
-			{ SharpDXKey.Power, SlimDXKey.Power },
-			{ SharpDXKey.Sleep, SlimDXKey.Sleep },
-			{ SharpDXKey.Wake, SlimDXKey.Wake },
-			{ SharpDXKey.WebSearch, SlimDXKey.WebSearch },
-			{ SharpDXKey.WebFavorites, SlimDXKey.WebFavorites },
-			{ SharpDXKey.WebRefresh, SlimDXKey.WebRefresh },
-			{ SharpDXKey.WebStop, SlimDXKey.WebStop },
-			{ SharpDXKey.WebForward, SlimDXKey.WebForward },
-			{ SharpDXKey.WebBack, SlimDXKey.WebBack },
-			{ SharpDXKey.MyComputer, SlimDXKey.MyComputer },
-			{ SharpDXKey.Mail, SlimDXKey.Mail },
-			{ SharpDXKey.MediaSelect, SlimDXKey.MediaSelect },
-			#endregion
-		};
 
 		/// <summary>
 		///		SlimDX.DirectInput.Key から System.Windows.Form.Keys への変換表。

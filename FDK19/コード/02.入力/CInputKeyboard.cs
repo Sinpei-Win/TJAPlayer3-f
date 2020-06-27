@@ -4,7 +4,6 @@ using System.Text;
 using System.Diagnostics;
 
 using SlimDXKey = SlimDXKeys.Key;
-using SharpDXKey = SharpDX.DirectInput.Key;
 
 namespace FDK
 {
