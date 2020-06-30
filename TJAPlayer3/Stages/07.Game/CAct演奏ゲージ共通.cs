@@ -133,6 +133,7 @@ namespace TJAPlayer3
 			}
 
 			this.dbゲージ値 = 0;
+			this.dbゲージ値2P = 0;
 
 			//ゲージのMAXまでの最低コンボ数を計算
 			float[] dbGaugeMaxComboValue = new float[2] { 0 , 0};
@@ -200,7 +201,7 @@ namespace TJAPlayer3
 								dbGaugeMaxComboValue[nPlayer] = TJAPlayer3.DTX[nPlayer].nノーツ数[3] * (this.fGaugeMaxRate[2] / 100.0f);
 								for (int i = 0; i < 3; i++)
 								{
-									dbGaugeMaxComboValue_branch[nPlayer,i] = TJAPlayer3.DTX[0].nノーツ数_Branch[i] * (this.fGaugeMaxRate[2] / 100.0f);
+									dbGaugeMaxComboValue_branch[nPlayer,i] = TJAPlayer3.DTX[nPlayer].nノーツ数_Branch[i] * (this.fGaugeMaxRate[2] / 100.0f);
 								}
 							}
 							else
