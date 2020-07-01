@@ -61,10 +61,10 @@ namespace TJAPlayer3
 				Drums.n演奏速度分母 = 20;
 				Drums.bSTAGEFAILED有効 = TJAPlayer3.ConfigIni.bSTAGEFAILED有効;
 				Drums.eダメージレベル = TJAPlayer3.ConfigIni.eダメージレベル;
-				Drums.b演奏にキーボードを使用した = this.b演奏にキーボードを使った.Drums;
-				Drums.b演奏にMIDI入力を使用した = this.b演奏にMIDI入力を使った.Drums;
-				Drums.b演奏にジョイパッドを使用した = this.b演奏にジョイパッドを使った.Drums;
-				Drums.b演奏にマウスを使用した = this.b演奏にマウスを使った.Drums;
+				Drums.b演奏にキーボードを使用した = this.b演奏にキーボードを使った;
+				Drums.b演奏にMIDI入力を使用した = this.b演奏にMIDI入力を使った;
+				Drums.b演奏にジョイパッドを使用した = this.b演奏にジョイパッドを使った;
+				Drums.b演奏にマウスを使用した = this.b演奏にマウスを使った;
 				Drums.nPerfectになる範囲ms = TJAPlayer3.nPerfect範囲ms;
 				Drums.nGreatになる範囲ms = TJAPlayer3.nGreat範囲ms;
 				Drums.nGoodになる範囲ms = TJAPlayer3.nGood範囲ms;
@@ -182,26 +182,16 @@ namespace TJAPlayer3
 			}
 
 			cInvisibleChip = new CInvisibleChip( TJAPlayer3.ConfigIni.nDisplayTimesMs, TJAPlayer3.ConfigIni.nFadeoutTimeMs );
-			this.演奏判定ライン座標 = new C演奏判定ライン座標共通();
 			this.nヒット数_Auto含まない[0] = new CHITCOUNTOFRANK();
 			this.nヒット数_Auto含まない[1] = new CHITCOUNTOFRANK();
 			this.nヒット数_Auto含む[0] = new CHITCOUNTOFRANK();
 			this.nヒット数_Auto含む[1] = new CHITCOUNTOFRANK();
-			for ( int k = 0; k < 4; k++ )
-			{
-				//this.nJudgeLinePosY_delta[ k ] = CDTXMania.ConfigIni.nJudgeLinePosOffset[ k ];		// #31602 2013.6.23 yyagi
 
-				this.演奏判定ライン座標.nJudgeLinePosY_delta[ k ] = TJAPlayer3.ConfigIni.nJudgeLinePosOffset[ k ];
+			this.b演奏にキーボードを使った = false;
+			this.b演奏にジョイパッドを使った = false;
+			this.b演奏にMIDI入力を使った = false;
+			this.b演奏にマウスを使った = false;
 
-			}
-			actCombo.演奏判定ライン座標 = 演奏判定ライン座標;
-			for ( int i = 0; i < 3; i++ )
-			{
-				this.b演奏にキーボードを使った[ i ] = false;
-				this.b演奏にジョイパッドを使った[ i ] = false;
-				this.b演奏にMIDI入力を使った[ i ] = false;
-				this.b演奏にマウスを使った[ i ] = false;
-			}
 			this.bAUTOでないチップが１つでもバーを通過した = false;
 			cInvisibleChip.Reset();
 			base.On活性化();
@@ -459,7 +449,6 @@ namespace TJAPlayer3
 		public CAct演奏ステージ失敗 actStageFailed;
 		protected CAct演奏ステータスパネル共通 actStatusPanels;
 		protected CAct演奏スクロール速度 act譜面スクロール速度;
-		public    C演奏判定ライン座標共通 演奏判定ライン座標;
 		protected CAct演奏Drums連打 actRoll;
 		protected CAct演奏Drums風船 actBalloon;
 		public CAct演奏Drumsキャラクター actChara;
@@ -476,10 +465,10 @@ namespace TJAPlayer3
 		public bool bTjiroPRESSSPACE;
 		public bool[] bIsAlreadyCleared;
 		public bool[] bIsAlreadyMaxed;
-		protected STDGBVALUE<bool> b演奏にMIDI入力を使った;
-		protected STDGBVALUE<bool> b演奏にキーボードを使った;
-		protected STDGBVALUE<bool> b演奏にジョイパッドを使った;
-		protected STDGBVALUE<bool> b演奏にマウスを使った;
+		protected bool b演奏にMIDI入力を使った;
+		protected bool b演奏にキーボードを使った;
+		protected bool b演奏にジョイパッドを使った;
+		protected bool b演奏にマウスを使った;
 		public CCounter[] ctChipAnime;
 		public CCounter[] ctChipAnimeLag;
 
@@ -503,7 +492,6 @@ namespace TJAPlayer3
 		protected bool bIsDirectSound;							//
 		protected double db再生速度;
 //		protected bool bDTXVmode;
-//		protected STDGBVALUE<int> nJudgeLinePosY_delta;			// #31602 2013.6.23 yyagi 表示遅延対策として、判定ラインの表示位置をずらす機能を追加する
 
 		protected CTexture txチップ;
 		protected CTexture txヒットバー;
@@ -2857,19 +2845,19 @@ namespace TJAPlayer3
 		{
 			if ( TJAPlayer3.Pad.st検知したデバイス.Keyboard )
 			{
-				this.b演奏にキーボードを使った[ (int) part ] = true;
+				this.b演奏にキーボードを使った = true;
 			}
 			if ( TJAPlayer3.Pad.st検知したデバイス.Joypad )
 			{
-				this.b演奏にジョイパッドを使った[ (int) part ] = true;
+				this.b演奏にジョイパッドを使った = true;
 			}
 			if ( TJAPlayer3.Pad.st検知したデバイス.MIDIIN )
 			{
-				this.b演奏にMIDI入力を使った[ (int) part ] = true;
+				this.b演奏にMIDI入力を使った = true;
 			}
 			if ( TJAPlayer3.Pad.st検知したデバイス.Mouse )
 			{
-				this.b演奏にマウスを使った[ (int) part ] = true;
+				this.b演奏にマウスを使った = true;
 			}
 		}
 
@@ -4470,20 +4458,20 @@ namespace TJAPlayer3
 		
 		protected void t進行描画_判定文字列()
 		{
-			this.actJudgeString.t進行描画( 演奏判定ライン座標 );
+			this.actJudgeString.t進行描画();
 		}
 		protected void t進行描画_判定文字列1_通常位置指定の場合()
 		{
 			if ( ( (E判定文字表示位置) TJAPlayer3.ConfigIni.判定文字表示位置 ) != E判定文字表示位置.コンボ下 )	// 判定ライン上または横
 			{
-				this.actJudgeString.t進行描画( 演奏判定ライン座標 );
+				this.actJudgeString.t進行描画();
 			}
 		}
 		protected void t進行描画_判定文字列2_判定ライン上指定の場合()
 		{
 			if ( ( (E判定文字表示位置) TJAPlayer3.ConfigIni.判定文字表示位置 ) == E判定文字表示位置.コンボ下 )	// 判定ライン上または横
 			{
-				this.actJudgeString.t進行描画( 演奏判定ライン座標 );
+				this.actJudgeString.t進行描画();
 			}
 		}
 
