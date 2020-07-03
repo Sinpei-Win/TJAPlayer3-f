@@ -39,12 +39,6 @@ namespace TJAPlayer3
 		n曲目に表示 = 1,
 		mtaikoに画像で表示 = 2,
 	}
-	public enum Eダークモード
-	{
-		OFF,
-		HALF,
-		FULL
-	}
 	public enum Eダメージレベル
 	{
 		少ない	= 0,
@@ -193,13 +187,6 @@ namespace TJAPlayer3
 		AutoGreat   = 7,
 		AutoGood    = 8,
 	}
-	internal enum E判定文字表示位置
-	{
-		表示OFF,
-		レーン上,
-		判定ライン上,
-		コンボ下
-	}
 	internal enum E判定位置
 	{
 		標準	= 0,
@@ -221,34 +208,6 @@ namespace TJAPlayer3
 	{
 		フェードイン,
 		フェードアウト
-	}
-	internal enum Eレーン
-	{
-		LC = 0,
-		HH,
-		SD,
-		BD,
-		HT,
-		LT,
-		FT,
-		CY,
-		LP,
-		RD,		// 将来の独立レーン化/独立AUTO設定を見越して追加
-		LBD = 10,
-		Guitar,	// AUTOレーン判定を容易にするため、便宜上定義しておく(未使用)
-		Bass,	// (未使用)
-		GtR,
-		GtG,
-		GtB,
-		GtPick,
-		GtW,
-		BsR,
-		BsG,
-		BsB,
-		BsPick,
-		BsW,
-		MAX,	// 要素数取得のための定義 ("BGM"は使わない前提で)
-		BGM
 	}
 	internal enum E演奏画面の戻り値
 	{

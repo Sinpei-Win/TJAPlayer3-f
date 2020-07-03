@@ -24,7 +24,6 @@ namespace TJAPlayer3
 			base.eステージID = CStage.Eステージ.演奏;
 			base.eフェーズID = CStage.Eフェーズ.共通_通常状態;
 			base.b活性化してない = true;
-			base.list子Activities.Add( this.actPad = new CAct演奏Drumsパッド() );
 			base.list子Activities.Add( this.actCombo = new CAct演奏DrumsコンボDGB() );
 			base.list子Activities.Add( this.actDANGER = new CAct演奏DrumsDanger() );
 			base.list子Activities.Add( this.actChipFireD = new CAct演奏DrumsチップファイアD() );
@@ -292,20 +291,6 @@ namespace TJAPlayer3
 		{
 			if( !base.b活性化してない )
 			{
-				//this.t背景テクスチャの生成();
-				//this.tx太鼓ノーツ = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_taiko_notes.png" ) );
-				//this.txHand = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_taiko_notes_arm.png" ) );
-				//this.txSenotes = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_senotes.png" ) );
-				//this.tx小節線 = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_bar_line.png" ) );
-				//this.tx小節線_branch = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_bar_line_branch.png" ) );
-	//            this.tx判定数小文字 = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\8_Result_number_s.png" ) );
-	//            this.txNamePlate = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_NamePlate.png" ) );
-	//            if (CDTXMania.stage演奏ドラム画面.bDoublePlay)
-	//                this.txNamePlate2P = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_NamePlate2P.png" ) );
-	//            this.txPlayerNumber = CDTXMania.tテクスチャの生成(CSkin.Path(@"Graphics\7_PlayerNumber.png"));
-
-	//            this.tx判定数表示パネル = CDTXMania.tテクスチャの生成( CSkin.Path( @"Graphics\7_Paramater Panel.png" ) );
-
 				// When performing calibration, reduce audio distraction from user input.
 				// For users who play primarily by listening to the music,
 				// you might think that we want them to hear drum sound effects during
@@ -325,7 +310,7 @@ namespace TJAPlayer3
 					this.soundBlue[1] = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\ka.ogg"), ESoundGroup.SoundEffect);
 					this.soundAdlib[1] = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\Adlib.ogg"), ESoundGroup.SoundEffect);
 
-					if (TJAPlayer3.ConfigIni.nPlayerCount >= 2)//2020.05.06 Mr-Ojii左右に出したかったから、追加。
+					if (TJAPlayer3.ConfigIni.nPlayerCount >= 2)//2020.05.06 Mr-Ojii 左右に出したかったから、追加。
 					{
 						this.soundRed[0].n位置 = -100;
 						this.soundBlue[0].n位置 = -100;
@@ -343,24 +328,6 @@ namespace TJAPlayer3
 		{
 			if( !base.b活性化してない )
 			{
-				////CDTXMania.tテクスチャの解放( ref this.tx背景 );
-				//CDTXMania.tテクスチャの解放( ref this.txヒットバー );
-				//CDTXMania.tテクスチャの解放( ref this.txヒットバーGB );
-				//CDTXMania.tテクスチャの解放( ref this.txチップ );
-				//            //CDTXMania.tテクスチャの解放( ref this.tx太鼓ノーツ );
-				//            CDTXMania.tテクスチャの解放( ref this.txHand );
-				//            CDTXMania.tテクスチャの解放( ref this.txSenotes );
-				//            CDTXMania.tテクスチャの解放( ref this.tx小節線 );
-				//            CDTXMania.tテクスチャの解放( ref this.tx小節線_branch );
-				//CDTXMania.tテクスチャの解放( ref this.txレーンフレームGB );
-				////CDTXMania.tテクスチャの解放( ref this.txWailing枠 );
-
-				//            CDTXMania.tテクスチャの解放( ref this.tx判定数表示パネル );
-				//            CDTXMania.tテクスチャの解放( ref this.tx判定数小文字 );
-				//            CDTXMania.tテクスチャの解放( ref this.txNamePlate );
-				//            if (CDTXMania.stage演奏ドラム画面.bDoublePlay)
-				//                CDTXMania.tテクスチャの解放( ref this.txNamePlate2P );
-				//            CDTXMania.tテクスチャの解放( ref this.txPlayerNumber);
 				for (int i = 0; i < 2; i++)
 				{
 					if (this.soundRed[i] != null)
@@ -514,7 +481,7 @@ namespace TJAPlayer3
 
 
 				if( !TJAPlayer3.ConfigIni.bNoInfo )
-					this.t進行描画_判定文字列1_通常位置指定の場合();
+					this.t進行描画_判定文字列();
 
 				this.t進行描画_演奏情報();
 				
@@ -606,7 +573,6 @@ namespace TJAPlayer3
 		}
 		public CAct演奏DrumsチップファイアD actChipFireD;
 
-		private CAct演奏Drumsパッド actPad;
 		public CAct演奏Drumsレーン actLane;
 		public CAct演奏DrumsMtaiko actMtaiko;
 		public CAct演奏Drumsレーン太鼓 actLaneTaiko;
@@ -806,15 +772,6 @@ namespace TJAPlayer3
 		private void t進行描画_チップファイアD()
 		{
 			this.actChipFireD.On進行描画();
-		}
-
-
-		private void t進行描画_ドラムパッド()
-		{
-			if( TJAPlayer3.ConfigIni.eDark != Eダークモード.FULL )
-			{
-				this.actPad.On進行描画();
-			}
 		}
 
 		protected override void t進行描画_演奏情報()
