@@ -2964,7 +2964,7 @@ namespace TJAPlayer3
 
 			if (obj.Offset != null) //TJAと同じようにDELAYをかませる
 			{
-				double nDELAY = (Convert.ToDouble(-obj.Offset) * 1000.0);
+				double nDELAY = (Convert.ToDouble(obj.Offset) * 1000.0);
 
 
 				this.listDELAY.Add(this.n内部番号DELAY1to, new CDELAY() { n内部番号 = this.n内部番号DELAY1to, n表記上の番号 = 0, nDELAY値 = (int)nDELAY, delay_bmscroll_time = this.dbLastBMScrollTime, delay_bpm = this.dbNowBPM, delay_course = this.n現在のコース, delay_time = this.dbLastTime });
@@ -3061,7 +3061,6 @@ namespace TJAPlayer3
 			#endregion
 
 			t入力tccファイル(obj.Courses[cindex].Single);
-
         }
 
 
@@ -3204,11 +3203,11 @@ namespace TJAPlayer3
 				this.nOFFSET = (int)((double)obj.Offset * 1000);
 			else
 				this.nOFFSET = 0;
-			this.bOFFSETの値がマイナスである = this.nOFFSET < 0 ? true : false;
+			this.bOFFSETの値がマイナスである = this.nOFFSET < 0 ? false : true;	//2020.07.04 Mr-Ojii OTC規格ではOFFSETがTJAと逆なので真と偽が逆になる。
 
 			this.listBPM[0].bpm_change_bmscroll_time = -2000 * this.dbNowBPM / 15000;
-			if (this.bOFFSETの値がマイナスである == true)
-				this.nOFFSET = this.nOFFSET * -1; //OFFSETは秒を加算するので、必ず正の数にすること。
+			if (this.bOFFSETの値がマイナスである == false)						//↑trueとfalseが逆になるのでここの比較も逆
+				this.nOFFSET = this.nOFFSET * -1; //OFFSETは秒を加算するので、必ず正の数にすること。 
 			#endregion
 
 			#region[MOVIEOFFSET]
