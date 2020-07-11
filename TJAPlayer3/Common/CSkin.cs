@@ -35,6 +35,9 @@ namespace TJAPlayer3
 		SOUND曲決定音,
 		SOUND成績発表,
 		SOUNDDANするカッ,
+		SOUND特訓再生,
+		SOUND特訓停止,
+		SOUND特訓スクロール,
 		Count				// システムサウンド総数の計算用
 	}
 
@@ -323,6 +326,9 @@ namespace TJAPlayer3
 		public Cシステムサウンド sound曲決定音 = null;
 		public Cシステムサウンド sound成績発表 = null;
 		public Cシステムサウンド soundDanするカッ = null;
+		public Cシステムサウンド sound特訓再生音 = null;
+		public Cシステムサウンド sound特訓停止音 = null;
+		public Cシステムサウンド sound特訓スクロール音 = null;
 
 		//public Cシステムサウンド soundRed = null;
 		//public Cシステムサウンド soundBlue = null;
@@ -401,6 +407,15 @@ namespace TJAPlayer3
 
 					case Eシステムサウンド.SOUNDDANするカッ:
 						return this.soundDanするカッ;
+
+					case Eシステムサウンド.SOUND特訓再生:
+						return this.sound特訓再生音;
+
+					case Eシステムサウンド.SOUND特訓停止:
+						return this.sound特訓停止音;
+
+					case Eシステムサウンド.SOUND特訓スクロール:
+						return this.sound特訓スクロール音;
 				}
 				throw new IndexOutOfRangeException();
 			}
@@ -476,6 +491,15 @@ namespace TJAPlayer3
 
 					case 19:
 						return this.soundDanするカッ;
+
+					case 20:
+						return this.sound特訓再生音;
+
+					case 21:
+						return this.sound特訓停止音;
+
+					case 22:
+						return this.sound特訓スクロール音;
 				}
 				throw new IndexOutOfRangeException();
 			}
@@ -631,6 +655,11 @@ namespace TJAPlayer3
 			this.sound曲決定音 = new Cシステムサウンド(@"Sounds\SongDecide.ogg", false, false, ESoundGroup.Voice);
 			this.sound成績発表 = new Cシステムサウンド(@"Sounds\ResultIn.ogg", false, false, ESoundGroup.Voice);
 			this.soundDanするカッ = new Cシステムサウンド(@"Sounds\Dan_Select.ogg", false, false, ESoundGroup.SoundEffect);
+
+			this.sound特訓再生音 = new Cシステムサウンド(@"Sounds\Resume.ogg", false, false, ESoundGroup.SoundEffect);
+			this.sound特訓停止音 = new Cシステムサウンド(@"Sounds\Pause.ogg", false, false, ESoundGroup.SoundEffect);
+			this.sound特訓スクロール音 = new Cシステムサウンド(@"Sounds\Scroll.ogg", false, false, ESoundGroup.SoundEffect);
+
 			ReloadSkin();
 			tReadSkinConfig();
 		}
@@ -1110,6 +1139,66 @@ namespace TJAPlayer3
 							{
 								SongSelect_Box_Center_Header_Y_Diff = int.Parse(strParam);
 							}
+
+							#region Difficulty
+							else if (strCommand == nameof(Difficulty_Bar_Center_X_WH_WH_Y_Y))
+							{
+								Difficulty_Bar_Center_X_WH_WH_Y_Y = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Difficulty_Bar_XY))
+							{
+								Difficulty_Bar_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Difficulty_Bar_Padding))
+							{
+								Difficulty_Bar_Padding = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Difficulty_BarEtc_XY))
+							{
+								Difficulty_BarEtc_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Difficulty_BarEtc_Padding))
+							{
+								Difficulty_BarEtc_Padding = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Difficulty_Anc_XY))
+							{
+								Difficulty_Anc_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Difficulty_AncEtc_XY))
+							{
+								Difficulty_AncEtc_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Difficulty_AncBox_XY))
+							{
+								Difficulty_AncBox_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Difficulty_AncBoxEtc_XY))
+							{
+								Difficulty_AncBoxEtc_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Difficulty_Anc_Padding))
+							{
+								Difficulty_Anc_Padding = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Difficulty_AncEtc_Padding))
+							{
+								Difficulty_Anc_Padding = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Difficulty_AncBox_Padding))
+							{
+								Difficulty_Anc_Padding = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Difficulty_AncBoxEtc_Padding))
+							{
+								Difficulty_Anc_Padding = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Difficulty_Mark_Y))
+							{
+								Difficulty_Mark_Y = int.Parse(strParam);
+							}
+							#endregion
+
 							#endregion
 							#region SongLoading
 							else if (strCommand == nameof(SongLoading_Plate_X))
@@ -2149,6 +2238,40 @@ namespace TJAPlayer3
 								Game_PuchiChara_SineTimer = double.Parse(strParam);
 							}
 							#endregion
+							#region Training
+							else if (strCommand == nameof(Game_Training_ScrollTime))
+							{
+								Game_Training_ScrollTime = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Game_Training_ProgressBar_XY))
+							{
+								Game_Training_ProgressBar_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Game_Training_GoGoPoint_Y))
+							{
+								Game_Training_GoGoPoint_Y = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Game_Training_MaxMeasureCount_XY))
+							{
+								Game_Training_MaxMeasureCount_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Game_Training_CurrentMeasureCount_XY))
+							{
+								Game_Training_CurrentMeasureCount_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Game_Training_SpeedDisplay_XY))
+							{
+								Game_Training_CurrentMeasureCount_XY = strParam.Split(',').Select(int.Parse).ToArray();
+							}
+							else if (strCommand == nameof(Game_Training_SmallNumber_Width))
+							{
+								Game_Training_SmallNumber_Width = int.Parse(strParam);
+							}
+							else if (strCommand == nameof(Game_Training_BigNumber_Width))
+							{
+								Game_Training_BigNumber_Width = int.Parse(strParam);
+							}
+							#endregion
 							#region Background
 
 							else if (strCommand == nameof(this.Background_Scroll_PatternY))
@@ -2456,11 +2579,27 @@ namespace TJAPlayer3
 		public int[] SongSelect_Counter_XY = { 1145, 55 };
 
 		#region[Difficulty]
-		public int[] Difficulty_Bar_Center_X_WH_WH_Y_Y = new int[7] { 643, 387, 439, 880, 600 , 125 , 25};
-        #endregion
-        #endregion
-        #region SongLoading
-        public int SongLoading_Plate_X = 640;
+		public int[] Difficulty_Bar_Center_X_WH_WH_Y_Y = new int[7] { 643, 387, 439, 880, 540, 125, 25 };
+		public int[] Difficulty_Bar_XY = new int[2] { 440, 90 };
+		public int Difficulty_Bar_Padding = 100;
+		public int[] Difficulty_BarEtc_XY = new int[2] { 225, 150 };
+		public int Difficulty_BarEtc_Padding = 75;
+
+		public int[] Difficulty_Anc_XY = new int[2] { 441, -10 };
+		public int Difficulty_Anc_Padding = 100;
+		public int[] Difficulty_AncBox_XY = new int[2] { 441, 138 };
+		public int Difficulty_AncBox_Padding = 100;
+
+		public int[] Difficulty_AncEtc_XY = new int[2] { 210, 0 };
+		public int Difficulty_AncEtc_Padding = 75;
+		public int[] Difficulty_AncBoxEtc_XY = new int[2] { 210, 105 };
+		public int Difficulty_AncBoxEtc_Padding = 75;
+
+		public int Difficulty_Mark_Y = 600;
+		#endregion
+		#endregion
+		#region SongLoading
+		public int SongLoading_Plate_X = 640;
 		public int SongLoading_Plate_Y = 360;
 		public int SongLoading_Title_X = 640;
 		public int SongLoading_Title_Y = 340;
@@ -2695,6 +2834,16 @@ namespace TJAPlayer3
 		public int[] Game_DanC_ExamUnit_Size = new int[] { 30, 36 };
 		public int[] Game_DanC_Exam_Offset = new int[] { 932, 17 };
 		public int[] Game_DanC_Dan_Plate = new int[] { 149, 416 };
+		#endregion
+		#region Training
+		public int Game_Training_ScrollTime = 350;
+		public int[] Game_Training_ProgressBar_XY = { 333, 378 };
+		public int Game_Training_GoGoPoint_Y = 396;
+		public int[] Game_Training_MaxMeasureCount_XY = { 284, 377 };
+		public int[] Game_Training_CurrentMeasureCount_XY = { 254, 370 };
+		public int[] Game_Training_SpeedDisplay_XY = { 115, 370 };
+		public int Game_Training_SmallNumber_Width = 17;
+		public int Game_Training_BigNumber_Width = 20;
 		#endregion
 		#region Background
 		public int[] Background_Scroll_PatternY = new int[] { 0, 0 };

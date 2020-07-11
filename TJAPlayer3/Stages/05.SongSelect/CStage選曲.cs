@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 using FDK;
-using CSharpTest.Net.Collections;
 
 using Rectangle = System.Drawing.Rectangle;
 
@@ -436,6 +435,8 @@ namespace TJAPlayer3
 					TJAPlayer3.act文字コンソール.tPrint(0, 0, C文字コンソール.Eフォント種別.白, "GAME: SURVIVAL");
 				if (TJAPlayer3.ConfigIni.eGameMode == EGame.完走叩ききりまショー激辛)
 					TJAPlayer3.act文字コンソール.tPrint(0, 0, C文字コンソール.Eフォント種別.白, "GAME: SURVIVAL HARD");
+				if (TJAPlayer3.ConfigIni.eGameMode == EGame.特訓モード)
+					TJAPlayer3.act文字コンソール.tPrint(0, 0, C文字コンソール.Eフォント種別.白, "GAME: TRAINING MODE");
 				if (TJAPlayer3.ConfigIni.bSuperHard)
 					TJAPlayer3.act文字コンソール.tPrint(0, 16, C文字コンソール.Eフォント種別.赤, "SUPER HARD MODE : ON");
 				if (TJAPlayer3.ConfigIni.eScrollMode == EScrollMode.BMSCROLL)
@@ -708,6 +709,8 @@ namespace TJAPlayer3
 								else
 								{
 									this.act難易度選択画面.裏カウント[0] = 0;
+									this.act難易度選択画面.ct難易度拡大用[0].n現在の値 = 0;
+									this.act難易度選択画面.ct難易度拡大用[0].t時間Reset();
 								}
 								if (this.act難易度選択画面.裏表示 && this.act難易度選択画面.現在の選択行[0] == 6)
 								{
@@ -732,6 +735,8 @@ namespace TJAPlayer3
 								else
 								{
 									this.act難易度選択画面.裏カウント[1] = 0;
+									this.act難易度選択画面.ct難易度拡大用[1].n現在の値 = 0;
+									this.act難易度選択画面.ct難易度拡大用[1].t時間Reset();
 								}
 								if (this.act難易度選択画面.裏表示 && this.act難易度選択画面.現在の選択行[1] == 6)
 								{
@@ -752,6 +757,11 @@ namespace TJAPlayer3
 								if (this.act難易度選択画面.現在の選択行[0] < 0)
 								{
 									this.act難易度選択画面.現在の選択行[0] = 0;
+								}
+								else 
+								{
+									this.act難易度選択画面.ct難易度拡大用[0].n現在の値 = 0;
+									this.act難易度選択画面.ct難易度拡大用[0].t時間Reset();
 								}
 
 								this.act難易度選択画面.裏カウント[0] = 0;
@@ -774,6 +784,12 @@ namespace TJAPlayer3
 								{
 									this.act難易度選択画面.現在の選択行[1] = 0;
 								}
+								else 
+								{
+									this.act難易度選択画面.ct難易度拡大用[1].n現在の値 = 0;
+									this.act難易度選択画面.ct難易度拡大用[1].t時間Reset();
+								}
+
 								this.act難易度選択画面.裏カウント[1] = 0;
 
 								if (this.act難易度選択画面.裏表示 && this.act難易度選択画面.現在の選択行[1] == 6)
@@ -891,7 +907,7 @@ namespace TJAPlayer3
 								if ((TJAPlayer3.Pad.b押されたDGB(Eパッド.Decide) || (TJAPlayer3.Pad.b押されたDGB(Eパッド.LRed) || TJAPlayer3.Pad.b押されたDGB(Eパッド.RRed)) || (TJAPlayer3.Pad.b押されたDGB(Eパッド.LRed2P) || TJAPlayer3.Pad.b押されたDGB(Eパッド.RRed2P)) && TJAPlayer3.ConfigIni.nPlayerCount >= 2 ||
 										(TJAPlayer3.ConfigIni.bEnterがキー割り当てのどこにも使用されていない && TJAPlayer3.Input管理.Keyboard.bキーが押された((int)SlimDXKeys.Key.Return))))
 								{
-									if (this.act曲リスト.r現在選択中の曲 != null)
+									if (this.act曲リスト.r現在選択中の曲 != null && !(TJAPlayer3.ConfigIni.eGameMode == EGame.特訓モード && TJAPlayer3.ConfigIni.nPlayerCount >= 2))
 									{
 										switch (this.act曲リスト.r現在選択中の曲.eノード種別)
 										{
@@ -1160,6 +1176,7 @@ namespace TJAPlayer3
 			TJAPlayer3.Skin.sound取消音.t再生する();
 			this.act難易度選択画面.選択済み[0] = false;
 			this.act難易度選択画面.選択済み[1] = false;
+			this.act難易度選択画面.b開いた直後 = true;
 			現在の選曲画面状況 = E選曲画面.難易度選択Out;
 		}
 
