@@ -1095,7 +1095,7 @@ namespace FDK
 						if( wfx.Encoding == WaveFormatEncoding.Extensible )
 						{
 							br.ReadUInt16();	// 拡張領域サイズbyte
-							var wfxEx = (SharpDX.Multimedia.WaveFormatExtensible) wfx;
+							var wfxEx = (WaveFormatExtensible) wfx;
 							int ValidBitsPerSample = br.ReadInt16();
 							wfxEx.ChannelMask = (Speakers) br.ReadInt32();
 							wfxEx.GuidSubFormat = new Guid( br.ReadBytes( 16 ) ); // GUID は 16byte (128bit)
@@ -1154,7 +1154,7 @@ namespace FDK
 
 			this.Buffer = new SecondarySoundBuffer( DirectSound, new SoundBufferDescription()
 			{
-				Format = ( wfx.Encoding == WaveFormatEncoding.Pcm ) ? wfx : (SharpDX.Multimedia.WaveFormatExtensible) wfx,
+				Format = ( wfx.Encoding == WaveFormatEncoding.Pcm ) ? wfx : (WaveFormatExtensible) wfx,
 				Flags = flags,
 				BufferBytes = nPCMサイズbyte,
 			} );

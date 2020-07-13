@@ -15,13 +15,6 @@ namespace FDK
 		public int		Color;
 		public Vector2	TextureCoordinates;
 
-		public static int SizeInBytes
-		{
-			get
-			{
-				return Marshal.SizeOf( typeof( PositionColoredTexturedVertex ) );
-			}
-		}
 		public static VertexFormat Format
 		{
 			get

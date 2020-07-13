@@ -107,7 +107,6 @@
     <Compile Include="コード\01.フレームワーク\Core\GameWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="コード\01.フレームワーク\DeviceSettings\ConversionMethods.cs" />
     <Compile Include="コード\01.フレームワーク\DeviceSettings\DeviceSettings.cs" />
     <Compile Include="コード\01.フレームワーク\DeviceSettings\Direct3D9Settings.cs" />
     <Compile Include="コード\01.フレームワーク\Enumeration\Enumeration9.cs" />

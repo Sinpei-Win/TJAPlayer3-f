@@ -38,9 +38,6 @@ namespace TJAPlayer3
 
 				if ( !bDLLnotfound )
 				{
-#if DEBUG && TEST_ENGLISH
-					Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US" );
-#endif
 
 					DWM.EnableComposition( false );	// Disable AeroGrass temporally
 

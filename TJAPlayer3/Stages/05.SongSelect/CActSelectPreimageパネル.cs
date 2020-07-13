@@ -423,7 +423,7 @@ namespace TJAPlayer3
 					{
 						try
 						{
-							TJAPlayer3.app.Device.UpdateSurface( this.sfAVI画像, new SharpDX.Mathematics.Interop.RawRectangle( 0, 0, this.sfAVI画像.Description.Width, this.sfAVI画像.Description.Height ), surface, new SharpDX.Mathematics.Interop.RawPoint( x, y ) );
+							TJAPlayer3.app.Device.UpdateSurface( this.sfAVI画像, new SharpDX.Rectangle( 0, 0, this.sfAVI画像.Description.Width, this.sfAVI画像.Description.Height ), surface, new SharpDX.Point( x, y ) );
 						}
 						catch( Exception e )	// #32335 2013.10.26 yyagi: codecがないと、D3DERR_INVALIDCALLが発生する場合がある
 						{

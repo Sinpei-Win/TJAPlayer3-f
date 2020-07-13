@@ -5,8 +5,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using FDK;
 using System.IO;
-using TJAPlayer3;
-using SharpDX;
 using Rectangle = System.Drawing.Rectangle;
 
 namespace TJAPlayer3
@@ -583,7 +581,6 @@ namespace TJAPlayer3
 		[StructLayout(LayoutKind.Sequential)]
 		struct ChallengeStatus
 		{
-			public Color4 Color;
 			public CCounter Timer_Gauge;
 			public CCounter Timer_Amount;
 			public CCounter Timer_Failed;
