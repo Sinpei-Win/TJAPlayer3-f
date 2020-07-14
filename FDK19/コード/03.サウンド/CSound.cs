@@ -47,50 +47,6 @@ namespace FDK
 			{
 				return _nMasterVolume;
 			}
-			//get
-			//{
-			//    if ( SoundDeviceType == ESoundDeviceType.ExclusiveWASAPI || SoundDeviceType == ESoundDeviceType.ASIO )
-			//    {
-			//        return Bass.BASS_GetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM ) / 100;
-			//    }
-			//    else
-			//    {
-			//        return 100;
-			//    }
-			//}
-			//set
-			//{
-			//    if ( SoundDeviceType == ESoundDeviceType.ExclusiveWASAPI )
-			//    {
-			//			// LINEARでなくWINDOWS(2)を使う必要があるが、exclusive時は使用不可、またデバイス側が対応してないと使用不可
-			//        bool b = BassWasapi.BASS_WASAPI_SetVolume( BASSWASAPIVolume.BASS_WASAPI_CURVE_LINEAR, value / 100.0f );
-			//        if ( !b )
-			//        {
-			//            BASSError be = Bass.BASS_ErrorGetCode();
-			//            Trace.TraceInformation( "WASAPI Master Volume Set Error: " + be.ToString() );
-			//        }
-			//    }
-			//}
-			//set
-			//{
-			//    if ( SoundDeviceType == ESoundDeviceType.ExclusiveWASAPI || SoundDeviceType == ESoundDeviceType.ASIO )
-			//    {
-			//        bool b = Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM, value * 100 );
-			//        if ( !b )
-			//        {
-			//            BASSError be = Bass.BASS_ErrorGetCode();
-			//            Trace.TraceInformation( "Master Volume Set Error: " + be.ToString() );
-			//        }
-			//    }
-			//}
-			//set
-			//{
-			//    if ( SoundDeviceType == ESoundDeviceType.ExclusiveWASAPI || SoundDeviceType == ESoundDeviceType.ASIO )
-			//    {
-			//        var nodes = new BASS_MIXER_NODE[ 1 ] { new BASS_MIXER_NODE( 0, (float) value ) };
-			//        BassMix.BASS_Mixer_ChannelSetEnvelope( SoundDevice.hMixer, BASSMIXEnvelope.BASS_MIXER_ENV_VOL, nodes );
-			//    }
-			//}
 			set
 			{
 				SoundDevice.nMasterVolume = value;
@@ -1165,7 +1121,6 @@ namespace FDK
 			this.eデバイス種別 = ESoundDeviceType.DirectSound;
 			this.DirectSoundBufferFlags = flags;
 			this.byArrWAVファイルイメージ = byArrWAVファイルイメージ;
-			this.DirectSound = DirectSound;
 
 			// DTXMania用に追加
 			this.nオリジナルの周波数 = wfx.SampleRate;
@@ -1642,7 +1597,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 		//    }
 		//}
 		protected SoundBuffer Buffer = null;			// DirectSound 用
-		protected DirectSound DirectSound;
 		protected int hMixer = -1;	// 設計壊してゴメン Mixerに後で登録するときに使う
 		//-----------------
 		#endregion

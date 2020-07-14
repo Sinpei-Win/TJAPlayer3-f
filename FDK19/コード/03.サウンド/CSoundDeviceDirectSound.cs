@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using SharpDX.DirectSound;
+using OpenTK.Audio.OpenAL;
+using OpenTK;
 
 namespace FDK
 {
@@ -106,13 +108,30 @@ namespace FDK
 
 		// メソッド
 
-		public CSoundDeviceDirectSound( IntPtr hWnd, long n遅延時間ms, bool bUseOSTimer )
+		public unsafe CSoundDeviceDirectSound( IntPtr hWnd, long n遅延時間ms, bool bUseOSTimer ) //ぬるぽ使うのであんせーふ
 		{
 			Trace.TraceInformation( "DirectSound の初期化を開始します。" );
 
 			this.e出力デバイス = ESoundDeviceType.Unknown;
 			this.n実バッファサイズms = this.n実出力遅延ms = n遅延時間ms;
 			this.tmシステムタイマ = new CTimer( CTimer.E種別.MultiMedia );
+			
+			#region[ OpenAL サウンドデバイスの作成]
+
+			//Initialize
+			this.device = Alc.OpenDevice(null);
+			this.context = Alc.CreateContext(this.device, (int*)null);
+			Alc.MakeContextCurrent(this.context);
+
+
+			//Versionの確認
+			var version = AL.Get(ALGetString.Version);
+			var vendor = AL.Get(ALGetString.Vendor);
+			var renderer = AL.Get(ALGetString.Renderer);
+			Console.WriteLine("OpenAL Version=" + version);
+			Console.WriteLine("OpenAL Vendor=" + vendor);
+			Console.WriteLine("OpenAL Renderer=" + renderer);
+			#endregion
 
 			#region [ DirectSound デバイスを作成する。]
 			//-----------------
@@ -223,6 +242,11 @@ namespace FDK
 		}
 		protected void Dispose( bool bManagedDispose )
 		{
+			//使わなくなったデータをクリーンアップ
+			Alc.MakeContextCurrent(ContextHandle.Zero);
+			Alc.DestroyContext(this.context);
+			Alc.CloseDevice(this.device);
+
 			this.e出力デバイス = ESoundDeviceType.Unknown;		// まず出力停止する(Dispose中にクラス内にアクセスされることを防ぐ)
 			if ( bManagedDispose )
 			{
@@ -264,7 +288,6 @@ namespace FDK
 		protected DirectSound DirectSound = null;
 		protected CSound sd経過時間計測用サウンドバッファ = null;
 		protected Thread th経過時間測定用スレッド = null;
-//		protected AutoResetEvent autoResetEvent = new AutoResetEvent( false );
 		protected const uint n単位繰り上げ間隔sec = 1;	// [秒]
 		protected const uint n単位繰り上げ間隔ms = n単位繰り上げ間隔sec * 1000;	// [ミリ秒]
 		protected int nループ回数 = 0;
@@ -273,5 +296,9 @@ namespace FDK
 		private int n前回の位置 = 0;
 
 		private CTimer ctimer = null;
+
+		//OpenTK
+		IntPtr device;
+		ContextHandle context;
 	}
 }
