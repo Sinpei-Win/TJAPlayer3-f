@@ -8,6 +8,8 @@ using System.Threading;
 using FDK.ExtensionMethods;
 using SharpDX.DirectSound;
 using SharpDX.Multimedia;
+using OpenTK.Audio.OpenAL;
+using OpenTK;
 using Un4seen.Bass;
 using Un4seen.BassAsio;
 using Un4seen.BassWasapi;
@@ -470,36 +472,6 @@ namespace FDK
 		{
 			get { return false; }
 		}
-		public double db周波数倍率
-		{
-			get
-			{
-				return _db周波数倍率;
-			}
-			set
-			{
-				if ( _db周波数倍率 != value )
-				{
-					_db周波数倍率 = value;
-					if ( bBASSサウンドである )
-					{
-						Bass.BASS_ChannelSetAttribute( this.hBassStream, BASSAttribute.BASS_ATTRIB_FREQ, ( float ) ( _db周波数倍率 * _db再生速度 * nオリジナルの周波数 ) );
-					}
-					else
-					{
-						try
-						{
-							this.Buffer.Frequency = (int)(_db周波数倍率 * _db再生速度 * nオリジナルの周波数);
-						}
-						catch
-						{
-							//例外処理は出さない
-							this.b速度上げすぎ問題 = true;
-						}
-					}
-				}
-			}
-		}
 		public double db再生速度
 		{
 			get
@@ -539,6 +511,7 @@ namespace FDK
 						try
 						{
 							this.Buffer.Frequency = (int)(_db周波数倍率 * _db再生速度 * nオリジナルの周波数);
+							AL.SpeedOfSound((float)_db再生速度);
 						}
 						catch
 						{
@@ -705,6 +678,7 @@ namespace FDK
 				{
 					var db音量 = (value.ToDouble() * 100.0).Clamp(-10000, 0);
 					this.Buffer.Volume = (int) Math.Round(db音量);
+					AL.Source(this.SourceOpen, ALSourcef.Gain, (float)db音量 / 100f);
 				}
 			}
 		}
@@ -765,17 +739,17 @@ namespace FDK
 					}
 
 					this.Buffer.Pan = this._n位置db;
+					float x = 0, y = 0;
+					if (value < 0)
+					{
+						x = (-value) / 100f;
+					}
+					else {
+						y = value / 100f;
+					}
+					AL.Source(this.SourceOpen, ALSource3f.Position, x, y, 0);
 				}
 			}
-		}
-
-		/// <summary>
-		/// <para>DirectSoundのセカンダリバッファ。</para>
-		/// </summary>
-		//public SecondarySoundBuffer DirectSoundBuffer
-		public SoundBuffer DirectSoundBuffer
-		{
-			get { return this.Buffer; }
 		}
 
 		/// <summary>
@@ -1108,6 +1082,12 @@ namespace FDK
 			this._Format = wfx;
 			// セカンダリバッファを作成し、PCMデータを書き込む。
 
+
+			this.SourceOpen = AL.GenSource();
+			this.BufferOpen = AL.GenBuffer();
+
+			AL.BufferData(this.BufferOpen, ALFormat.Stereo16, byArrWAVファイルイメージ, byArrWAVファイルイメージ.Length, wfx.SampleRate);
+
 			this.Buffer = new SecondarySoundBuffer( DirectSound, new SoundBufferDescription()
 			{
 				Format = ( wfx.Encoding == WaveFormatEncoding.Pcm ) ? wfx : (WaveFormatExtensible) wfx,
@@ -1199,6 +1179,8 @@ namespace FDK
 				if ( this.eデバイス種別 == ESoundDeviceType.DirectSound )
 				{
 					return ( ( this.Buffer.Status & (int)BufferStatus.Playing ) != (int)BufferStatus.None );
+					ALSourceState state = AL.GetSourceState(SourceOpen);
+					return state == ALSourceState.Playing;
 				}
 				else
 				{
@@ -1285,6 +1267,9 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			{
 				PlayFlags pf = ( bループする) ? PlayFlags.Looping : PlayFlags.None;
 				this.Buffer.Play( 0, pf );
+
+				AL.Source(this.SourceOpen, ALSourceb.Looping, bループする);
+				AL.SourcePlay(this.SourceOpen);
 			}
 		}
 		public void tサウンドを停止してMixerからも削除する()
@@ -1315,6 +1300,7 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				try
 				{
 					this.Buffer.Stop();
+					AL.SourceStop(this.SourceOpen);
 				}
 				catch ( Exception )
 				{
@@ -1335,6 +1321,7 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			else if( this.bDirectSoundである )
 			{
 				this.Buffer.CurrentPosition = 0;
+				AL.Source(this.SourceOpen, ALSourcef.SecOffset, 0f);
 			}
 		}
 		public void t再生位置を変更する( long n位置ms )
@@ -1344,7 +1331,7 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				bool b = true;
 				try
 				{
-					b = BassMix.BASS_Mixer_ChannelSetPosition( this.hBassStream, Bass.BASS_ChannelSeconds2Bytes( this.hBassStream, n位置ms * this.db周波数倍率 * this.db再生速度 / 1000.0 ), BASSMode.BASS_POS_BYTES );
+					b = BassMix.BASS_Mixer_ChannelSetPosition( this.hBassStream, Bass.BASS_ChannelSeconds2Bytes( this.hBassStream, n位置ms * this.db再生速度 / 1000.0 ), BASSMode.BASS_POS_BYTES );
 				}
 				catch( Exception e )
 				{
@@ -1370,6 +1357,8 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				try
 				{
 					this.Buffer.CurrentPosition = n位置sample * this._Format.BlockAlign;
+					AL.GetBuffer(this.BufferOpen, ALGetBufferi.Size, out int length);
+					AL.Source(this.SourceOpen, ALSourcef.SecOffset, n位置ms * 0.001f);
 				}
 				catch
 				{
@@ -1510,6 +1499,7 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 						try
 						{
 							this.Buffer.Stop();
+							AL.SourceStop(this.SourceOpen);
 						}
 						catch (Exception e)
 						{
@@ -1517,6 +1507,8 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 							Trace.TraceError( e.ToString() );
 							Trace.TraceError( "例外が発生しましたが処理を継続します。 (19bcaa24-5259-4198-bf74-41eb1114ba28)" );
 						}
+						AL.DeleteSource(this.SourceOpen);
+						AL.DeleteBuffer(this.BufferOpen);
 						C共通.tDisposeする( ref this.Buffer );
 					}
 					//-----------------
@@ -1596,7 +1588,9 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 		//        _hBassStream = value;
 		//    }
 		//}
-		protected SoundBuffer Buffer = null;			// DirectSound 用
+		public SoundBuffer Buffer = null;           // DirectSound 用
+		public int BufferOpen;
+		public int SourceOpen;
 		protected int hMixer = -1;	// 設計壊してゴメン Mixerに後で登録するときに使う
 		//-----------------
 		#endregion

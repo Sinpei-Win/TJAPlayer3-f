@@ -40,7 +40,8 @@ namespace FDK
 			{
 				if ( ctimer != null )
 				{
-					this.sd経過時間計測用サウンドバッファ.DirectSoundBuffer.GetCurrentPosition(out int n現在位置,out int _);
+					this.sd経過時間計測用サウンドバッファ.Buffer.GetCurrentPosition(out int n現在位置,out int _);
+					AL.GetSource(this.sd経過時間計測用サウンドバッファ.SourceOpen, ALSourcef.SecOffset, out float ms);
 					long n現在のシステム時刻ms = this.tmシステムタイマ.nシステム時刻ms;
 
 
@@ -60,7 +61,8 @@ namespace FDK
 
 					// 経過時間を算出。
 
-					long n経過時間ms = (long) ( ( this.nループ回数 * n単位繰り上げ間隔ms ) + ( n現在位置 * 1000.0 / ( 44100.0 * 2 * 2 ) ) );
+					//long n経過時間ms = (long) ( ( this.nループ回数 * n単位繰り上げ間隔ms ) + ( n現在位置 * 1000.0 / ( 44100.0 * 2 * 2 ) ) );
+					long n経過時間ms = (long)ms * 1000;
 
 
 					// 今回の値を次回に向けて保存。
@@ -193,7 +195,9 @@ namespace FDK
 
 				this.nループ回数 = 0;
 				this.n前回の位置 = 0;
-				this.sd経過時間計測用サウンドバッファ.DirectSoundBuffer.Play( 0, PlayFlags.Looping );
+				this.sd経過時間計測用サウンドバッファ.Buffer.Play( 0, PlayFlags.Looping );
+				AL.Source(this.sd経過時間計測用サウンドバッファ.SourceOpen, ALSourceb.Looping, true);
+				AL.SourcePlay(this.sd経過時間計測用サウンドバッファ.SourceOpen);
 				this.n前に経過時間を測定したシステム時刻ms = this.tmシステムタイマ.nシステム時刻ms;
 				//-----------------
 				#endregion
