@@ -750,15 +750,6 @@ namespace FDK
 		}
 
 		/// <summary>
-		/// <para>DirectSoundのセカンダリバッファ作成時のフラグ。</para>
-		/// </summary>
-		public BufferFlags DirectSoundBufferFlags
-		{
-			get;
-			protected set;
-		}
-
-		/// <summary>
 		/// <para>全インスタンスリスト。</para>
 		/// <para>～を作成する() で追加され、t解放する() or Dispose() で解放される。</para>
 		/// </summary>
@@ -778,7 +769,6 @@ namespace FDK
 			SoundGroup = soundGroup;
 			this.n位置 = 0;
 			this._db再生速度 = 1.0;
-			this.DirectSoundBufferFlags = CSoundDeviceDirectSound.DefaultFlags;
 //			this._cbRemoveMixerChannel = new WaitCallback( RemoveMixerChannelLater );
 			this._hBassStream = -1;
 			this._hTempoStream = 0;
@@ -804,14 +794,14 @@ namespace FDK
 			this.eデバイス種別 = eデバイス種別;		// 作成後に設定する。（作成に失敗してると例外発出されてここは実行されない）
 			this.tBASSサウンドを作成する( byArrWAVファイルイメージ, hMixer, BASSFlag.BASS_STREAM_DECODE | BASSFlag.BASS_SAMPLE_FLOAT );
 		}
-		public void tDirectSoundサウンドを作成する( string strファイル名, DirectSound DirectSound )
+		public void tDirectSoundサウンドを作成する( string strファイル名 )
 		{
 			this.e作成方法 = E作成方法.ファイルから;
 			this.strファイル名 = strファイル名;
 			if ( String.Compare( Path.GetExtension( strファイル名 ), ".mp3", true ) == 0 ||
 				 String.Compare( Path.GetExtension( strファイル名 ), ".ogg", true ) == 0 )	// caselessで文字列比較
 			{
-				tDirectSoundサウンドを作成するXaOggMp3( strファイル名, DirectSound );
+				tDirectSoundサウンドを作成するXaOggMp3( strファイル名 );
 				return;
 			}
 
@@ -866,9 +856,9 @@ namespace FDK
 
 			// あとはあちらで。
 
-			this.tDirectSoundサウンドを作成する( byArrWAVファイルイメージ, DirectSound );
+			this.tDirectSoundサウンドを作成する( byArrWAVファイルイメージ );
 		}
-		public void tDirectSoundサウンドを作成するXaOggMp3( string strファイル名, DirectSound DirectSound )
+		public void tDirectSoundサウンドを作成するXaOggMp3( string strファイル名 )
 		{
 			try
 			{
@@ -888,7 +878,7 @@ namespace FDK
 
 				// セカンダリバッファを作成し、PCMデータを書き込む。
 				tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み
-					(ref this.byArrWAVファイルイメージ, DirectSound, CSoundDeviceDirectSound.DefaultFlags, wfx,
+					(ref this.byArrWAVファイルイメージ, wfx,
 					  nPCMサイズbyte, nPCMデータの先頭インデックス);
 				return;
 			}
@@ -957,14 +947,10 @@ namespace FDK
 
 			// あとはあちらで。
 
-			this.tDirectSoundサウンドを作成する(byArrWAVファイルイメージ, DirectSound);
+			this.tDirectSoundサウンドを作成する(byArrWAVファイルイメージ);
 		}
 
-		public void tDirectSoundサウンドを作成する( byte[] byArrWAVファイルイメージ, DirectSound DirectSound )
-		{
-			this.tDirectSoundサウンドを作成する(  byArrWAVファイルイメージ, DirectSound, CSoundDeviceDirectSound.DefaultFlags );
-		}
-		public void tDirectSoundサウンドを作成する( byte[] byArrWAVファイルイメージ, DirectSound DirectSound, BufferFlags flags )
+		public void tDirectSoundサウンドを作成する( byte[] byArrWAVファイルイメージ )
 		{
 			if( this.e作成方法 == E作成方法.Unknown )
 				this.e作成方法 = E作成方法.WAVファイルイメージから;
@@ -1068,11 +1054,11 @@ namespace FDK
 
 			// セカンダリバッファを作成し、PCMデータを書き込む。
 			tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み(
-				ref byArrWAVファイルイメージ, DirectSound, flags, wfx, nPCMサイズbyte, nPCMデータの先頭インデックス );
+				ref byArrWAVファイルイメージ, wfx, nPCMサイズbyte, nPCMデータの先頭インデックス );
 		}
 
 		private void tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み
-			( ref byte[] byArrWAVファイルイメージ, DirectSound DirectSound, BufferFlags flags, WaveFormat wfx,
+			( ref byte[] byArrWAVファイルイメージ, WaveFormat wfx,
 			int nPCMサイズbyte, int nPCMデータの先頭インデックス )
 			{
 			this._Format = wfx;
@@ -1090,7 +1076,6 @@ namespace FDK
 			// 作成完了。
 
 			this.eデバイス種別 = ESoundDeviceType.DirectSound;
-			this.DirectSoundBufferFlags = flags;
 			this.byArrWAVファイルイメージ = byArrWAVファイルイメージ;
 
 			// DTXMania用に追加
@@ -1425,9 +1410,8 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 						else if( sounds[ i ].bDirectSoundである )
 						{
 							byte[] byArrWaveファイルイメージ = sounds[ i ].byArrWAVファイルイメージ;
-							var flags = sounds[ i ].DirectSoundBufferFlags;
 							sounds[ i ].Dispose( true, false );
-							( (CSoundDeviceDirectSound) device ).tサウンドを作成する( byArrWaveファイルイメージ, flags, sounds[ i ] );
+							( (CSoundDeviceDirectSound) device ).tサウンドを作成する( byArrWaveファイルイメージ, sounds[ i ] );
 						}
 						break;
 					#endregion
