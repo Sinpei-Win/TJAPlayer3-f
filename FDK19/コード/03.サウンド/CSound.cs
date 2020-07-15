@@ -503,14 +503,14 @@ namespace FDK
 						}
 						else
 						{
-							Bass.BASS_ChannelSetAttribute( this.hBassStream, BASSAttribute.BASS_ATTRIB_FREQ, ( float ) ( _db周波数倍率 * _db再生速度 * nオリジナルの周波数 ) );
+							Bass.BASS_ChannelSetAttribute( this.hBassStream, BASSAttribute.BASS_ATTRIB_FREQ, ( float ) ( _db再生速度 * nオリジナルの周波数 ) );
 						}
 					}
 					else
 					{
 						try
 						{
-							this.Buffer.Frequency = (int)(_db周波数倍率 * _db再生速度 * nオリジナルの周波数);
+							this.Buffer.Frequency = (int)(_db再生速度 * nオリジナルの周波数);
 							AL.SpeedOfSound((float)_db再生速度);
 						}
 						catch
@@ -780,7 +780,6 @@ namespace FDK
 		{
 			SoundGroup = soundGroup;
 			this.n位置 = 0;
-			this._db周波数倍率 = 1.0;
 			this._db再生速度 = 1.0;
 			this.DirectSoundBufferFlags = CSoundDeviceDirectSound.DefaultFlags;
 //			this._cbRemoveMixerChannel = new WaitCallback( RemoveMixerChannelLater );
@@ -1087,6 +1086,7 @@ namespace FDK
 			this.BufferOpen = AL.GenBuffer();
 
 			AL.BufferData(this.BufferOpen, ALFormat.Stereo16, byArrWAVファイルイメージ, byArrWAVファイルイメージ.Length, wfx.SampleRate);
+			AL.BindBufferToSource(this.SourceOpen, this.BufferOpen);
 
 			this.Buffer = new SecondarySoundBuffer( DirectSound, new SoundBufferDescription()
 			{
@@ -1353,7 +1353,7 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if( this.bDirectSoundである )
 			{
-				int n位置sample = (int) (this._Format.SampleRate * n位置ms * 0.001 * _db周波数倍率 * _db再生速度 );	// #30839 2013.2.24 yyagi; add _db周波数倍率 and _db再生速度
+				int n位置sample = (int) (this._Format.SampleRate * n位置ms * 0.001 * _db再生速度 );	// #30839 2013.2.24 yyagi; add _db周波数倍率 and _db再生速度
 				try
 				{
 					this.Buffer.CurrentPosition = n位置sample * this._Format.BlockAlign;
@@ -1385,9 +1385,12 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if ( this.bDirectSoundである )
 			{
-				this.Buffer.GetCurrentPosition(out int n位置tmp, out int _);
-				n位置byte = (long)n位置tmp;
-				db位置ms = n位置byte / this._Format.SampleRate / 0.001 / _db周波数倍率 / _db再生速度;
+				AL.GetSource(this.SourceOpen, ALGetSourcei.ByteOffset, out int n位置bytei);
+				//this.Buffer.GetCurrentPosition(out int n位置tmp, out int _);
+				//n位置byte = (long)n位置tmp;
+				n位置byte = (long)n位置bytei;
+				AL.GetSource(this.SourceOpen, ALSourcef.SecOffset, out float ms);
+				db位置ms = ms/*n位置byte / this._Format.SampleRate / 0.001 / _db再生速度*/;
 			}
 			else
 			{
@@ -1620,7 +1623,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 		private long nBytes = 0;
 		private int n一時停止回数 = 0;
 		private int nオリジナルの周波数 = 0;
-		private double _db周波数倍率 = 1.0;
 		private double _db再生速度 = 1.0;
 		private bool bIs1倍速再生 = true;
 		private WaveFormat _Format;

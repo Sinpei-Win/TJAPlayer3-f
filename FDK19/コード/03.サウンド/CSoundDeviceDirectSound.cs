@@ -246,10 +246,6 @@ namespace FDK
 		}
 		protected void Dispose( bool bManagedDispose )
 		{
-			//使わなくなったデータをクリーンアップ
-			Alc.MakeContextCurrent(ContextHandle.Zero);
-			Alc.DestroyContext(this.context);
-			Alc.CloseDevice(this.device);
 
 			this.e出力デバイス = ESoundDeviceType.Unknown;		// まず出力停止する(Dispose中にクラス内にアクセスされることを防ぐ)
 			if ( bManagedDispose )
@@ -281,6 +277,10 @@ namespace FDK
 			{
 				C共通.tDisposeする( ref this.ctimer );
 			}
+			//使わなくなったデータをクリーンアップ
+			Alc.MakeContextCurrent(ContextHandle.Zero);
+			Alc.DestroyContext(this.context);
+			Alc.CloseDevice(this.device);
 		}
 		~CSoundDeviceDirectSound()
 		{
