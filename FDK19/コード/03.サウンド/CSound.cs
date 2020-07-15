@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using FDK.ExtensionMethods;
-using SharpDX.DirectSound;
 using SharpDX.Multimedia;
 using OpenTK.Audio.OpenAL;
 using OpenTK;

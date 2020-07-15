@@ -139,19 +139,6 @@ namespace FDK
 			//-----------------
 			this.DirectSound = new DirectSound();	// 失敗したら例外をそのまま発出。
 
-			// デバイスの協調レベルを設定する。
-
-			bool priority = true;
-			try
-			{
-				this.DirectSound.SetCooperativeLevel( hWnd, CooperativeLevel.Priority );
-			}
-			catch
-			{
-				this.DirectSound.SetCooperativeLevel( hWnd, CooperativeLevel.Normal );	// これでも失敗したら例外をそのまま発出。
-				priority = false;
-			}
-
 			// デバイス作成完了。
 
 			this.e出力デバイス = ESoundDeviceType.DirectSound;
@@ -205,7 +192,7 @@ namespace FDK
 			{
 				ctimer = new CTimer( CTimer.E種別.MultiMedia );
 			}
-			Trace.TraceInformation( "DirectSound を初期化しました。({0})({1})", ( priority ) ? "Priority" : "Normal", bUseOSTimer? "OStimer" : "FDKtimer" );
+			Trace.TraceInformation( "DirectSound を初期化しました。({0})", bUseOSTimer? "OStimer" : "FDKtimer" );
 		}
 
 		public CSound tサウンドを作成する( string strファイル名, ESoundGroup soundGroup )
