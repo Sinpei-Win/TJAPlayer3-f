@@ -510,7 +510,6 @@ namespace FDK
 					{
 						try
 						{
-							this.Buffer.Frequency = (int)(_db再生速度 * nオリジナルの周波数);
 							AL.SpeedOfSound((float)_db再生速度);
 						}
 						catch
@@ -676,9 +675,8 @@ namespace FDK
 				}
 				else if (this.bDirectSoundである)
 				{
-					var db音量 = (value.ToDouble() * 100.0).Clamp(-10000, 0);
-					this.Buffer.Volume = (int) Math.Round(db音量);
-					AL.Source(this.SourceOpen, ALSourcef.Gain, (float)db音量 / 100f);
+					var db音量 = ((value.ToDouble() / 100.0) + 1.0).Clamp(0, 1);
+					AL.Source(this.SourceOpen, ALSourcef.Gain, (float)db音量);
 				}
 			}
 		}
@@ -738,7 +736,6 @@ namespace FDK
 						this._n位置db = (int) ( ( -20.0 * Math.Log10( ( (double) ( 100 - this._n位置 ) ) / 100.0 ) ) * 100.0 );
 					}
 
-					this.Buffer.Pan = this._n位置db;
 					float x = 0, y = 0;
 					if (value < 0)
 					{
@@ -1085,16 +1082,10 @@ namespace FDK
 			this.SourceOpen = AL.GenSource();
 			this.BufferOpen = AL.GenBuffer();
 
-			AL.BufferData(this.BufferOpen, ALFormat.Stereo16, byArrWAVファイルイメージ, byArrWAVファイルイメージ.Length, wfx.SampleRate);
-			AL.BindBufferToSource(this.SourceOpen, this.BufferOpen);
+			ALFormat alformat = wfx.Channels >= 2 ? ALFormat.Stereo16 : ALFormat.Mono16;
 
-			this.Buffer = new SecondarySoundBuffer( DirectSound, new SoundBufferDescription()
-			{
-				Format = ( wfx.Encoding == WaveFormatEncoding.Pcm ) ? wfx : (WaveFormatExtensible) wfx,
-				Flags = flags,
-				BufferBytes = nPCMサイズbyte,
-			} );
-			this.Buffer.Write( byArrWAVファイルイメージ, nPCMデータの先頭インデックス, nPCMサイズbyte, 0, LockFlags.None );
+			AL.BufferData(this.BufferOpen, alformat, byArrWAVファイルイメージ, byArrWAVファイルイメージ.Length, wfx.SampleRate);
+			AL.BindBufferToSource(this.SourceOpen, this.BufferOpen);
 
 			// 作成完了。
 
@@ -1178,7 +1169,6 @@ namespace FDK
 			{
 				if ( this.eデバイス種別 == ESoundDeviceType.DirectSound )
 				{
-					return ( ( this.Buffer.Status & (int)BufferStatus.Playing ) != (int)BufferStatus.None );
 					ALSourceState state = AL.GetSourceState(SourceOpen);
 					return state == ALSourceState.Playing;
 				}
@@ -1265,9 +1255,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if( this.bDirectSoundである )
 			{
-				PlayFlags pf = ( bループする) ? PlayFlags.Looping : PlayFlags.None;
-				this.Buffer.Play( 0, pf );
-
 				AL.Source(this.SourceOpen, ALSourceb.Looping, bループする);
 				AL.SourcePlay(this.SourceOpen);
 			}
@@ -1299,7 +1286,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			{
 				try
 				{
-					this.Buffer.Stop();
 					AL.SourceStop(this.SourceOpen);
 				}
 				catch ( Exception )
@@ -1320,7 +1306,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if( this.bDirectSoundである )
 			{
-				this.Buffer.CurrentPosition = 0;
 				AL.Source(this.SourceOpen, ALSourcef.SecOffset, 0f);
 			}
 		}
@@ -1356,7 +1341,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				int n位置sample = (int) (this._Format.SampleRate * n位置ms * 0.001 * _db再生速度 );	// #30839 2013.2.24 yyagi; add _db周波数倍率 and _db再生速度
 				try
 				{
-					this.Buffer.CurrentPosition = n位置sample * this._Format.BlockAlign;
 					AL.GetBuffer(this.BufferOpen, ALGetBufferi.Size, out int length);
 					AL.Source(this.SourceOpen, ALSourcef.SecOffset, n位置ms * 0.001f);
 				}
@@ -1386,11 +1370,9 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			else if ( this.bDirectSoundである )
 			{
 				AL.GetSource(this.SourceOpen, ALGetSourcei.ByteOffset, out int n位置bytei);
-				//this.Buffer.GetCurrentPosition(out int n位置tmp, out int _);
-				//n位置byte = (long)n位置tmp;
 				n位置byte = (long)n位置bytei;
 				AL.GetSource(this.SourceOpen, ALSourcef.SecOffset, out float ms);
-				db位置ms = ms/*n位置byte / this._Format.SampleRate / 0.001 / _db再生速度*/;
+				db位置ms = ms;
 			}
 			else
 			{
@@ -1497,23 +1479,18 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				{
 					#region [ DirectSound の解放 ]
 					//-----------------
-					if( this.Buffer != null )
+					try
 					{
-						try
-						{
-							this.Buffer.Stop();
-							AL.SourceStop(this.SourceOpen);
-						}
-						catch (Exception e)
-						{
-							// 演奏終了後、長時間解放しないでいると、たまに AccessViolationException が発生することがある。
-							Trace.TraceError( e.ToString() );
-							Trace.TraceError( "例外が発生しましたが処理を継続します。 (19bcaa24-5259-4198-bf74-41eb1114ba28)" );
-						}
-						AL.DeleteSource(this.SourceOpen);
-						AL.DeleteBuffer(this.BufferOpen);
-						C共通.tDisposeする( ref this.Buffer );
+						AL.SourceStop(this.SourceOpen);
 					}
+					catch (Exception e)
+					{
+						// 演奏終了後、長時間解放しないでいると、たまに AccessViolationException が発生することがある。
+						Trace.TraceError(e.ToString());
+						Trace.TraceError("例外が発生しましたが処理を継続します。 (19bcaa24-5259-4198-bf74-41eb1114ba28)");
+					}
+					AL.DeleteSource(this.SourceOpen);
+					AL.DeleteBuffer(this.BufferOpen);
 					//-----------------
 					#endregion
 				}
@@ -1591,7 +1568,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 		//        _hBassStream = value;
 		//    }
 		//}
-		public SoundBuffer Buffer = null;           // DirectSound 用
 		public int BufferOpen;
 		public int SourceOpen;
 		protected int hMixer = -1;	// 設計壊してゴメン Mixerに後で登録するときに使う
