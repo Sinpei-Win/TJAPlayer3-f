@@ -14,7 +14,7 @@ using Un4seen.BassAsio;
 using Un4seen.BassWasapi;
 using Un4seen.Bass.AddOn.Mix;
 using Un4seen.Bass.AddOn.Fx;
-
+using OpenTK.Platform.Windows;
 
 namespace FDK
 {
@@ -509,7 +509,7 @@ namespace FDK
 					{
 						try
 						{
-							AL.SpeedOfSound((float)_db再生速度);
+							AL.Source(this.SourceOpen, ALSourcef.Pitch,(float) db再生速度);
 						}
 						catch
 						{
@@ -697,7 +697,8 @@ namespace FDK
 				}
 				else if( this.bDirectSoundである )
 				{
-					return this._n位置;
+					AL.GetSource(this.SourceOpen, ALSource3f.Position, out float position, out float _, out float _);
+					return (int)(position * 100f);
 				}
 				return -9999;
 			}
@@ -712,38 +713,8 @@ namespace FDK
 				}
 				else if( this.bDirectSoundである )
 				{
-					this._n位置 = Math.Min( Math.Max( -100, value ), 100 );		// -100～100
-
-					if( this._n位置 == 0 )
-					{
-						this._n位置db = 0;
-					}
-					else if( this._n位置 == -100 )
-					{
-						this._n位置db = -10000;
-					}
-					else if( this._n位置 == 100 )
-					{
-						this._n位置db = 10000;
-					}
-					else if( this._n位置 < 0 )
-					{
-						this._n位置db = (int) ( ( 20.0 * Math.Log10( ( (double) ( this._n位置 + 100 ) ) / 100.0 ) ) * 100.0 );
-					}
-					else
-					{
-						this._n位置db = (int) ( ( -20.0 * Math.Log10( ( (double) ( 100 - this._n位置 ) ) / 100.0 ) ) * 100.0 );
-					}
-
-					float x = 0, y = 0;
-					if (value < 0)
-					{
-						x = (-value) / 100f;
-					}
-					else {
-						y = value / 100f;
-					}
-					AL.Source(this.SourceOpen, ALSource3f.Position, x, y, 0);
+					float f位置 = Math.Min(Math.Max(value, -100), 100) / 100.0f;  // -100～100 → -1.0～1.0
+					AL.Source(this.SourceOpen, ALSource3f.Position, f位置, 0f, 0f);
 				}
 			}
 		}
@@ -1325,8 +1296,7 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				int n位置sample = (int) (this._Format.SampleRate * n位置ms * 0.001 * _db再生速度 );	// #30839 2013.2.24 yyagi; add _db周波数倍率 and _db再生速度
 				try
 				{
-					AL.GetBuffer(this.BufferOpen, ALGetBufferi.Size, out int length);
-					AL.Source(this.SourceOpen, ALSourcef.SecOffset, n位置ms * 0.001f);
+					AL.Source(this.SourceOpen, ALSourcef.SecOffset, (float)(n位置ms * 0.001f * this.db再生速度));
 				}
 				catch
 				{
@@ -1573,8 +1543,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 					this.eデバイス種別 == ESoundDeviceType.SharedWASAPI );
 			}
 		}
-		private int _n位置 = 0;
-		private int _n位置db;
 		private Lufs _gain = DefaultGain;
 		private Lufs? _truePeak = null;
 		private int _automationLevel = DefaultAutomationLevel;

@@ -4,7 +4,6 @@ using System.Text;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using SharpDX.DirectSound;
 using OpenTK.Audio.OpenAL;
 using OpenTK;
 
@@ -99,11 +98,10 @@ namespace FDK
 			{
 				AL.GetListener(ALListenerf.Gain, out float Volume);
 				return (int)(Volume * 100f);
-
 			}
 			set
 			{
-				AL.Listener(ALListenerf.Gain, value / 100f);
+				AL.Listener(ALListenerf.Gain, (float)(value / 100f));
 			}
 		}
 
@@ -125,7 +123,6 @@ namespace FDK
 			this.context = Alc.CreateContext(this.device, (int*)null);
 			Alc.MakeContextCurrent(this.context);
 
-
 			//Versionの確認
 			var version = AL.Get(ALGetString.Version);
 			var vendor = AL.Get(ALGetString.Vendor);
@@ -137,7 +134,6 @@ namespace FDK
 
 			#region [ DirectSound デバイスを作成する。]
 			//-----------------
-			this.DirectSound = new DirectSound();	// 失敗したら例外をそのまま発出。
 
 			// デバイス作成完了。
 
@@ -252,7 +248,6 @@ namespace FDK
 				//-----------------
 				#endregion
 
-				C共通.tDisposeする( ref this.DirectSound );
 				C共通.tDisposeする( this.tmシステムタイマ );
 			}
 			if ( ctimer != null )
@@ -271,7 +266,6 @@ namespace FDK
 		//-----------------
 		#endregion
 
-		protected DirectSound DirectSound = null;
 		protected CSound sd経過時間計測用サウンドバッファ = null;
 		protected Thread th経過時間測定用スレッド = null;
 		protected const uint n単位繰り上げ間隔sec = 1;	// [秒]
