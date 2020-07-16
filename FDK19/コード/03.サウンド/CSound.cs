@@ -25,7 +25,7 @@ namespace FDK
 		{
 			get; set;
 		}
-		private static ESoundDeviceType SoundDeviceType
+		internal static ESoundDeviceType SoundDeviceType
 		{
 			get; set;
 		}
@@ -736,8 +736,13 @@ namespace FDK
 
 		public CSound(ESoundGroup soundGroup)
 		{
+			if (CSound管理.SoundDeviceType == ESoundDeviceType.DirectSound) 
+			{
+				this.SourceOpen = AL.GenSource();
+				this.BufferOpen = AL.GenBuffer();
+			}
+			this.n位置 = -100;
 			SoundGroup = soundGroup;
-			this.n位置 = 0;
 			this._db再生速度 = 1.0;
 //			this._cbRemoveMixerChannel = new WaitCallback( RemoveMixerChannelLater );
 			this._hBassStream = -1;
@@ -1033,10 +1038,6 @@ namespace FDK
 			{
 			this._Format = wfx;
 			// セカンダリバッファを作成し、PCMデータを書き込む。
-
-
-			this.SourceOpen = AL.GenSource();
-			this.BufferOpen = AL.GenBuffer();
 
 			ALFormat alformat = wfx.Channels >= 2 ? ALFormat.Stereo16 : ALFormat.Mono16;
 
