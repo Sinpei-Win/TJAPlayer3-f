@@ -713,7 +713,7 @@ namespace FDK
 				}
 				else if( this.bDirectSoundである )
 				{
-					float f位置 = Math.Min(Math.Max(value, -100), 100) / 100.0f;  // -100～100 → -1.0～1.0
+					float f位置 = (Math.Min(Math.Max(value, -100), 100) / 100.0f);  // -100～100 → -1.0～1.0
 					AL.Source(this.SourceOpen, ALSource3f.Position, f位置, 0f, 0f);
 				}
 			}
@@ -741,8 +741,8 @@ namespace FDK
 				this.SourceOpen = AL.GenSource();
 				this.BufferOpen = AL.GenBuffer();
 			}
-			this.n位置 = -100;
 			SoundGroup = soundGroup;
+			this.n位置 = 0;
 			this._db再生速度 = 1.0;
 //			this._cbRemoveMixerChannel = new WaitCallback( RemoveMixerChannelLater );
 			this._hBassStream = -1;
@@ -1039,6 +1039,9 @@ namespace FDK
 			this._Format = wfx;
 			// セカンダリバッファを作成し、PCMデータを書き込む。
 
+			
+
+
 			ALFormat alformat = wfx.Channels >= 2 ? ALFormat.Stereo16 : ALFormat.Mono16;
 
 			AL.BufferData(this.BufferOpen, alformat, byArrWAVファイルイメージ, byArrWAVファイルイメージ.Length, wfx.SampleRate);
@@ -1052,6 +1055,7 @@ namespace FDK
 			// DTXMania用に追加
 			this.nオリジナルの周波数 = wfx.SampleRate;
 			n総演奏時間ms = (int) ( ( (double) nPCMサイズbyte ) / (this._Format.AverageBytesPerSecond * 0.001 ) );
+			this.n位置 = 100;
 
 
 			// インスタンスリストに登録。

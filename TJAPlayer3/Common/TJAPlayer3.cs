@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
-using System.Runtime.Serialization.Formatters.Binary;
 using SharpDX;
 using SharpDX.Direct3D9;
 using FDK;
@@ -23,7 +22,7 @@ namespace TJAPlayer3
 {
 	internal class TJAPlayer3 : Game
 	{
-		[System.Runtime.InteropServices.DllImport("wininet.dll")]
+		[DllImport("wininet.dll")]
 		extern static bool InternetGetConnectedState(out int lpdwFlags, int dwReserved);
 		// プロパティ
 		#region [ properties ]
