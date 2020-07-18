@@ -85,6 +85,8 @@ VisualStudio Community 2019
 * ReadJEnc
 * SharpDX
 * Newtonsoft.Json
+* OpenTK
+* OpenAL Soft
 
 ライセンスは「Test/Licenses」に追加いたしました。
 

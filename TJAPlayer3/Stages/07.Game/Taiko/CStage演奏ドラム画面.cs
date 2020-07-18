@@ -312,16 +312,6 @@ namespace TJAPlayer3
 					this.soundBlue[1] = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\ka.ogg"), ESoundGroup.SoundEffect);
 					this.soundAdlib[1] = TJAPlayer3.Sound管理.tサウンドを生成する(CSkin.Path(@"Sounds\Taiko\Adlib.ogg"), ESoundGroup.SoundEffect);
 
-					for (int nPlayer = 0; nPlayer < TJAPlayer3.ConfigIni.nPlayerCount; nPlayer++)
-					{
-
-						if (this.soundRed[nPlayer] != null)
-							Trace.WriteLine(nPlayer + "Red=" + this.soundRed[nPlayer].n位置);
-						if (this.soundBlue[nPlayer] != null)
-							Trace.WriteLine(nPlayer + "Blue=" + this.soundBlue[nPlayer].n位置);
-						if (this.soundAdlib[nPlayer] != null)
-							Trace.WriteLine(nPlayer + "Adlib=" + this.soundAdlib[nPlayer].n位置);
-					}
 					if (TJAPlayer3.ConfigIni.nPlayerCount >= 2 && TJAPlayer3.ConfigIni.b2P演奏時のSEの左右)//2020.05.06 Mr-Ojii 左右に出したかったから、追加。
 					{
 						if (this.soundRed[0] != null)
@@ -336,15 +326,6 @@ namespace TJAPlayer3
 							this.soundBlue[1].n位置 = 100;
 						if (this.soundAdlib[1] != null)
 							this.soundAdlib[1].n位置 = 100;
-					}
-					for (int nPlayer = 0; nPlayer < TJAPlayer3.ConfigIni.nPlayerCount; nPlayer++) {
-
-						if (this.soundRed[nPlayer] != null)
-							Trace.WriteLine(nPlayer + "Red=" + this.soundRed[nPlayer].n位置);
-							if (this.soundBlue[nPlayer] != null)
-							Trace.WriteLine(nPlayer + "Blue=" + this.soundBlue[nPlayer].n位置);
-						if (this.soundAdlib[nPlayer] != null)
-							Trace.WriteLine(nPlayer + "Adlib=" + this.soundAdlib[nPlayer].n位置);
 					}
 				}
 

@@ -25,7 +25,7 @@ namespace FDK
 		{
 			get; set;
 		}
-		internal static ESoundDeviceType SoundDeviceType
+		private static ESoundDeviceType SoundDeviceType
 		{
 			get; set;
 		}
@@ -509,7 +509,10 @@ namespace FDK
 					{
 						try
 						{
-							AL.Source(this.SourceOpen, ALSourcef.Pitch,(float) db再生速度);
+							for (int i = 0; i < this.SourceOpen.Length; i++)
+							{
+								AL.Source(this.SourceOpen[i], ALSourcef.Pitch, (float)db再生速度);
+							}
 						}
 						catch
 						{
@@ -675,7 +678,11 @@ namespace FDK
 				else if (this.bDirectSoundである)
 				{
 					var db音量 = ((value.ToDouble() / 100.0) + 1.0).Clamp(0, 1);
-					AL.Source(this.SourceOpen, ALSourcef.Gain, (float)db音量);
+
+					for (int i = 0; i < this.SourceOpen.Length; i++)
+					{
+						AL.Source(this.SourceOpen[i], ALSourcef.Gain, (float)db音量);
+					}
 				}
 			}
 		}
@@ -697,8 +704,7 @@ namespace FDK
 				}
 				else if( this.bDirectSoundである )
 				{
-					AL.GetSource(this.SourceOpen, ALSource3f.Position, out float position, out float _, out float _);
-					return (int)(position * 100f);
+					return _n位置;
 				}
 				return -9999;
 			}
@@ -714,7 +720,13 @@ namespace FDK
 				else if( this.bDirectSoundである )
 				{
 					float f位置 = (Math.Min(Math.Max(value, -100), 100) / 100.0f);  // -100～100 → -1.0～1.0
-					AL.Source(this.SourceOpen, ALSource3f.Position, f位置, 0f, 0f);
+					for (int i = 0; i < this.SourceOpen.Length; i++)
+					{
+						float tmppan = Math.Min(Math.Max(f位置 * 2 + defaultPan[i], -1f), 1f);//もっとよい数式ください
+
+						AL.Source(this.SourceOpen[i], ALSource3f.Position, tmppan, 0f, 0f);
+					}
+					_n位置 = value;
 				}
 			}
 		}
@@ -735,12 +747,7 @@ namespace FDK
 		}
 
 		public CSound(ESoundGroup soundGroup)
-		{
-			if (CSound管理.SoundDeviceType == ESoundDeviceType.DirectSound) 
-			{
-				this.SourceOpen = AL.GenSource();
-				this.BufferOpen = AL.GenBuffer();
-			}
+		{			
 			SoundGroup = soundGroup;
 			this.n位置 = 0;
 			this._db再生速度 = 1.0;
@@ -1039,13 +1046,100 @@ namespace FDK
 			this._Format = wfx;
 			// セカンダリバッファを作成し、PCMデータを書き込む。
 
-			
+			this.SourceOpen = new int[wfx.Channels];
+			this.BufferOpen = new int[wfx.Channels];
+			this.defaultPan = new float[wfx.Channels];
+
+			for (int i = 0; i < wfx.Channels; i++)
+			{
+				this.SourceOpen[i] = AL.GenSource();
+				this.BufferOpen[i] = AL.GenBuffer();
+			}
+
+			ALFormat alformat;
+			if (wfx.BitsPerSample == 8)
+			{
+				alformat = ALFormat.Mono8;
+			}
+			else
+			{
+				alformat = ALFormat.Mono16;
+			}
+
+			int BytesPerSample = (wfx.BitsPerSample / 8);
+
+			{
+				for (int i = 0; i < wfx.Channels; i++)
+				{
+					byte[] wavdat = new byte[byArrWAVファイルイメージ.Length / wfx.Channels];
+					for (int j = 0; j < wavdat.Length; j += BytesPerSample) {
+						for (int k = 0; k < BytesPerSample; k++) {
+							wavdat[j + k] = byArrWAVファイルイメージ[(j * wfx.Channels) + (i * BytesPerSample) + k];
+						}
+					}
 
 
-			ALFormat alformat = wfx.Channels >= 2 ? ALFormat.Stereo16 : ALFormat.Mono16;
+					AL.BufferData(this.BufferOpen[i], alformat, wavdat, wavdat.Length, wfx.SampleRate);
+					AL.BindBufferToSource(this.SourceOpen[i], this.BufferOpen[i]);
+				}
+			}
 
-			AL.BufferData(this.BufferOpen, alformat, byArrWAVファイルイメージ, byArrWAVファイルイメージ.Length, wfx.SampleRate);
-			AL.BindBufferToSource(this.SourceOpen, this.BufferOpen);
+
+			switch (wfx.Channels)//強制2Dパン(面倒くさいだけです。すみません。)
+			{
+				case 1://FC
+					this.defaultPan[0] = 0;
+					break;
+				case 2://FL+FR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					break;
+				case 3://FL+FR+FC
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					break;
+				case 4://FL+FR+BL+BR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = -1;
+					this.defaultPan[3] = 1;
+					break;
+				case 5://FL+FR+FC+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = -1;
+					this.defaultPan[4] = 1;
+					break;
+				case 6://FL+FR+FC+BC+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = 0;
+					this.defaultPan[4] = -1;
+					this.defaultPan[5] = 1;
+					break;
+				case 7://FL+FR+FC+BL+BR+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = -1;
+					this.defaultPan[4] = 1;
+					this.defaultPan[5] = -1;
+					this.defaultPan[6] = 1;
+					break;
+				case 8://FL+FR+FC+BL+BR+BC+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = -1;
+					this.defaultPan[4] = 1;
+					this.defaultPan[5] = 0;
+					this.defaultPan[6] = -1;
+					this.defaultPan[7] = 1;
+					break;
+			}
 
 			// 作成完了。
 
@@ -1055,7 +1149,11 @@ namespace FDK
 			// DTXMania用に追加
 			this.nオリジナルの周波数 = wfx.SampleRate;
 			n総演奏時間ms = (int) ( ( (double) nPCMサイズbyte ) / (this._Format.AverageBytesPerSecond * 0.001 ) );
-			this.n位置 = 100;
+
+			for (int i = 0; i < wfx.Channels; i++) 
+			{
+				AL.Source(this.SourceOpen[i], ALSource3f.Position, defaultPan[i], 0f, 0f);
+			}
 
 
 			// インスタンスリストに登録。
@@ -1129,7 +1227,7 @@ namespace FDK
 			{
 				if ( this.eデバイス種別 == ESoundDeviceType.DirectSound )
 				{
-					ALSourceState state = AL.GetSourceState(SourceOpen);
+					ALSourceState state = AL.GetSourceState(SourceOpen[0]);//すべてのチャンネルで同期させているはずなので、0で取得
 					return state == ALSourceState.Playing;
 				}
 				else
@@ -1215,8 +1313,11 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if( this.bDirectSoundである )
 			{
-				AL.Source(this.SourceOpen, ALSourceb.Looping, bループする);
-				AL.SourcePlay(this.SourceOpen);
+				for (int i = 0; i < this.SourceOpen.Length; i++)
+				{
+					AL.Source(this.SourceOpen[i], ALSourceb.Looping, bループする);
+					AL.SourcePlay(this.SourceOpen[i]);
+				}
 			}
 		}
 		public void tサウンドを停止してMixerからも削除する()
@@ -1246,7 +1347,10 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			{
 				try
 				{
-					AL.SourceStop(this.SourceOpen);
+					for (int i = 0; i < this.SourceOpen.Length; i++)
+					{
+						AL.SourceStop(this.SourceOpen[i]);
+					}
 				}
 				catch ( Exception )
 				{
@@ -1266,7 +1370,10 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if( this.bDirectSoundである )
 			{
-				AL.Source(this.SourceOpen, ALSourcef.SecOffset, 0f);
+				for (int i = 0; i < this.SourceOpen.Length; i++)
+				{
+					AL.Source(this.SourceOpen[i], ALSourcef.SecOffset, 0f);
+				}
 			}
 		}
 		public void t再生位置を変更する( long n位置ms )
@@ -1301,7 +1408,10 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				int n位置sample = (int) (this._Format.SampleRate * n位置ms * 0.001 * _db再生速度 );	// #30839 2013.2.24 yyagi; add _db周波数倍率 and _db再生速度
 				try
 				{
-					AL.Source(this.SourceOpen, ALSourcef.SecOffset, (float)(n位置ms * 0.001f * this.db再生速度));
+					for (int i = 0; i < this.SourceOpen.Length; i++)
+					{
+						AL.Source(this.SourceOpen[i], ALSourcef.SecOffset, (float)(n位置ms * 0.001f * this.db再生速度));
+					}
 				}
 				catch
 				{
@@ -1328,9 +1438,12 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if ( this.bDirectSoundである )
 			{
-				AL.GetSource(this.SourceOpen, ALGetSourcei.ByteOffset, out int n位置bytei);
+
+				//すべてのチャンネルで長さは同じはず0で取得する
+				AL.GetSource(this.SourceOpen[0], ALGetSourcei.ByteOffset, out int n位置bytei);
 				n位置byte = (long)n位置bytei;
-				AL.GetSource(this.SourceOpen, ALSourcef.SecOffset, out float ms);
+				AL.GetSource(this.SourceOpen[0], ALSourcef.SecOffset, out float ms);
+				
 				db位置ms = ms;
 			}
 			else
@@ -1439,7 +1552,9 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 					//-----------------
 					try
 					{
-						AL.SourceStop(this.SourceOpen);
+						for (int i = 0; i < this.SourceOpen.Length; i++) {
+							AL.SourceStop(this.SourceOpen[i]); 
+						}
 					}
 					catch (Exception e)
 					{
@@ -1447,8 +1562,11 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 						Trace.TraceError(e.ToString());
 						Trace.TraceError("例外が発生しましたが処理を継続します。 (19bcaa24-5259-4198-bf74-41eb1114ba28)");
 					}
-					AL.DeleteSource(this.SourceOpen);
-					AL.DeleteBuffer(this.BufferOpen);
+					for (int i = 0; i < this.SourceOpen.Length; i++)//SourceOpenとBufferOpenは同じ長さでないといけない
+					{
+						AL.DeleteSource(this.SourceOpen[i]);
+						AL.DeleteBuffer(this.BufferOpen[i]);
+					}
 					//-----------------
 					#endregion
 				}
@@ -1526,8 +1644,11 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 		//        _hBassStream = value;
 		//    }
 		//}
-		public int BufferOpen;
-		public int SourceOpen;
+		public int[] BufferOpen;
+		public int[] SourceOpen;
+		public float[] defaultPan;
+		public int _n位置 = 0;
+
 		protected int hMixer = -1;	// 設計壊してゴメン Mixerに後で登録するときに使う
 		//-----------------
 		#endregion
