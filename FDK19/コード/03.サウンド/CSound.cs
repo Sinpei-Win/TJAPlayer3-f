@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using FDK.ExtensionMethods;
-using SharpDX.Multimedia;
 using OpenTK.Audio.OpenAL;
 using Un4seen.Bass;
 using Un4seen.BassAsio;
@@ -795,8 +794,7 @@ namespace FDK
 				//-----------------
 				try
 				{
-					Stream str = File.Open(strファイル名, FileMode.Open, FileAccess.Read);
-					using ( var ws = new SoundStream( str ) )
+					using (var ws = new SoundStream(File.Open(strファイル名, FileMode.Open, FileAccess.Read)))
 					{
 						if ( (int)ws.Format.Encoding != (int)WaveFormatEncoding.Pcm)
 							bファイルがWAVかつPCMフォーマットである = false;
@@ -1736,8 +1734,7 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			//-----------------
 			try
 			{
-				Stream str = File.Open(strファイル名, FileMode.Open, FileAccess.Read);
-				using ( var ws = new SoundStream( str ) )
+				using (var ws = new SoundStream(File.Open(strファイル名, FileMode.Open, FileAccess.Read)))
 				{
 					if ( (int)ws.Format.Encoding == (int)WaveFormatEncoding.OggVorbisMode2Plus ||
 						 (int)ws.Format.Encoding == (int)WaveFormatEncoding.OggVorbisMode3Plus)
