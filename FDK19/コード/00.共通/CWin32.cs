@@ -461,6 +461,7 @@ namespace FDK
 				cbSize = _cbSize;
 			}
 		}
+
 		[StructLayout( LayoutKind.Sequential )]
 		public struct WindowMessage
 		{

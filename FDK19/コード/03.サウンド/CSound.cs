@@ -8,7 +8,6 @@ using System.Threading;
 using FDK.ExtensionMethods;
 using SharpDX.Multimedia;
 using OpenTK.Audio.OpenAL;
-using OpenTK;
 using Un4seen.Bass;
 using Un4seen.BassAsio;
 using Un4seen.BassWasapi;
@@ -799,7 +798,7 @@ namespace FDK
 					Stream str = File.Open(strファイル名, FileMode.Open, FileAccess.Read);
 					using ( var ws = new SoundStream( str ) )
 					{
-						if ( ws.Format.Encoding != WaveFormatEncoding.Pcm )
+						if ( (int)ws.Format.Encoding != (int)WaveFormatEncoding.Pcm)
 							bファイルがWAVかつPCMフォーマットである = false;
 					}
 				}
@@ -874,26 +873,17 @@ namespace FDK
 			{
 				#region [ ファイルがWAVかつPCMフォーマットか否か調べる。]
 				//-----------------
-				SoundStream ws = null;
 				try
 				{
-					using (ws = new SoundStream(new FileStream(strファイル名, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+					using (var ws = new SoundStream(new FileStream(strファイル名, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
 					{
-						if (ws.Format.Encoding != WaveFormatEncoding.Pcm)
+						if ((int)ws.Format.Encoding != (int)WaveFormatEncoding.Pcm)
 							bファイルがWAVかつPCMフォーマットである = false;
 					}
 				}
 				catch
 				{
 					bファイルがWAVかつPCMフォーマットである = false;
-				}
-				finally
-				{
-					if (ws != null)
-					{
-						ws.Close();
-						ws.Dispose();
-					}
 				}
 				//-----------------
 				#endregion
@@ -933,7 +923,8 @@ namespace FDK
 			if( this.e作成方法 == E作成方法.Unknown )
 				this.e作成方法 = E作成方法.WAVファイルイメージから;
 
-			WaveFormat wfx = null;
+			bool EnableData = false;
+			CWin32.WAVEFORMATEX cw32wfx = new CWin32.WAVEFORMATEX();
 			int nPCMデータの先頭インデックス = -1;
 			int nPCMサイズbyte = -1;
 	
@@ -971,24 +962,32 @@ namespace FDK
 						int BlockAlignment = br.ReadInt16();
 						int BitsPerSample = br.ReadInt16();
 
-						if ( tag == WaveFormatEncoding.Pcm ) wfx = new WaveFormat();
-						else if( tag == WaveFormatEncoding.Extensible ) wfx = new WaveFormatExtensible(SamplesPerSecond, BitsPerSample, Channels);	// このクラスは WaveFormat を継承している。
+						if (tag == WaveFormatEncoding.Pcm) 
+						{ 
+							EnableData = true;
+						}
+						else if (tag == WaveFormatEncoding.Extensible) 
+						{
+							EnableData = true;
+						}
 						else
-							throw new InvalidDataException( string.Format( "未対応のWAVEフォーマットタグです。(Tag:{0})", tag.ToString() ) );
+							throw new InvalidDataException(string.Format("未対応のWAVEフォーマットタグです。(Tag:{0})", tag.ToString()));
 
-						wfx = WaveFormat.CreateCustomFormat((WaveFormatEncoding)tag , SamplesPerSecond, Channels, AverageBytesPerSecond, BlockAlignment, BitsPerSample);
-						
+						cw32wfx.wFormatTag = (ushort)tag;
+						cw32wfx.nChannels = (ushort)Channels;
+						cw32wfx.nSamplesPerSec = (uint)SamplesPerSecond;
+						cw32wfx.nAvgBytesPerSec = (uint)AverageBytesPerSecond;
+						cw32wfx.nBlockAlign = (ushort)BlockAlignment;
+						cw32wfx.wBitsPerSample = (ushort)BitsPerSample;
+							
 						long nフォーマットサイズbyte = 16;
 
-						
-
-						if( wfx.Encoding == WaveFormatEncoding.Extensible )
+						if( tag == WaveFormatEncoding.Extensible )
 						{
-							br.ReadUInt16();	// 拡張領域サイズbyte
-							var wfxEx = (WaveFormatExtensible) wfx;
-							int ValidBitsPerSample = br.ReadInt16();
-							wfxEx.ChannelMask = (Speakers) br.ReadInt32();
-							wfxEx.GuidSubFormat = new Guid( br.ReadBytes( 16 ) ); // GUID は 16byte (128bit)
+							br.ReadUInt16();    // 拡張領域サイズbyte
+							br.ReadInt16();//ValidBitsPerSample	読み捨て
+							br.ReadInt32();//ChannelMask	読み捨て
+							new Guid( br.ReadBytes( 16 ) ); // GUID は 16byte (128bit)	GuidSubFormat	読み捨て
 
 							nフォーマットサイズbyte += 24;
 						}
@@ -1016,7 +1015,7 @@ namespace FDK
 					}
 				}
 
-				if( wfx == null )
+				if( !EnableData )
 					throw new InvalidDataException( "fmt チャンクが存在しません。不正なサウンドデータです。" );
 				if( nPCMサイズbyte < 0 )
 					throw new InvalidDataException( "data チャンクが存在しません。不正なサウンドデータです。" );
@@ -1032,7 +1031,7 @@ namespace FDK
 
 			// セカンダリバッファを作成し、PCMデータを書き込む。
 			tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み(
-				ref byArrWAVファイルイメージ, wfx, nPCMサイズbyte, nPCMデータの先頭インデックス );
+				ref byArrWAVファイルイメージ, cw32wfx, nPCMサイズbyte, nPCMデータの先頭インデックス );
 		}
 		private void tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み
 			(ref byte[] byArrWAVファイルイメージ, CWin32.WAVEFORMATEX wfx,
@@ -1152,124 +1151,6 @@ namespace FDK
 			// インスタンスリストに登録。
 
 			CSound.listインスタンス.Add(this);
-		}
-
-		private void tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み
-			( ref byte[] byArrWAVファイルイメージ, WaveFormat wfx,
-			int nPCMサイズbyte, int nPCMデータの先頭インデックス )
-			{
-			this.SourceOpen = new int[wfx.Channels];
-			this.BufferOpen = new int[wfx.Channels];
-			this.defaultPan = new float[wfx.Channels];
-
-			for (int i = 0; i < wfx.Channels; i++)
-			{
-				this.SourceOpen[i] = AL.GenSource();
-				this.BufferOpen[i] = AL.GenBuffer();
-			}
-
-			ALFormat alformat;
-			if (wfx.BitsPerSample == 8)
-			{
-				alformat = ALFormat.Mono8;
-			}
-			else
-			{
-				alformat = ALFormat.Mono16;
-			}
-
-			int BytesPerSample = (wfx.BitsPerSample / 8);
-
-			{
-				for (int i = 0; i < wfx.Channels; i++)
-				{
-					byte[] wavdat = new byte[byArrWAVファイルイメージ.Length / wfx.Channels];
-					for (int j = 0; j < wavdat.Length; j += BytesPerSample) {
-						for (int k = 0; k < BytesPerSample; k++) {
-							wavdat[j + k] = byArrWAVファイルイメージ[(j * wfx.Channels) + (i * BytesPerSample) + k];
-						}
-					}
-
-
-					AL.BufferData(this.BufferOpen[i], alformat, wavdat, wavdat.Length, wfx.SampleRate);
-					AL.BindBufferToSource(this.SourceOpen[i], this.BufferOpen[i]);
-				}
-			}
-
-			switch (wfx.Channels)//強制2Dパン(面倒くさいだけです。すみません。)
-			{
-				case 1://FC
-					this.defaultPan[0] = 0;
-					break;
-				case 2://FL+FR
-					this.defaultPan[0] = -1;
-					this.defaultPan[1] = 1;
-					break;
-				case 3://FL+FR+FC
-					this.defaultPan[0] = -1;
-					this.defaultPan[1] = 1;
-					this.defaultPan[2] = 0;
-					break;
-				case 4://FL+FR+BL+BR
-					this.defaultPan[0] = -1;
-					this.defaultPan[1] = 1;
-					this.defaultPan[2] = -1;
-					this.defaultPan[3] = 1;
-					break;
-				case 5://FL+FR+FC+SL+SR
-					this.defaultPan[0] = -1;
-					this.defaultPan[1] = 1;
-					this.defaultPan[2] = 0;
-					this.defaultPan[3] = -1;
-					this.defaultPan[4] = 1;
-					break;
-				case 6://FL+FR+FC+BC+SL+SR
-					this.defaultPan[0] = -1;
-					this.defaultPan[1] = 1;
-					this.defaultPan[2] = 0;
-					this.defaultPan[3] = 0;
-					this.defaultPan[4] = -1;
-					this.defaultPan[5] = 1;
-					break;
-				case 7://FL+FR+FC+BL+BR+SL+SR
-					this.defaultPan[0] = -1;
-					this.defaultPan[1] = 1;
-					this.defaultPan[2] = 0;
-					this.defaultPan[3] = -1;
-					this.defaultPan[4] = 1;
-					this.defaultPan[5] = -1;
-					this.defaultPan[6] = 1;
-					break;
-				case 8://FL+FR+FC+BL+BR+BC+SL+SR
-					this.defaultPan[0] = -1;
-					this.defaultPan[1] = 1;
-					this.defaultPan[2] = 0;
-					this.defaultPan[3] = -1;
-					this.defaultPan[4] = 1;
-					this.defaultPan[5] = 0;
-					this.defaultPan[6] = -1;
-					this.defaultPan[7] = 1;
-					break;
-			}
-
-			// 作成完了。
-
-			this.eデバイス種別 = ESoundDeviceType.DirectSound;
-			this.byArrWAVファイルイメージ = byArrWAVファイルイメージ;
-
-			// DTXMania用に追加
-			this.nオリジナルの周波数 = wfx.SampleRate;
-			n総演奏時間ms = (int) ( ( (double) nPCMサイズbyte ) / (wfx.AverageBytesPerSecond * 0.001 ) );
-
-			for (int i = 0; i < wfx.Channels; i++) 
-			{
-				AL.Source(this.SourceOpen[i], ALSource3f.Position, defaultPan[i], 0f, 0f);
-			}
-
-
-			// インスタンスリストに登録。
-
-			CSound.listインスタンス.Add( this );
 		}
 
 		#region [ DTXMania用の変換 ]
@@ -1858,9 +1739,10 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 				Stream str = File.Open(strファイル名, FileMode.Open, FileAccess.Read);
 				using ( var ws = new SoundStream( str ) )
 				{
-					if ( ws.Format.Encoding == (WaveFormatEncoding) 0x6770 ||	// Ogg Vorbis Mode 2+
-						 ws.Format.Encoding == (WaveFormatEncoding) 0x6771 )	// Ogg Vorbis Mode 3+
+					if ( (int)ws.Format.Encoding == (int)WaveFormatEncoding.OggVorbisMode2Plus ||
+						 (int)ws.Format.Encoding == (int)WaveFormatEncoding.OggVorbisMode3Plus)
 					{
+						
 						Trace.TraceInformation( Path.GetFileName( strファイル名 ) + ": RIFF chunked Vorbis. Decode to raw Wave first, to avoid BASS.DLL troubles" );
 						try
 						{
