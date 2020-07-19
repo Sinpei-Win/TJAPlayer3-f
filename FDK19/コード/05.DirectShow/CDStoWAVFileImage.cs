@@ -5,7 +5,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using DirectShowLib;
-using SharpDX.Multimedia;
 
 namespace FDK
 {
@@ -93,7 +92,7 @@ namespace FDK
 
 				// オーディオレンダラを NullRenderer に置換。
 
-				WaveFormat wfx;
+				WaveFormatEx wfx;
 				byte[] wfx拡張領域;
 				CDirectShow.tオーディオレンダラをNullレンダラに変えてフォーマットを取得する( graphBuilder, out wfx, out wfx拡張領域 );
 
@@ -115,12 +114,12 @@ namespace FDK
 				bw.Write( new byte[] { 0x57, 0x41, 0x56, 0x45 } );		// 'WAVE'
 				bw.Write( new byte[] { 0x66, 0x6D, 0x74, 0x20 } );		// 'fmt '
 				bw.Write( (UInt32) ( 16 + ( ( wfx拡張領域.Length > 0 ) ? ( 2/*sizeof(WAVEFORMATEX.cbSize)*/ + wfx拡張領域.Length ) : 0 ) ) );	// fmtチャンクのサイズ[byte]
-				bw.Write( (UInt16) wfx.Encoding );						// フォーマットID（リニアPCMなら1）
-				bw.Write( (UInt16) wfx.Channels );						// チャンネル数
-				bw.Write( (UInt32) wfx.SampleRate );					// サンプリングレート
-				bw.Write( (UInt32) wfx.AverageBytesPerSecond );			// データ速度
-				bw.Write( (UInt16) wfx.BlockAlign );					// ブロックサイズ
-				bw.Write( (UInt16) wfx.BitsPerSample );					// サンプルあたりのビット数
+				bw.Write( (UInt16) wfx.wFormatTag );						// フォーマットID（リニアPCMなら1）
+				bw.Write( (UInt16) wfx.nChannels );						// チャンネル数
+				bw.Write( (UInt32) wfx.nSamplesPerSec );					// サンプリングレート
+				bw.Write( (UInt32) wfx.nAvgBytesPerSec );			// データ速度
+				bw.Write( (UInt16) wfx.nBlockAlign );					// ブロックサイズ
+				bw.Write( (UInt16) wfx.wBitsPerSample );					// サンプルあたりのビット数
 				if( wfx拡張領域.Length > 0 )
 				{
 					bw.Write( (UInt16) wfx拡張領域.Length );			// 拡張領域のサイズ[byte]

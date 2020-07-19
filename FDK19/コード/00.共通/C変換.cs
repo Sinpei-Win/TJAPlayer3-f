@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SharpDX;
 
 namespace FDK
 {
@@ -235,25 +234,6 @@ namespace FDK
 		public static int nParsentTo255(double num)
 		{
 			return (int)(255.0 * num);
-		}
-
-		/// <summary>
-		/// 255段階数値を百分率に変換するメソッド。
-		/// </summary>
-		/// <param name="num"></param>
-		/// <returns></returns>
-		public static int n255ToParsent(int num)
-		{
-			return (int)(100.0 / num);
-		}
-
-		public static Color4 n255ToColor4(int nR, int nG, int nB)
-		{
-			float fR = n255ToParsent(nR);
-			float fG = n255ToParsent(nG);
-			float fB = n255ToParsent(nB);
-
-			return new Color4(fR, fG, fB, 1.0f);
 		}
 
 		#region [ private ]

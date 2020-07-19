@@ -8,7 +8,6 @@ using System.Drawing.Imaging;
 using System.Threading;
 using SharpDX;
 using SharpDX.Direct3D9;
-using SharpDX.Multimedia;
 using DirectShowLib;
 
 namespace FDK
@@ -372,9 +371,7 @@ namespace FDK
 
 				if( bオーディオレンダラなし )
 				{
-					WaveFormat dummy1;
-					byte[] dummy2;
-					CDirectShow.tオーディオレンダラをNullレンダラに変えてフォーマットを取得する( this.graphBuilder, out dummy1, out dummy2 );
+					CDirectShow.tオーディオレンダラをNullレンダラに変えてフォーマットを取得する( this.graphBuilder, out WaveFormatEx _, out byte[] _ );
 				}
 
 
@@ -686,7 +683,7 @@ namespace FDK
 
 			Debug.Flush();
 		}
-		public static void tオーディオレンダラをNullレンダラに変えてフォーマットを取得する( IGraphBuilder graphBuilder, out WaveFormat wfx, out byte[] wfx拡張データ )
+		public static void tオーディオレンダラをNullレンダラに変えてフォーマットを取得する( IGraphBuilder graphBuilder, out WaveFormatEx wfx, out byte[] wfx拡張データ )
 		{
 			int hr = 0;
 
@@ -757,10 +754,9 @@ namespace FDK
 				{
 					#region [ type.formatPtr から wfx に、拡張領域を除くデータをコピーする。]
 					//-----------------
-					var wfxTemp = new WaveFormatEx();	// SlimDX.Multimedia.WaveFormat は Marshal.PtrToStructure() で使えないので、それが使える DirectShowLib.WaveFormatEx を介して取得する。（面倒…）
+					var wfxTemp = new WaveFormatEx();	// SharpDX.Multimedia.WaveFormat は Marshal.PtrToStructure() で使えないので、それが使える DirectShowLib.WaveFormatEx を介して取得する。（面倒…）
 					Marshal.PtrToStructure( type.formatPtr, (object) wfxTemp );
-
-					wfx = WaveFormat.CreateCustomFormat((WaveFormatEncoding)wfxTemp.wFormatTag, wfxTemp.nSamplesPerSec, wfxTemp.nChannels, wfxTemp.nAvgBytesPerSec, wfxTemp.nBlockAlign, wfxTemp.wBitsPerSample);
+					wfx = wfxTemp;
 					//-----------------
 					#endregion
 					#region [ 拡張領域が存在するならそれを wfx拡張データ に格納する。 ]

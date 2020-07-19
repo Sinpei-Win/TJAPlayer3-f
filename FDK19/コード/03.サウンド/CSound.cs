@@ -14,7 +14,6 @@ using Un4seen.BassAsio;
 using Un4seen.BassWasapi;
 using Un4seen.Bass.AddOn.Mix;
 using Un4seen.Bass.AddOn.Fx;
-using OpenTK.Platform.Windows;
 
 namespace FDK
 {
@@ -847,7 +846,6 @@ namespace FDK
 				this.e作成方法 = E作成方法.ファイルから;
 				this.strファイル名 = strファイル名;
 
-				WaveFormat wfx = new WaveFormat();
 				int nPCMデータの先頭インデックス = 0;
 				//			int nPCMサイズbyte = (int) ( xa.xaheader.nSamples * xa.xaheader.nChannels * 2 );	// nBytes = Bass.BASS_ChannelGetLength( this.hBassStream );
 
@@ -856,11 +854,9 @@ namespace FDK
 				tオンメモリ方式でデコードする(strファイル名, out this.byArrWAVファイルイメージ,
 				out nPCMデータの先頭インデックス, out nPCMサイズbyte, out cw32wfx, false);
 
-				wfx = WaveFormat.CreateCustomFormat((WaveFormatEncoding)cw32wfx.wFormatTag, (int)cw32wfx.nSamplesPerSec, cw32wfx.nChannels, (int)cw32wfx.nAvgBytesPerSec, cw32wfx.nBlockAlign, cw32wfx.wBitsPerSample);
-
 				// セカンダリバッファを作成し、PCMデータを書き込む。
 				tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み
-					(ref this.byArrWAVファイルイメージ, wfx,
+					(ref this.byArrWAVファイルイメージ, cw32wfx,
 					  nPCMサイズbyte, nPCMデータの先頭インデックス);
 				return;
 			}
@@ -1038,14 +1034,130 @@ namespace FDK
 			tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み(
 				ref byArrWAVファイルイメージ, wfx, nPCMサイズbyte, nPCMデータの先頭インデックス );
 		}
+		private void tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み
+			(ref byte[] byArrWAVファイルイメージ, CWin32.WAVEFORMATEX wfx,
+			int nPCMサイズbyte, int nPCMデータの先頭インデックス)
+		{
+			this.SourceOpen = new int[wfx.nChannels];
+			this.BufferOpen = new int[wfx.nChannels];
+			this.defaultPan = new float[wfx.nChannels];
+
+			for (int i = 0; i < wfx.nChannels; i++)
+			{
+				this.SourceOpen[i] = AL.GenSource();
+				this.BufferOpen[i] = AL.GenBuffer();
+			}
+
+			ALFormat alformat;
+			if (wfx.wBitsPerSample == 8)
+			{
+				alformat = ALFormat.Mono8;
+			}
+			else
+			{
+				alformat = ALFormat.Mono16;
+			}
+
+			int BytesPerSample = (wfx.wBitsPerSample / 8);
+
+			{
+				for (int i = 0; i < wfx.nChannels; i++)
+				{
+					byte[] wavdat = new byte[byArrWAVファイルイメージ.Length / wfx.nChannels];
+					for (int j = 0; j < wavdat.Length; j += BytesPerSample)
+					{
+						for (int k = 0; k < BytesPerSample; k++)
+						{
+							wavdat[j + k] = byArrWAVファイルイメージ[(j * wfx.nChannels) + (i * BytesPerSample) + k];
+						}
+					}
+
+
+					AL.BufferData(this.BufferOpen[i], alformat, wavdat, wavdat.Length, (int)wfx.nSamplesPerSec);
+					AL.BindBufferToSource(this.SourceOpen[i], this.BufferOpen[i]);
+				}
+			}
+
+			switch (wfx.nChannels)//強制2Dパン(面倒くさいだけです。すみません。)
+			{
+				case 1://FC
+					this.defaultPan[0] = 0;
+					break;
+				case 2://FL+FR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					break;
+				case 3://FL+FR+FC
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					break;
+				case 4://FL+FR+BL+BR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = -1;
+					this.defaultPan[3] = 1;
+					break;
+				case 5://FL+FR+FC+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = -1;
+					this.defaultPan[4] = 1;
+					break;
+				case 6://FL+FR+FC+BC+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = 0;
+					this.defaultPan[4] = -1;
+					this.defaultPan[5] = 1;
+					break;
+				case 7://FL+FR+FC+BL+BR+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = -1;
+					this.defaultPan[4] = 1;
+					this.defaultPan[5] = -1;
+					this.defaultPan[6] = 1;
+					break;
+				case 8://FL+FR+FC+BL+BR+BC+SL+SR
+					this.defaultPan[0] = -1;
+					this.defaultPan[1] = 1;
+					this.defaultPan[2] = 0;
+					this.defaultPan[3] = -1;
+					this.defaultPan[4] = 1;
+					this.defaultPan[5] = 0;
+					this.defaultPan[6] = -1;
+					this.defaultPan[7] = 1;
+					break;
+			}
+
+			// 作成完了。
+
+			this.eデバイス種別 = ESoundDeviceType.DirectSound;
+			this.byArrWAVファイルイメージ = byArrWAVファイルイメージ;
+
+			// DTXMania用に追加
+			this.nオリジナルの周波数 = (int)wfx.nSamplesPerSec;
+			n総演奏時間ms = (int)(((double)nPCMサイズbyte) / (wfx.nAvgBytesPerSec * 0.001));
+
+			for (int i = 0; i < wfx.nChannels; i++)
+			{
+				AL.Source(this.SourceOpen[i], ALSource3f.Position, defaultPan[i], 0f, 0f);
+			}
+
+
+			// インスタンスリストに登録。
+
+			CSound.listインスタンス.Add(this);
+		}
 
 		private void tDirectSoundサウンドを作成する_セカンダリバッファの作成とWAVデータ書き込み
 			( ref byte[] byArrWAVファイルイメージ, WaveFormat wfx,
 			int nPCMサイズbyte, int nPCMデータの先頭インデックス )
 			{
-			this._Format = wfx;
-			// セカンダリバッファを作成し、PCMデータを書き込む。
-
 			this.SourceOpen = new int[wfx.Channels];
 			this.BufferOpen = new int[wfx.Channels];
 			this.defaultPan = new float[wfx.Channels];
@@ -1083,7 +1195,6 @@ namespace FDK
 					AL.BindBufferToSource(this.SourceOpen[i], this.BufferOpen[i]);
 				}
 			}
-
 
 			switch (wfx.Channels)//強制2Dパン(面倒くさいだけです。すみません。)
 			{
@@ -1148,7 +1259,7 @@ namespace FDK
 
 			// DTXMania用に追加
 			this.nオリジナルの周波数 = wfx.SampleRate;
-			n総演奏時間ms = (int) ( ( (double) nPCMサイズbyte ) / (this._Format.AverageBytesPerSecond * 0.001 ) );
+			n総演奏時間ms = (int) ( ( (double) nPCMサイズbyte ) / (wfx.AverageBytesPerSecond * 0.001 ) );
 
 			for (int i = 0; i < wfx.Channels; i++) 
 			{
@@ -1405,7 +1516,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 			}
 			else if( this.bDirectSoundである )
 			{
-				int n位置sample = (int) (this._Format.SampleRate * n位置ms * 0.001 * _db再生速度 );	// #30839 2013.2.24 yyagi; add _db周波数倍率 and _db再生速度
 				try
 				{
 					for (int i = 0; i < this.SourceOpen.Length; i++)
@@ -1678,7 +1788,6 @@ Debug.WriteLine("更に再生に失敗: " + Path.GetFileName(this.strファイ�
 		private int nオリジナルの周波数 = 0;
 		private double _db再生速度 = 1.0;
 		private bool bIs1倍速再生 = true;
-		private WaveFormat _Format;
 
 		private void tBASSサウンドを作成する( string strファイル名, int hMixer, BASSFlag flags )
 		{
