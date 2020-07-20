@@ -827,15 +827,9 @@ namespace TJAPlayer3
 			cスコア.譜面情報.Preimage = br.ReadString();
 			cスコア.譜面情報.Premovie = br.ReadString();
 			cスコア.譜面情報.Backgound = br.ReadString();
-			cスコア.譜面情報.最大ランク.Drums = br.ReadInt32();
-			cスコア.譜面情報.最大ランク.Guitar = br.ReadInt32();
-			cスコア.譜面情報.最大ランク.Bass = br.ReadInt32();
-			cスコア.譜面情報.最大スキル.Drums = br.ReadDouble();
-			cスコア.譜面情報.最大スキル.Guitar = br.ReadDouble();
-			cスコア.譜面情報.最大スキル.Bass = br.ReadDouble();
-			cスコア.譜面情報.フルコンボ.Drums = br.ReadBoolean();
-			cスコア.譜面情報.フルコンボ.Guitar = br.ReadBoolean();
-			cスコア.譜面情報.フルコンボ.Bass = br.ReadBoolean();
+			cスコア.譜面情報.最大ランク = br.ReadInt32();
+			cスコア.譜面情報.最大スキル = br.ReadDouble();
+			cスコア.譜面情報.フルコンボ = br.ReadBoolean();
 			cスコア.譜面情報.演奏回数 = br.ReadInt32();
 			cスコア.譜面情報.演奏履歴.行1 = br.ReadString();
 			cスコア.譜面情報.演奏履歴.行2 = br.ReadString();
@@ -1267,15 +1261,9 @@ namespace TJAPlayer3
 			bw.Write(node.arスコア.譜面情報.Preimage);
 			bw.Write(node.arスコア.譜面情報.Premovie);
 			bw.Write(node.arスコア.譜面情報.Backgound);
-			bw.Write(node.arスコア.譜面情報.最大ランク.Drums);
-			bw.Write(node.arスコア.譜面情報.最大ランク.Guitar);
-			bw.Write(node.arスコア.譜面情報.最大ランク.Bass);
-			bw.Write(node.arスコア.譜面情報.最大スキル.Drums);
-			bw.Write(node.arスコア.譜面情報.最大スキル.Guitar);
-			bw.Write(node.arスコア.譜面情報.最大スキル.Bass);
-			bw.Write(node.arスコア.譜面情報.フルコンボ.Drums);
-			bw.Write(node.arスコア.譜面情報.フルコンボ.Guitar);
-			bw.Write(node.arスコア.譜面情報.フルコンボ.Bass);
+			bw.Write(node.arスコア.譜面情報.最大ランク);
+			bw.Write(node.arスコア.譜面情報.最大スキル);
+			bw.Write(node.arスコア.譜面情報.フルコンボ);
 			bw.Write(node.arスコア.譜面情報.演奏回数);
 			bw.Write(node.arスコア.譜面情報.演奏履歴.行1);
 			bw.Write(node.arスコア.譜面情報.演奏履歴.行2);
@@ -1494,38 +1482,36 @@ Debug.WriteLine( dBPM + ":" + c曲リストノード.strタイトル );
 			{
 				var ini = new CScoreIni(strScoreIniファイルパス);
 
-				for (int n楽器番号 = 0; n楽器番号 < 3; n楽器番号++)
+				for (int n楽器番号 = 0; n楽器番号 < 1; n楽器番号++)
 				{
-					int n = (n楽器番号 * 2) + 1;    // n = 0～5
-
-					#region socre.譜面情報.最大ランク[ n楽器番号 ] = ... 
+					#region socre.譜面情報.最大ランク.Drums = ... 
 					//-----------------
-					if (ini.stセクション[n].b演奏にMIDI入力を使用した ||
-						ini.stセクション[n].b演奏にキーボードを使用した ||
-						ini.stセクション[n].b演奏にジョイパッドを使用した ||
-						ini.stセクション[n].b演奏にマウスを使用した)
+					if (ini.stセクション.HiSkillDrums.b演奏にMIDI入力を使用した ||
+						ini.stセクション.HiSkillDrums.b演奏にキーボードを使用した ||
+						ini.stセクション.HiSkillDrums.b演奏にジョイパッドを使用した ||
+						ini.stセクション.HiSkillDrums.b演奏にマウスを使用した)
 					{
 						// (A) 全オートじゃないようなので、演奏結果情報を有効としてランクを算出する。
 
-						score.譜面情報.最大ランク[n楽器番号] =
+						score.譜面情報.最大ランク =
 							CScoreIni.tランク値を計算して返す(
-								ini.stセクション[n].n全チップ数,
-								ini.stセクション[n].nPerfect数,
-								ini.stセクション[n].nGreat数,
-								ini.stセクション[n].nGood数,
-								ini.stセクション[n].nPoor数,
-								ini.stセクション[n].nMiss数);
+								ini.stセクション.HiSkillDrums.n全チップ数,
+								ini.stセクション.HiSkillDrums.nPerfect数,
+								ini.stセクション.HiSkillDrums.nGreat数,
+								ini.stセクション.HiSkillDrums.nGood数,
+								ini.stセクション.HiSkillDrums.nPoor数,
+								ini.stセクション.HiSkillDrums.nMiss数);
 					}
 					else
 					{
 						// (B) 全オートらしいので、ランクは無効とする。
 
-						score.譜面情報.最大ランク[n楽器番号] = (int)CScoreIni.ERANK.UNKNOWN;
+						score.譜面情報.最大ランク = (int)CScoreIni.ERANK.UNKNOWN;
 					}
 					//-----------------
 					#endregion
-					score.譜面情報.最大スキル[n楽器番号] = ini.stセクション[n].db演奏型スキル値;
-					score.譜面情報.フルコンボ[n楽器番号] = ini.stセクション[n].bフルコンボである;
+					score.譜面情報.最大スキル = ini.stセクション.HiSkillDrums.db演奏型スキル値;
+					score.譜面情報.フルコンボ = ini.stセクション.HiSkillDrums.bフルコンボである;
 					for (int i = 0; i < (int)Difficulty.Total; i++)
 					{
 						score.譜面情報.nハイスコア[i] = (int)ini.stセクション.HiScoreDrums.nハイスコア[i];

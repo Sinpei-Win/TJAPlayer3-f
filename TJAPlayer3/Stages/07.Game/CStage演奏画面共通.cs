@@ -24,7 +24,7 @@ namespace TJAPlayer3
 
 			//if (  )
 			{
-				Drums.nスコア = (long) this.actScore.Get( E楽器パート.DRUMS, nPlayer );
+				Drums.nスコア = (long) this.actScore.Get( nPlayer );
 				Drums.dbゲーム型スキル値 = CScoreIni.tゲーム型スキルを計算して返す( TJAPlayer3.DTX[nPlayer].LEVELtaiko[TJAPlayer3.stage選曲.n確定された曲の難易度[0]], TJAPlayer3.DTX[nPlayer].n可視チップ数.Drums, this.nヒット数_Auto含まない[nPlayer].Perfect, this.actCombo.n現在のコンボ数.最高値[0], E楽器パート.DRUMS );
 				Drums.db演奏型スキル値 = CScoreIni.t演奏型スキルを計算して返す( TJAPlayer3.DTX[nPlayer].n可視チップ数.Drums, this.nヒット数_Auto含まない[nPlayer].Perfect, this.nヒット数_Auto含まない[nPlayer].Great, this.nヒット数_Auto含まない[nPlayer].Good, this.nヒット数_Auto含まない[nPlayer].Poor, this.nヒット数_Auto含まない[nPlayer].Miss, E楽器パート.DRUMS );
 				Drums.nPerfect数 = TJAPlayer3.ConfigIni.b太鼓パートAutoPlay[nPlayer] ? this.nヒット数_Auto含む[nPlayer].Perfect : this.nヒット数_Auto含まない[nPlayer].Perfect;
@@ -63,8 +63,8 @@ namespace TJAPlayer3
 				if( !TJAPlayer3.ConfigIni.b太鼓パートAutoPlay[nPlayer] )
 				{
 					Drums.nハイスコア = TJAPlayer3.stage選曲.r確定されたスコア.譜面情報.nハイスコア; //2015.06.16 kairera0467 他難易度の上書き防止。
-					if ( TJAPlayer3.stage選曲.r確定されたスコア.譜面情報.nハイスコア[ TJAPlayer3.stage選曲.n確定された曲の難易度[nPlayer] ] < (int)this.actScore.Get( E楽器パート.DRUMS, nPlayer ) )
-						Drums.nハイスコア[ TJAPlayer3.stage選曲.n確定された曲の難易度[0] ] = (int)this.actScore.Get( E楽器パート.DRUMS, nPlayer );
+					if ( TJAPlayer3.stage選曲.r確定されたスコア.譜面情報.nハイスコア[ TJAPlayer3.stage選曲.n確定された曲の難易度[nPlayer] ] < (int)this.actScore.Get( nPlayer ) )
+						Drums.nハイスコア[ TJAPlayer3.stage選曲.n確定された曲の難易度[0] ] = (int)this.actScore.Get( nPlayer );
 
 					var danC = TJAPlayer3.stage演奏ドラム画面.actDan.GetExam();
 					for (int i = 0; i < danC.Length; i++)
@@ -929,17 +929,17 @@ namespace TJAPlayer3
 					if( TJAPlayer3.DTX[0].nScoreModeTmp == 0 || TJAPlayer3.DTX[0].nScoreModeTmp == 1 )
 					{
 						if( pChip.nチャンネル番号 == 0x15 )
-							this.actScore.Add( E楽器パート.TAIKO, (long)( 300 * 1.2f ), nPlayer );
+							this.actScore.Add( (long)( 300 * 1.2f ), nPlayer );
 						else
-							this.actScore.Add( E楽器パート.TAIKO, (long)( 360 * 1.2f ), nPlayer );
+							this.actScore.Add( (long)( 360 * 1.2f ), nPlayer );
 					}
 					// 新配点
 					else
 					{
 						if( pChip.nチャンネル番号 == 0x15 )
-							this.actScore.Add( E楽器パート.TAIKO, (long)( 100 * 1.2f ), nPlayer );
+							this.actScore.Add( (long)( 100 * 1.2f ), nPlayer );
 						else
-							this.actScore.Add( E楽器パート.TAIKO, (long)( 200 * 1.2f ), nPlayer );
+							this.actScore.Add( (long)( 200 * 1.2f ), nPlayer );
 					}
 				}
 				else
@@ -948,17 +948,17 @@ namespace TJAPlayer3
 					if( TJAPlayer3.DTX[0].nScoreModeTmp == 0 || TJAPlayer3.DTX[0].nScoreModeTmp == 1 )
 					{
 						if( pChip.nチャンネル番号 == 0x15 )
-							this.actScore.Add( E楽器パート.TAIKO, 300L, nPlayer );
+							this.actScore.Add( 300L, nPlayer );
 						else
-							this.actScore.Add( E楽器パート.TAIKO, 360L, nPlayer );
+							this.actScore.Add( 360L, nPlayer );
 					}
 					// 新配点
 					else
 					{
 						if( pChip.nチャンネル番号 == 0x15 )
-							this.actScore.Add( E楽器パート.TAIKO, 100L, nPlayer );
+							this.actScore.Add( 100L, nPlayer );
 						else
-							this.actScore.Add( E楽器パート.TAIKO, 200L, nPlayer );
+							this.actScore.Add( 200L, nPlayer );
 					}
 				}
 
@@ -1053,10 +1053,10 @@ namespace TJAPlayer3
 					//CDTXMania.stage演奏ドラム画面.actChipFireD.Start( 0, nPlayer );
 					if(pChip.bGOGOTIME && !TJAPlayer3.ConfigIni.ShinuchiMode[nPlayer])
 					{
-						this.actScore.Add(E楽器パート.TAIKO, 6000L, nPlayer);
+						this.actScore.Add( 6000L, nPlayer);
 					} else
 					{
-						this.actScore.Add(E楽器パート.TAIKO, 5000L, nPlayer);
+						this.actScore.Add( 5000L, nPlayer);
 					}
 					pChip.bHit = true;
 					pChip.IsHitted = true;
@@ -1078,10 +1078,10 @@ namespace TJAPlayer3
 				{
 					if(pChip.bGOGOTIME && !TJAPlayer3.ConfigIni.ShinuchiMode[nPlayer])
 					{
-						this.actScore.Add(E楽器パート.TAIKO, 360L, nPlayer);
+						this.actScore.Add( 360L, nPlayer);
 					} else
 					{
-						this.actScore.Add(E楽器パート.TAIKO, 300L, nPlayer);
+						this.actScore.Add( 300L, nPlayer);
 					}
 
 					this.soundRed[pChip.nPlayerSide]?.t再生を開始する();
@@ -1137,8 +1137,6 @@ namespace TJAPlayer3
 			switch ( pChip.e楽器パート )
 			{
 				case E楽器パート.DRUMS:
-				case E楽器パート.GUITAR:
-				case E楽器パート.BASS:
 					break;
 				case E楽器パート.TAIKO:
 					{
@@ -1347,8 +1345,6 @@ namespace TJAPlayer3
 			switch ( pChip.e楽器パート )
 			{
 				case E楽器パート.DRUMS:
-				case E楽器パート.GUITAR:
-				case E楽器パート.BASS:
 					break;
 				case E楽器パート.TAIKO:
 					if( !bAutoPlay )
@@ -1610,7 +1606,7 @@ namespace TJAPlayer3
 						nAddScore = nAddScore * 2;
 					}
 
-					this.actScore.Add( E楽器パート.TAIKO, nAddScore, nPlayer );
+					this.actScore.Add( nAddScore, nPlayer );
 				}
 				else if( TJAPlayer3.DTX[0].nScoreModeTmp == 2 )
 				{
@@ -1678,7 +1674,7 @@ namespace TJAPlayer3
 						nAddScore = nAddScore * 2;
 					}
 
-					this.actScore.Add( E楽器パート.TAIKO, nAddScore, nPlayer );
+					this.actScore.Add( nAddScore, nPlayer );
 					//this.actScore.Add( E楽器パート.DRUMS, bIsAutoPlay, nAddScore );
 				}
 				else if( TJAPlayer3.DTX[0].nScoreModeTmp == 1 )
@@ -1746,7 +1742,7 @@ namespace TJAPlayer3
 						nAddScore = nAddScore * 2;
 					}
 
-					this.actScore.Add( E楽器パート.TAIKO, nAddScore, nPlayer );
+					this.actScore.Add( nAddScore, nPlayer );
 				}
 				else
 				{
@@ -1783,7 +1779,7 @@ namespace TJAPlayer3
 					}
 
 
-					this.actScore.Add( E楽器パート.TAIKO, nAddScore, nPlayer );
+					this.actScore.Add( nAddScore, nPlayer );
 					//this.actScore.Add( E楽器パート.DRUMS, bIsAutoPlay, nAddScore );              
 				}
 
@@ -1820,8 +1816,6 @@ namespace TJAPlayer3
 			switch ( part )
 			{
 				case E楽器パート.DRUMS:
-				case E楽器パート.GUITAR:
-				case E楽器パート.BASS:
 					break;
 
 				case E楽器パート.TAIKO:
@@ -2943,9 +2937,7 @@ namespace TJAPlayer3
 //Debug.WriteLine( "nCurrentTopChip=" + nCurrentTopChip + ", ch=" + pChip.nチャンネル番号.ToString("x2") + ", 発音位置=" + pChip.n発声位置 + ", 発声時刻ms=" + pChip.n発声時刻ms );
 				var time = pChip.n発声時刻ms - n現在時刻ms;
 				pChip.nバーからの距離dot.Drums = (int) ( time * ScrollSpeedDrums );
-				pChip.nバーからの距離dot.Guitar = (int) ( time * ScrollSpeedDrums );
-				pChip.nバーからの距離dot.Bass = (int) ( time * ScrollSpeedDrums );
-				pChip.nバーからの距離dot.Taiko = (int) (  time * pChip.dbBPM * pChip.dbSCROLL * (this.act譜面スクロール速度.db現在の譜面スクロール速度[nPlayer] + 1.0 )  / 502.8594 / 5.0 );//2020.04.18 Mr-Ojii rhimm様のコードを参考にばいそくの計算を修正
+				pChip.nバーからの距離dot.Taiko = (int) ( time * pChip.dbBPM * pChip.dbSCROLL * (this.act譜面スクロール速度.db現在の譜面スクロール速度[nPlayer] + 1.0 )  / 502.8594 / 5.0 );//2020.04.18 Mr-Ojii rhimm様のコードを参考にばいそくの計算を修正
 				if( pChip.nノーツ終了時刻ms != 0 )
 					pChip.nバーからのノーツ末端距離dot = (int) (  ( pChip.nノーツ終了時刻ms - n現在時刻ms) * pChip.dbBPM * pChip.dbSCROLL * (this.act譜面スクロール速度.db現在の譜面スクロール速度[nPlayer] + 1.0 )  / 502.8594 / 5.0);// 2020.04.18 Mr-Ojii rhimm様のコードを参考にばいそくの計算の修正
 
@@ -3627,7 +3619,7 @@ namespace TJAPlayer3
 						}
 						break;
 					case 0xDD: //SECTION //2020.04.25 Mr-Ojii akasoko26さんのコードをもとに変更
-						if (!pChip.bHit && (pChip.nバーからの距離dot.Drums < -10))
+						if (!pChip.bHit && (pChip.nバーからの距離dot.Drums < 0))
 						{
 							// 分岐毎にリセットしていたのでSECTIONの命令が来たらリセットする。
 							this.tBranchReset(nPlayer);
