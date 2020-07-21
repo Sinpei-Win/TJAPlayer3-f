@@ -131,24 +131,6 @@ namespace FDK
 		}
 
 		/// <summary>
-		/// <para>空の Managed テクスチャを作成する。</para>
-		/// <para>テクスチャのサイズは、指定された希望サイズ以上、かつ、D3D9デバイスで生成可能な最小のサイズに自動的に調節される。
-		/// その際、テクスチャの調節後のサイズにあわせた画像の拡大縮小は行わない。</para>
-		/// <para>テクスチャのテクセルデータは未初期化。（おそらくゴミデータが入ったまま。）</para>
-		/// <para>その他、ミップマップ数は 1、Usage は None、イメージフィルタは Point、ミップマップフィルタは None、
-		/// カラーキーは 0x00000000（透過しない）になる。</para>
-		/// </summary>
-		/// <param name="device">Direct3D9 デバイス。</param>
-		/// <param name="n幅">テクスチャの幅（希望値）。</param>
-		/// <param name="n高さ">テクスチャの高さ（希望値）。</param>
-		/// <param name="format">テクスチャのフォーマット。</param>
-		/// <exception cref="CTextureCreateFailedException">テクスチャの作成に失敗しました。</exception>
-		public CTexture(Device device, int n幅, int n高さ, Format format)
-			: this(device, n幅, n高さ, format, Pool.Managed)
-		{
-		}
-
-		/// <summary>
 		/// <para>指定された画像ファイルから Managed テクスチャを作成する。</para>
 		/// <para>利用可能な画像形式は、BMP, JPG, PNG, TGA, DDS, PPM, DIB, HDR, PFM のいずれか。</para>
 		/// </summary>
@@ -159,10 +141,6 @@ namespace FDK
 		/// <exception cref="CTextureCreateFailedException">テクスチャの作成に失敗しました。</exception>
 		public CTexture(Device device, string strファイル名, Format format, bool b黒を透過する)
 			: this(device, strファイル名, format, b黒を透過する, Pool.Managed)
-		{
-		}
-		public CTexture(Device device, byte[] txData, Format format, bool b黒を透過する)
-			: this(device, txData, format, b黒を透過する, Pool.Managed)
 		{
 		}
 		public CTexture(Device device, Bitmap bitmap, Format format, bool b黒を透過する)
@@ -244,7 +222,7 @@ namespace FDK
 			if (!File.Exists(strファイル名))     // #27122 2012.1.13 from: ImageInformation では FileNotFound 例外は返ってこないので、ここで自分でチェックする。わかりやすいログのために。
 				throw new FileNotFoundException(string.Format("ファイルが存在しません。\n[{0}]", strファイル名));
 
-			Byte[] _txData = File.ReadAllBytes(strファイル名);
+			Bitmap _txData = (Bitmap) Image.FromFile(strファイル名);
 			MakeTexture(device, _txData, format, b黒を透過する, pool);
 		}
 		public CTexture(Device device, byte[] txData, Format format, bool b黒を透過する, Pool pool)

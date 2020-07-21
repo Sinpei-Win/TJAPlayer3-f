@@ -1226,27 +1226,6 @@ for (int i = 0; i < 3; i++) {
 		{
 			TJAPlayer3.t安全にDisposeする(ref tx);
 		}
-		public static CTexture tテクスチャの生成(byte[] txData)
-		{
-			return tテクスチャの生成(txData, false);
-		}
-		public static CTexture tテクスチャの生成(byte[] txData, bool b黒を透過する)
-		{
-			if (app == null)
-			{
-				return null;
-			}
-			try
-			{
-				return new CTexture(app.Device, txData, TextureFormat, b黒を透過する);
-			}
-			catch (CTextureCreateFailedException e)
-			{
-				Trace.TraceError(e.ToString());
-				Trace.TraceError("テクスチャの生成に失敗しました。(txData)");
-				return null;
-			}
-		}
 		public static CTexture tテクスチャの生成(Bitmap bitmap)
 		{
 			return tテクスチャの生成(bitmap, false);
