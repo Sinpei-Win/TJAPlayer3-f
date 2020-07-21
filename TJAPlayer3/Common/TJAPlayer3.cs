@@ -574,7 +574,7 @@ namespace TJAPlayer3
 								{
 									case 0:     // 何もない
 												//if ( CDTXMania.stage選曲.bIsEnumeratingSongs )
-										if (!TJAPlayer3.stage選曲.bIsPlayingPremovie)
+										if (true)
 										{
 											EnumSongs.Resume();                     // #27060 2012.2.6 yyagi 中止していたバックグランド曲検索を再開
 											EnumSongs.IsSlowdown = false;

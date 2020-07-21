@@ -39,13 +39,6 @@ namespace TJAPlayer3
 				act曲リスト.bIsEnumeratingSongs = value;
 			}
 		}
-		public bool bIsPlayingPremovie
-		{
-			get
-			{
-				return this.actPreimageパネル.bIsPlayingPremovie;
-			}
-		}
 		public bool bスクロール中
 		{
 			get
@@ -95,7 +88,6 @@ namespace TJAPlayer3
 			base.list子Activities.Add(this.act難易度選択画面 = new CActSelect難易度選択画面());
 			base.list子Activities.Add(this.actステータスパネル = new CActSelectステータスパネル());
 			base.list子Activities.Add(this.act演奏履歴パネル = new CActSelect演奏履歴パネル());
-			base.list子Activities.Add(this.actPreimageパネル = new CActSelectPreimageパネル());
 			base.list子Activities.Add(this.actPresound = new CActSelectPresound());
 			base.list子Activities.Add(this.actArtistComment = new CActSelectArtistComment());
 			base.list子Activities.Add(this.actInformation = new CActSelectInformation());
@@ -111,7 +103,6 @@ namespace TJAPlayer3
 
 		public void t選択曲変更通知()
 		{
-			this.actPreimageパネル.t選択曲が変更された();
 			this.actPresound.t選択曲が変更された();
 			this.act演奏履歴パネル.t選択曲が変更された();
 			this.actステータスパネル.t選択曲が変更された();
@@ -1236,7 +1227,6 @@ namespace TJAPlayer3
 		//private CActFIFOBlack actFOtoNowLoading;
 		private CActFIFOStart actFOtoNowLoading;
 		private CActSelectInformation actInformation;
-		private CActSelectPreimageパネル actPreimageパネル;
 		public CActSelectPresound actPresound;
 		private CActSelectステータスパネル actステータスパネル;
 		public CActSelect演奏履歴パネル act演奏履歴パネル;
