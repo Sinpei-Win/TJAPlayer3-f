@@ -186,11 +186,6 @@ namespace TJAPlayer3
 			get;
 			private set;
 		}
-		public static CActFlushGPU actFlushGPU
-		{
-			get;
-			private set;
-		}
 
 		public static CSound管理 Sound管理
 		{
@@ -1156,9 +1151,6 @@ for (int i = 0; i < 3; i++) {
 			}
 			this.Device.EndScene();         // Present()は game.csのOnFrameEnd()に登録された、GraphicsDeviceManager.game_FrameEnd() 内で実行されるので不要
 											// (つまり、Present()は、Draw()完了後に実行される)
-#if !GPUFlushAfterPresent
-			actFlushGPU?.On進行描画();      // Flush GPU	// EndScene()～Present()間 (つまりVSync前) でFlush実行
-#endif
 			if (Sound管理?.GetCurrentSoundDeviceType() != "DirectSound")
 			{
 				Sound管理?.t再生中の処理をする();  // サウンドバッファの更新; 画面描画と同期させることで、スクロールをスムーズにする
@@ -1558,7 +1550,6 @@ for (int i = 0; i < 3; i++) {
 #if WindowedFullscreen
 			this.t全画面_ウィンドウモード切り替え();				// #30666 2013.2.2 yyagi: finalize settings for "Maximized window mode"
 #endif
-			actFlushGPU = new CActFlushGPU();
 			//---------------------
 			#endregion
 
@@ -1831,7 +1822,6 @@ for (int i = 0; i < 3; i++) {
 			this.listトップレベルActivities.Add(stageChangeSkin);
 			this.listトップレベルActivities.Add(stage終了);
 			this.listトップレベルActivities.Add(stageメンテ);
-			this.listトップレベルActivities.Add(actFlushGPU);
 			//---------------------
 			#endregion
 			#region Discordの処理

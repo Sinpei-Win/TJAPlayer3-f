@@ -263,7 +263,6 @@
     <Compile Include="Stages\CActFIFOResult.cs" />
     <Compile Include="Stages\CActLVLNFont.cs" />
     <Compile Include="Stages\CStage.cs" />
-    <Compile Include="Common\CActFlushGPU.cs" />
     <Compile Include="Common\CConfigIni.cs" />
     <Compile Include="Common\TJAPlayer3.cs" />
     <Compile Include="Common\ConfigIniToSongGainControllerBinder.cs" />
