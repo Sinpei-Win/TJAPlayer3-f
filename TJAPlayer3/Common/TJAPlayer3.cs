@@ -321,16 +321,12 @@ namespace TJAPlayer3
 
 		public void t全画面_ウィンドウモード切り替え()
 		{
-#if WindowedFullscreen
-			if ( ConfigIni != null )
-#else
 			DeviceSettings settings = base.GraphicsDeviceManager.CurrentSettings.Clone();
 			if ((ConfigIni != null) && (ConfigIni.bウィンドウモード != settings.Windowed))
-#endif
 			{
-#if !WindowedFullscreen
+
 				settings.Windowed = ConfigIni.bウィンドウモード;
-#endif
+
 				if (ConfigIni.bウィンドウモード == false)   // #23510 2010.10.27 yyagi: backup current window size before going fullscreen mode
 				{
 					currentClientSize = this.Window.ClientSize;
@@ -338,45 +334,16 @@ namespace TJAPlayer3
 					ConfigIni.nウインドウheight = this.Window.ClientSize.Height;
 					//					FDK.CTaskBar.ShowTaskBar( false );
 				}
-#if !WindowedFullscreen
+
 				base.GraphicsDeviceManager.ChangeDevice(settings);
-#endif
+
 				if (ConfigIni.bウィンドウモード == true)    // #23510 2010.10.27 yyagi: to resume window size from backuped value
 				{
-#if WindowedFullscreen
-															// #30666 2013.2.2 yyagi Don't use Fullscreen mode becasue NVIDIA GeForce is
-															// tend to delay drawing on Fullscreen mode. So DTXMania uses Maximized window
-															// in spite of using fullscreen mode.
-					app.Window.WindowState = FormWindowState.Normal;
-					app.Window.FormBorderStyle = FormBorderStyle.Sizable;
-					app.Window.WindowState = FormWindowState.Normal;
-#endif
 					base.Window.ClientSize =
 						new Size(currentClientSize.Width, currentClientSize.Height);
 					base.Window.Icon = Properties.Resources.tjap3;
 					//					FDK.CTaskBar.ShowTaskBar( true );
 				}
-#if WindowedFullscreen
-				else 
-				{
-					app.Window.WindowState = FormWindowState.Normal;
-					app.Window.FormBorderStyle = FormBorderStyle.None;
-					app.Window.WindowState = FormWindowState.Maximized;
-				}
-				if ( ConfigIni.bウィンドウモード )
-				{
-					if ( !this.bマウスカーソル表示中 )
-					{
-						Cursor.Show();
-						this.bマウスカーソル表示中 = true;
-					}
-				}
-				else if ( this.bマウスカーソル表示中 )
-				{
-					Cursor.Hide();
-					this.bマウスカーソル表示中 = false;
-				}
-#endif
 			}
 		}
 
@@ -415,30 +382,13 @@ namespace TJAPlayer3
 
 		protected override void Initialize()
 		{
-			//			new GCBeep();
-			//sw.Start();
-			//swlist1 = new List<int>( 8192 );
-			//swlist2 = new List<int>( 8192 );
-			//swlist3 = new List<int>( 8192 );
-			//swlist4 = new List<int>( 8192 );
-			//swlist5 = new List<int>( 8192 );
 			if (this.listトップレベルActivities != null)
 			{
 				foreach (CActivity activity in this.listトップレベルActivities)
 					activity.OnManagedリソースの作成();
 			}
+		}
 
-#if GPUFlushAfterPresent
-			FrameEnd += dtxmania_FrameEnd;
-#endif
-		}
-#if GPUFlushAfterPresent
-		void dtxmania_FrameEnd( object sender, EventArgs e )	// GraphicsDeviceManager.game_FrameEnd()後に実行される
-		{														// → Present()直後にGPUをFlushする
-																// → 画面のカクツキが頻発したため、ここでのFlushは行わない
-			actFlushGPU.On進行描画();		// Flush GPU
-		}
-#endif
 		protected override void LoadContent()
 		{
 			if (ConfigIni.bウィンドウモード)
