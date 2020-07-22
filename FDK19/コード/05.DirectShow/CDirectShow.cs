@@ -6,8 +6,6 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Threading;
-using SharpDX;
-using SharpDX.Direct3D9;
 using DirectShowLib;
 
 namespace FDK
@@ -474,7 +472,7 @@ namespace FDK
 			return this.eグラフの状態;
 		}
 		public unsafe void t現時点における最新のスナップイメージをTextureに転写する( CTexture texture )
-		{
+		{/*
 			int hr;
 
 			#region [ 再生してないなら何もせず帰還。（一時停止中はOK。）]
@@ -522,20 +520,6 @@ namespace FDK
 					#region [ テクスチャにスナップイメージを転送。]
 					//-----------------
 					bool bARGB32 = true;
-
-					switch( texture.Format )
-					{
-						case Format.A8R8G8B8:
-							bARGB32 = true;
-							break;
-
-						case Format.X8R8G8B8:
-							bARGB32 = false;
-							break;
-
-						default:
-							return;		// 未対応のフォーマットは無視。
-					}
 
 					// スレッドプールを使って並列転送する準備。
 
@@ -593,7 +577,7 @@ namespace FDK
 			finally
 			{
 				texture.texture.UnlockRectangle( 0 );
-			}
+			}*/
 		}
 
 		private IntPtr ip = IntPtr.Zero;

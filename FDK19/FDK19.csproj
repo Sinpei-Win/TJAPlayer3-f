@@ -70,17 +70,6 @@
     <Reference Include="OpenTK.GLControl, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.GLControl.3.1.0\lib\net20\OpenTK.GLControl.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.4.2.0\lib\net45\SharpDX.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.Direct3D9, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Direct3D9.4.2.0\lib\net45\SharpDX.Direct3D9.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="SharpDX.Mathematics, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpDX.Mathematics.4.2.0\lib\net45\SharpDX.Mathematics.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -98,20 +87,6 @@
     <Compile Include="コード\00.共通\ExtensionMethods\Int32Extensions.cs" />
     <Compile Include="コード\01.フレームワーク\Core\GameWindowSize.cs" />
     <Compile Include="コード\01.フレームワーク\Core\Game.cs" />
-    <Compile Include="コード\01.フレームワーク\Core\GameClock.cs" />
-    <Compile Include="コード\01.フレームワーク\Core\GameTime.cs" />
-    <Compile Include="コード\01.フレームワーク\Core\GameWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="コード\01.フレームワーク\DeviceSettings\DeviceSettings.cs" />
-    <Compile Include="コード\01.フレームワーク\DeviceSettings\Direct3D9Settings.cs" />
-    <Compile Include="コード\01.フレームワーク\Enumeration\Enumeration9.cs" />
-    <Compile Include="コード\01.フレームワーク\Rendering\DeviceCreationException.cs" />
-    <Compile Include="コード\01.フレームワーク\Rendering\Direct3D9Manager.cs" />
-    <Compile Include="コード\01.フレームワーク\Rendering\Enums.cs" />
-    <Compile Include="コード\01.フレームワーク\Rendering\GraphicsDeviceManager.cs" />
-    <Compile Include="コード\01.フレームワーク\Rendering\NoCompatibleDevicesException.cs" />
-    <Compile Include="コード\01.フレームワーク\Rendering\VertexElementAttribute.cs" />
     <Compile Include="コード\01.フレームワーク\Win32\NativeMethods.cs" />
     <Compile Include="コード\01.フレームワーク\Win32\NativeStructures.cs" />
     <Compile Include="コード\01.フレームワーク\Win32\WindowConstants.cs" />
@@ -152,8 +127,6 @@
     <Compile Include="コード\04.グラフィック\CAvi.cs" />
     <Compile Include="コード\04.グラフィック\CTexture.cs" />
     <Compile Include="コード\04.グラフィック\CTextureCreateFailedException.cs" />
-    <Compile Include="コード\04.グラフィック\頂点フォーマット%28Vertex%29\PositionColoredTexturedVertex.cs" />
-    <Compile Include="コード\04.グラフィック\頂点フォーマット%28Vertex%29\TransformedColoredTexturedVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="コード\00.共通\CActivity.cs" />
     <Compile Include="コード\00.共通\CCounter.cs" />

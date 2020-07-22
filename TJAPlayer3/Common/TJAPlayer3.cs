@@ -4,15 +4,19 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Threading;
-using SharpDX;
-using SharpDX.Direct3D9;
+using OpenTK;
+using OpenTK.Graphics;
 using FDK;
 using SampleFramework;
 using System.Reflection;
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 using Rectangle = System.Drawing.Rectangle;
 using Point = System.Drawing.Point;
@@ -275,8 +279,10 @@ namespace TJAPlayer3
 
 		public bool bApplicationActive
 		{
-			get;
-			private set;
+			get 
+			{
+				return this.Focused;
+			}
 		}
 		public bool b次のタイミングで垂直帰線同期切り替えを行う
 		{
@@ -288,11 +294,11 @@ namespace TJAPlayer3
 			get;
 			set;
 		}
-		public Device Device
+		public int Device
 		{
 			get
 			{
-				return base.GraphicsDeviceManager.Direct3D9.Device;
+				return 0;
 			}
 		}
 		private static Size currentClientSize       // #23510 2010.10.27 add yyagi to keep current window size
@@ -303,7 +309,7 @@ namespace TJAPlayer3
 		//		public static CTimer ct;
 		public IntPtr WindowHandle                  // 2012.10.24 yyagi; to add ASIO support
 		{
-			get { return base.Window.Handle; }
+			get { return base.WindowInfo.Handle; }
 		}
 
 		#endregion
@@ -321,28 +327,16 @@ namespace TJAPlayer3
 
 		public void t全画面_ウィンドウモード切り替え()
 		{
-			DeviceSettings settings = base.GraphicsDeviceManager.CurrentSettings.Clone();
-			if ((ConfigIni != null) && (ConfigIni.bウィンドウモード != settings.Windowed))
+			if ((ConfigIni != null))
 			{
-
-				settings.Windowed = ConfigIni.bウィンドウモード;
-
 				if (ConfigIni.bウィンドウモード == false)   // #23510 2010.10.27 yyagi: backup current window size before going fullscreen mode
 				{
-					currentClientSize = this.Window.ClientSize;
-					ConfigIni.nウインドウwidth = this.Window.ClientSize.Width;
-					ConfigIni.nウインドウheight = this.Window.ClientSize.Height;
-					//					FDK.CTaskBar.ShowTaskBar( false );
+					base.WindowState = WindowState.Fullscreen;
 				}
-
-				base.GraphicsDeviceManager.ChangeDevice(settings);
 
 				if (ConfigIni.bウィンドウモード == true)    // #23510 2010.10.27 yyagi: to resume window size from backuped value
 				{
-					base.Window.ClientSize =
-						new Size(currentClientSize.Width, currentClientSize.Height);
-					base.Window.Icon = Properties.Resources.tjap3;
-					//					FDK.CTaskBar.ShowTaskBar( true );
+					base.WindowState = WindowState.Normal;
 				}
 			}
 		}
@@ -369,60 +363,63 @@ namespace TJAPlayer3
 				}
 			}
 
-			// http://www.gamedev.net/topic/594369-dx9slimdxati-incorrect-saving-surface-to-file/
-			using (Surface pSurface = TJAPlayer3.app.Device.GetRenderTarget(0))
-			{
-				Surface.ToFile(pSurface, strFullPath, ImageFileFormat.Png);
-			}
+			if (GraphicsContext.CurrentContext == null)
+				throw new GraphicsContextException();
+
+			Bitmap bmp = new Bitmap(ClientSize.Width, ClientSize.Height);
+			System.Drawing.Imaging.BitmapData data =
+				bmp.LockBits(ClientRectangle, System.Drawing.Imaging.ImageLockMode.WriteOnly,
+				System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+			GL.ReadPixels(0, 0, ClientSize.Width, ClientSize.Height,
+				OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
+			bmp.UnlockBits(data);
+
+			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+			bmp.Save(strFullPath, ImageFormat.Png);
+			bmp.Dispose();
+
 			return true;
 		}
 		#endregion
 
 		// Game 実装
 
-		protected override void Initialize()
+
+		protected override void OnResize(EventArgs e)
 		{
+			base.OnResize(e);
+			base.Width = ClientRectangle.Height * 16 / 9;
+			base.Height = ClientRectangle.Height;
+			GL.Viewport(ClientRectangle);
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
 			if (this.listトップレベルActivities != null)
 			{
 				foreach (CActivity activity in this.listトップレベルActivities)
 					activity.OnManagedリソースの作成();
 			}
-		}
-
-		protected override void LoadContent()
-		{
 			if (ConfigIni.bウィンドウモード)
 			{
 				if (!this.bマウスカーソル表示中)
 				{
-					Cursor.Show();
+					//Cursor.Show();
 					this.bマウスカーソル表示中 = true;
 				}
 			}
 			else if (this.bマウスカーソル表示中)
 			{
-				Cursor.Hide();
+				//Cursor.Hide();
 				this.bマウスカーソル表示中 = false;
 			}
-			this.Device.SetTransform(TransformState.View, Matrix.LookAtLH(new Vector3(0f, 0f, (float)(-SampleFramework.GameWindowSize.Height / 2 * Math.Sqrt(3.0))), new Vector3(0f, 0f, 0f), new Vector3(0f, 1f, 0f)));
-			this.Device.SetTransform(TransformState.Projection, Matrix.PerspectiveFovLH(C変換.DegreeToRadian((float)60f), ((float)this.Device.Viewport.Width) / ((float)this.Device.Viewport.Height), -100f, 100f));
-			this.Device.SetRenderState(RenderState.Lighting, false);
-			this.Device.SetRenderState(RenderState.ZEnable, false);
-			this.Device.SetRenderState(RenderState.AntialiasedLineEnable, false);
-			this.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-			this.Device.SetRenderState(RenderState.AlphaRef, 10);
 
-			this.Device.SetRenderState(RenderState.MultisampleAntialias, true);
-			this.Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
-			this.Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
-
-			this.Device.SetRenderState<Compare>(RenderState.AlphaFunc, Compare.Greater);
-			this.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-			this.Device.SetRenderState<Blend>(RenderState.SourceBlend, Blend.SourceAlpha);
-			this.Device.SetRenderState<Blend>(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
-			this.Device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
-			this.Device.SetTextureStageState(0, TextureStage.AlphaArg1, 2);
-			this.Device.SetTextureStageState(0, TextureStage.AlphaArg2, 1);
+			GL.ClearColor(Color.Black);
+			GL.Disable(EnableCap.DepthTest);
+			GL.Enable(EnableCap.Blend);
+			GL.Enable(EnableCap.Texture2D);
+			GL.Enable(EnableCap.AlphaTest);
 
 			if (this.listトップレベルActivities != null)
 			{
@@ -430,25 +427,25 @@ namespace TJAPlayer3
 					activity.OnUnmanagedリソースの作成();
 			}
 		}
-		protected override void UnloadContent()
+		protected override void OnUnload(EventArgs e)
 		{
 			if (this.listトップレベルActivities != null)
 			{
 				foreach (CActivity activity in this.listトップレベルActivities)
 					activity.OnUnmanagedリソースの解放();
 			}
-		}
-		protected override void OnExiting(EventArgs e)
-		{
 			CPowerManagement.tEnableMonitorSuspend();       // スリープ抑止状態を解除
 			this.t終了処理();
-			base.OnExiting(e);
+			base.OnUnload(e);
 		}
-		protected override void Update(GameTime gameTime)
+		protected override void OnUpdateFrame(FrameEventArgs e)
 		{
+			base.OnUpdateFrame(e);
 		}
-		protected override void Draw(GameTime gameTime)
+		protected override void OnRenderFrame(FrameEventArgs e)
 		{
+			base.OnRenderFrame(e);
+
 			Sound管理?.t再生中の処理をする();
 			Timer?.t更新();
 			CSound管理.rc演奏用タイマ?.t更新();
@@ -469,8 +466,7 @@ namespace TJAPlayer3
 			}
 			#endregion
 
-			this.Device.BeginScene();
-			this.Device.Clear(ClearFlags.ZBuffer | ClearFlags.Target, SharpDX.Color.Black, 1f, 0);
+			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 			if (r現在のステージ != null)
 			{
@@ -843,18 +839,7 @@ namespace TJAPlayer3
 
 							Trace.TraceInformation("----------------------");
 							Trace.TraceInformation("■ 演奏（ドラム画面）");
-#if false       // #23625 2011.1.11 Config.iniからダメージ/回復値の定数変更を行う場合はここを有効にする 087リリースに合わせ機能無効化
-for (int i = 0; i < 5; i++)
-{
-	for (int j = 0; j < 2; j++)
-	{
-		stage演奏ドラム画面.fDamageGaugeDelta[i, j] = ConfigIni.fGaugeFactor[i, j];
-	}
-}
-for (int i = 0; i < 3; i++) {
-	stage演奏ドラム画面.fDamageLevelFactor[i] = ConfigIni.fDamageLevelFactor[i];
-}		
-#endif
+
 							r直前のステージ = r現在のステージ;
 							r現在のステージ = stage演奏ドラム画面;
 
@@ -1099,8 +1084,6 @@ for (int i = 0; i < 3; i++) {
 					TJAPlayer3.Tx.Overlay.t2D描画(app.Device, 0, 0);
 				}
 			}
-			this.Device.EndScene();         // Present()は game.csのOnFrameEnd()に登録された、GraphicsDeviceManager.game_FrameEnd() 内で実行されるので不要
-											// (つまり、Present()は、Draw()完了後に実行される)
 			if (Sound管理?.GetCurrentSoundDeviceType() != "DirectSound")
 			{
 				Sound管理?.t再生中の処理をする();  // サウンドバッファの更新; 画面描画と同期させることで、スクロールをスムーズにする
@@ -1118,19 +1101,22 @@ for (int i = 0; i < 3; i++) {
 			#region [ 垂直基線同期切り替え ]
 			if (this.b次のタイミングで垂直帰線同期切り替えを行う)
 			{
-				bool bIsMaximized = this.Window.IsMaximized;                                            // #23510 2010.11.3 yyagi: to backup current window mode before changing VSyncWait
-				currentClientSize = this.Window.ClientSize;                                             // #23510 2010.11.3 yyagi: to backup current window size before changing VSyncWait
-				DeviceSettings currentSettings = app.GraphicsDeviceManager.CurrentSettings;
-				currentSettings.EnableVSync = ConfigIni.b垂直帰線待ちを行う;
-				app.GraphicsDeviceManager.ChangeDevice(currentSettings);
+				bool bIsMaximized = (this.WindowState == WindowState.Maximized);// #23510 2010.11.3 yyagi: to backup current window mode before changing VSyncWait
+
+				if (ConfigIni.b垂直帰線待ちを行う)
+					base.VSync = VSyncMode.On;
+				else
+					base.VSync = VSyncMode.Off;
+
 				this.b次のタイミングで垂直帰線同期切り替えを行う = false;
-				base.Window.ClientSize = new Size(currentClientSize.Width, currentClientSize.Height);   // #23510 2010.11.3 yyagi: to resume window size after changing VSyncWait
+				base.ClientSize = new Size(currentClientSize.Width, currentClientSize.Height);// #23510 2010.11.3 yyagi: to resume window size after changing VSyncWait
 				if (bIsMaximized)
 				{
-					this.Window.WindowState = FormWindowState.Maximized;                                // #23510 2010.11.3 yyagi: to resume window mode after changing VSyncWait
+					this.WindowState = WindowState.Maximized;// #23510 2010.11.3 yyagi: to resume window mode after changing VSyncWait
 				}
 			}
 			#endregion
+			base.SwapBuffers();
 		}
 
 		// その他
@@ -1387,8 +1373,6 @@ for (int i = 0; i < 3; i++) {
 					Trace.TraceError("例外が発生しましたが処理を継続します。 (b8d93255-bbe4-4ca3-8264-7ee5175b19f3)");
 				}
 			}
-			this.Window.EnableSystemMenu = TJAPlayer3.ConfigIni.bIsEnabledSystemMenu;   // #28200 2011.5.1 yyagi
-																						// 2012.8.22 Config.iniが無いときに初期値が適用されるよう、この設定行をifブロック外に移動
 
 			//---------------------
 			#endregion
@@ -1432,74 +1416,42 @@ for (int i = 0; i < 3; i++) {
 
 			#region [ ウィンドウ初期化 ]
 			//---------------------
-			base.Window.StartPosition = FormStartPosition.Manual;                                                       // #30675 2013.02.04 ikanick add
-			base.Window.Location = new Point(ConfigIni.n初期ウィンドウ開始位置X, ConfigIni.n初期ウィンドウ開始位置Y);   // #30675 2013.02.04 ikanick add
+			base.X = ConfigIni.n初期ウィンドウ開始位置X;
+			base.Y = ConfigIni.n初期ウィンドウ開始位置Y;
 
 
-			base.Window.Text = "";
 
-			base.Window.StartPosition = FormStartPosition.Manual;                                                       // #30675 2013.02.04 ikanick add
-			base.Window.Location = new Point(ConfigIni.n初期ウィンドウ開始位置X, ConfigIni.n初期ウィンドウ開始位置Y);   // #30675 2013.02.04 ikanick add
+			base.Title = "";
 
-			base.Window.ClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);   // #34510 yyagi 2010.10.31 to change window size got from Config.ini
-#if !WindowedFullscreen
+			base.ClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);   // #34510 yyagi 2010.10.31 to change window size got from Config.ini
+
 			if (!ConfigIni.bウィンドウモード)                       // #23510 2010.11.02 yyagi: add; to recover window size in case bootup with fullscreen mode
 			{                                                       // #30666 2013.02.02 yyagi: currentClientSize should be always made
-#endif
 				currentClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);
-#if !WindowedFullscreen
 			}
-#endif
-			base.Window.MaximizeBox = true;                         // #23510 2010.11.04 yyagi: to support maximizing window
-			base.Window.FormBorderStyle = FormBorderStyle.Sizable;  // #23510 2010.10.27 yyagi: changed from FixedDialog to Sizable, to support window resize
-																	// #30666 2013.02.02 yyagi: moved the code to t全画面_ウインドウモード切り替え()
-			base.Window.ShowIcon = true;
-			base.Window.Icon = global::TJAPlayer3.Properties.Resources.tjap3;
-			base.Window.KeyDown += new KeyEventHandler(this.Window_KeyDown);
-			base.Window.MouseUp += new MouseEventHandler(this.Window_MouseUp);
-			base.Window.MouseDoubleClick += new MouseEventHandler(this.Window_MouseDoubleClick);    // #23510 2010.11.13 yyagi: to go fullscreen mode
-			base.Window.ResizeEnd += new EventHandler(this.Window_ResizeEnd);                       // #23510 2010.11.20 yyagi: to set resized window size in Config.ini
-			base.Window.ApplicationActivated += new EventHandler(this.Window_ApplicationActivated);
-			base.Window.ApplicationDeactivated += new EventHandler(this.Window_ApplicationDeactivated);
+			base.Icon = global::TJAPlayer3.Properties.Resources.tjap3;
+			/*base.KeyDown += new KeyEventHandler(this.Window_KeyDown);
+			base.MouseUp += new MouseEventHandler(this.Window_MouseUp);
+			base.MouseDoubleClick += new MouseEventHandler(this.Window_MouseDoubleClick);    // #23510 2010.11.13 yyagi: to go fullscreen mode
+			base.ResizeEnd += new EventHandler(this.Window_ResizeEnd);                       // #23510 2010.11.20 yyagi: to set resized window size in Config.ini*/
 			//---------------------
 			#endregion
 			#region [ Direct3D9 デバイスの生成 ]
 			//---------------------
-			DeviceSettings settings = new DeviceSettings();
-#if WindowedFullscreen
-			settings.Windowed = true;								// #30666 2013.2.2 yyagi: Fullscreenmode is "Maximized window" mode
-#else
-			settings.Windowed = ConfigIni.bウィンドウモード;
-#endif
-			settings.BackBufferWidth = SampleFramework.GameWindowSize.Width;
-			settings.BackBufferHeight = SampleFramework.GameWindowSize.Height;
-			//			settings.BackBufferCount = 3;
-			settings.EnableVSync = ConfigIni.b垂直帰線待ちを行う;
-			//			settings.BackBufferFormat = Format.A8R8G8B8;
-			//			settings.MultisampleType = MultisampleType.FourSamples;
-			//			settings.MultisampleQuality = 4;
-			//			settings.MultisampleType = MultisampleType.None;
-			//			settings.MultisampleQuality = 0;
+			if (ConfigIni.bウィンドウモード)
+				base.WindowState = WindowState.Normal;
+			else
+				base.WindowState = WindowState.Fullscreen;
 
-			try
-			{
-				base.GraphicsDeviceManager.ChangeDevice(settings);
-			}
-			catch (DeviceCreationException e)
-			{
-				Trace.TraceError(e.ToString());
-				MessageBox.Show(e.ToString(), "DTXMania failed to boot: DirectX9 Initialize Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Environment.Exit(-1);
-			}
+			if (ConfigIni.b垂直帰線待ちを行う)
+				base.VSync = VSyncMode.On;
+			else
+				base.VSync = VSyncMode.Off;
 
-			base.IsFixedTimeStep = false;
-			//			base.TargetElapsedTime = TimeSpan.FromTicks( 10000000 / 75 );
-			base.Window.ClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);   // #23510 2010.10.31 yyagi: to recover window size. width and height are able to get from Config.ini.
-			base.InactiveSleepTime = TimeSpan.FromMilliseconds((float)(ConfigIni.n非フォーカス時スリープms));  // #23568 2010.11.3 yyagi: to support valiable sleep value when !IsActive
-																									// #23568 2010.11.4 ikanick changed ( 1 -> ConfigIni )
-#if WindowedFullscreen
-			this.t全画面_ウィンドウモード切り替え();				// #30666 2013.2.2 yyagi: finalize settings for "Maximized window mode"
-#endif
+			
+
+			base.ClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);   // #23510 2010.10.31 yyagi: to recover window size. width and height are able to get from Config.ini.
+
 			//---------------------
 			#endregion
 
@@ -1660,7 +1612,7 @@ for (int i = 0; i < 3; i++) {
 						soundDeviceType = ESoundDeviceType.Unknown;
 						break;
 				}
-				Sound管理 = new CSound管理(base.Window.Handle,
+				Sound管理 = new CSound管理(this.WindowHandle,
 											soundDeviceType,
 											TJAPlayer3.ConfigIni.nWASAPIBufferSizeMs,
 											// CDTXMania.ConfigIni.nASIOBufferSizeMs,
@@ -1805,15 +1757,15 @@ for (int i = 0; i < 3; i++) {
 				delay = "(" + Sound管理.GetSoundDelay() + "ms)";
 			}
 			AssemblyName asmApp = Assembly.GetExecutingAssembly().GetName();
-			base.Window.Text = asmApp.Name + " Ver." + VERSION + " (" + Sound管理.GetCurrentSoundDeviceType() + delay + ")";
+			base.Title = asmApp.Name + " Ver." + VERSION + " (" + Sound管理.GetCurrentSoundDeviceType() + delay + ")";
 		}
 
 		public void ChangeWindowTitle(string Name, bool StringInitialize = true, bool Concat = true) {
 			if(StringInitialize)
 				this.ShowWindowTitleWithSoundType();
 			if (Concat)
-				Name = base.Window.Text + Name;
-			base.Window.Text = Name;
+				Name = base.Title + Name;
+			base.Title = Name;
 		}
 
 		private void t終了処理()
@@ -2094,9 +2046,6 @@ for (int i = 0; i < 3; i++) {
 
 				//---------------------
 				#endregion
-				#region [ DirectXの終了処理 ]
-				base.GraphicsDeviceManager.Dispose();
-				#endregion
 				Trace.TraceInformation( "アプリケーションの終了処理を完了しました。" );
 
 				this.b終了処理完了済み = true;
@@ -2168,14 +2117,6 @@ for (int i = 0; i < 3; i++) {
 		}
 		#region [ Windowイベント処理 ]
 		//-----------------
-		private void Window_ApplicationActivated( object sender, EventArgs e )
-		{
-			this.bApplicationActive = true;
-		}
-		private void Window_ApplicationDeactivated( object sender, EventArgs e )
-		{
-			this.bApplicationActive = false;
-		}
 		private void Window_KeyDown( object sender, KeyEventArgs e )
 		{
 			if ( e.KeyCode == Keys.Menu )
@@ -2226,12 +2167,12 @@ for (int i = 0; i < 3; i++) {
 		{
 			if ( ConfigIni.bウィンドウモード )
 			{
-				ConfigIni.n初期ウィンドウ開始位置X = base.Window.Location.X;	// #30675 2013.02.04 ikanick add
-				ConfigIni.n初期ウィンドウ開始位置Y = base.Window.Location.Y;	//
+				ConfigIni.n初期ウィンドウ開始位置X = base.X;	// #30675 2013.02.04 ikanick add
+				ConfigIni.n初期ウィンドウ開始位置Y = base.Y;	//
 			}
 
-			ConfigIni.nウインドウwidth = (ConfigIni.bウィンドウモード) ? base.Window.ClientSize.Width : currentClientSize.Width;	// #23510 2010.10.31 yyagi add
-			ConfigIni.nウインドウheight = (ConfigIni.bウィンドウモード) ? base.Window.ClientSize.Height : currentClientSize.Height;
+			ConfigIni.nウインドウwidth = (ConfigIni.bウィンドウモード) ? base.ClientSize.Width : currentClientSize.Width;	// #23510 2010.10.31 yyagi add
+			ConfigIni.nウインドウheight = (ConfigIni.bウィンドウモード) ? base.ClientSize.Height : currentClientSize.Height;
 		}
 		#endregion
 		#endregion

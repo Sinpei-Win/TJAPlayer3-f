@@ -234,7 +234,7 @@ namespace TJAPlayer3
 					}
 					if (TJAPlayer3.Tx.SongSelect_GenreBack[nGenreBack] != null )
 					{
-						for (int i = 0; i < (1280 / TJAPlayer3.Tx.SongSelect_Background.szテクスチャサイズ.Width) + 2; i++)
+						for (int i = 0; i < (1280 / TJAPlayer3.Tx.SongSelect_Background.sz画像サイズ.Width) + 2; i++)
 						{
 
 

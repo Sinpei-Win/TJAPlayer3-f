@@ -8,7 +8,8 @@ using System.Drawing;
 using System.Threading;
 using System.Globalization;
 using System.Runtime.Serialization.Formatters.Binary;
-//using SharpDX;
+using OpenTK;
+using OpenTK.Graphics;
 using FDK;
 
 namespace TJAPlayer3
@@ -106,7 +107,7 @@ namespace TJAPlayer3
 					graphics.DrawString( strMessage[ ci ], ftMessage, Brushes.White, (float) 0f, (float) 0f );
 					graphics.Dispose();
 					this.txMessage = new CTexture( TJAPlayer3.app.Device, image );
-					this.txMessage.vc拡大縮小倍率 = new SharpDX.Vector3( 0.5f, 0.5f, 1f );
+					this.txMessage.vc拡大縮小倍率 = new Vector3( 0.5f, 0.5f, 1f );
 					image.Dispose();
 					TJAPlayer3.t安全にDisposeする( ref ftMessage );
 				}

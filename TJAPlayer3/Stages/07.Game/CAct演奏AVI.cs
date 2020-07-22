@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
-using SharpDX;
-using SharpDX.Direct3D9;
+using OpenTK;
+using OpenTK.Graphics;
 using FDK;
 using DirectShowLib;
 
@@ -399,7 +399,7 @@ namespace TJAPlayer3
 					}
 				}
 				else if ( ( this.tx描画用 != null ) && ( this.n総移動時間ms != -1 ) )
-				{
+				{/*
 					if ( this.bフレームを作成した && ( this.pBmp != IntPtr.Zero ) )
 					{
 						DataRectangle rectangle3 = this.tx描画用.texture.LockRectangle( 0, LockFlags.None );
@@ -421,7 +421,7 @@ namespace TJAPlayer3
 						}
 						this.tx描画用.texture.UnlockRectangle( 0 );
 						this.bフレームを作成した = false;
-					}
+					}*/
 					double dbAVI比率 = this.rAVI.avi.nフレーム幅 / this.rAVI.avi.nフレーム高さ;
 
 					//とりあえず16:9以外は再生しない。

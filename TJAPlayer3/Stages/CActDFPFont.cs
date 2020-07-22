@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Drawing;
-using SharpDX;
+using OpenTK;
+using OpenTK.Graphics;
 using FDK;
 using Rectangle = System.Drawing.Rectangle;
 
