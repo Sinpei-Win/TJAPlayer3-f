@@ -126,26 +126,6 @@ namespace SampleFramework
 		}
 
 		/// <summary>
-		/// Creates a render target surface that is compatible with the current device settings.
-		/// </summary>
-		/// <param name="width">The width of the surface.</param>
-		/// <param name="height">The height of the surface.</param>
-		/// <returns>The newly created render target surface.</returns>
-		public Texture CreateRenderTarget(int width, int height)
-		{
-			return new Texture(Device, width, height, 1, Usage.RenderTarget, manager.CurrentSettings.BackBufferFormat, Pool.Default);
-		}
-
-		/// <summary>
-		/// Creates a resolve target for capturing the back buffer.
-		/// </summary>
-		/// <returns>The newly created resolve target.</returns>
-		public Texture CreateResolveTarget()
-		{
-			return new Texture(Device, manager.ScreenWidth, manager.ScreenHeight, 1, Usage.RenderTarget, manager.CurrentSettings.BackBufferFormat, Pool.Default);
-		}
-
-		/// <summary>
 		/// Resolves the current back buffer into a texture.
 		/// </summary>
 		/// <param name="target">The target texture.</param>

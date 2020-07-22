@@ -277,7 +277,6 @@ namespace TJAPlayer3
 			get;
 			private set;
 		}
-		public static Format TextureFormat = Format.A8R8G8B8;
 
 		public bool bApplicationActive
 		{
@@ -1208,7 +1207,7 @@ for (int i = 0; i < 3; i++) {
 			}
 			try
 			{
-				return new CTexture(app.Device, fileName, TextureFormat, b黒を透過する);
+				return new CTexture(app.Device, fileName, b黒を透過する);
 			}
 			catch (CTextureCreateFailedException e)
 			{
@@ -1243,7 +1242,7 @@ for (int i = 0; i < 3; i++) {
 			}
 			try
 			{
-				return new CTexture(app.Device, bitmap, TextureFormat, b黒を透過する);
+				return new CTexture(app.Device, bitmap, b黒を透過する);
 			}
 			catch (CTextureCreateFailedException e)
 			{

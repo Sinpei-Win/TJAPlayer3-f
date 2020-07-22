@@ -45,7 +45,7 @@ namespace TJAPlayer3
 						graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
 						graphics.DrawString( this.strArtist, this.ft描画用フォント, Brushes.White, ( float ) 0f, ( float ) 0f );
 						graphics.Dispose();
-						this.txArtist = new CTexture( TJAPlayer3.app.Device, bitmap2, TJAPlayer3.TextureFormat );
+						this.txArtist = new CTexture( TJAPlayer3.app.Device, bitmap2 );
 						this.txArtist.vc拡大縮小倍率 = new Vector3( 0.5f, 0.5f, 1f );
 						bitmap2.Dispose();
 					}
@@ -104,7 +104,7 @@ namespace TJAPlayer3
 					graphics2.Dispose();
 					try
 					{
-						this.txComment = new CTexture( TJAPlayer3.app.Device, bitmap4, TJAPlayer3.TextureFormat );
+						this.txComment = new CTexture( TJAPlayer3.app.Device, bitmap4 );
 						this.txComment.vc拡大縮小倍率 = new Vector3( 0.5f, 0.5f, 1f );
 					}
 					catch( CTextureCreateFailedException e )

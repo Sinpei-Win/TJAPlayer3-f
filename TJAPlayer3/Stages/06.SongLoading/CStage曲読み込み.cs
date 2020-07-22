@@ -142,7 +142,7 @@ namespace TJAPlayer3
 						using (var bmpSongTitle = this.pfTITLE.DrawPrivateFont( タイトル, TJAPlayer3.Skin.SongLoading_Title_ForeColor, TJAPlayer3.Skin.SongLoading_Title_BackColor ))
 
 						{
-							this.txタイトル = new CTexture( TJAPlayer3.app.Device, bmpSongTitle, TJAPlayer3.TextureFormat, false );
+							this.txタイトル = new CTexture( TJAPlayer3.app.Device, bmpSongTitle, false );
 							txタイトル.vc拡大縮小倍率.X = TJAPlayer3.GetSongNameXScaling(ref txタイトル, 710);
 						}
 
@@ -150,7 +150,7 @@ namespace TJAPlayer3
 
 
 						{
-							this.txサブタイトル = new CTexture( TJAPlayer3.app.Device, bmpSongSubTitle, TJAPlayer3.TextureFormat, false );
+							this.txサブタイトル = new CTexture( TJAPlayer3.app.Device, bmpSongSubTitle, false );
 						}
 					}
 					else

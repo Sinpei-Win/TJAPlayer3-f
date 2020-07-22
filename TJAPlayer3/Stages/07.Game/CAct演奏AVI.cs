@@ -64,7 +64,7 @@ namespace TJAPlayer3
 					}
 					if (this.tx描画用 == null)
 					{
-						this.tx描画用 = new CTexture(TJAPlayer3.app.Device, (int)this.framewidth, (int)this.frameheight, TJAPlayer3.app.GraphicsDeviceManager.CurrentSettings.BackBufferFormat, Pool.Managed);
+						this.tx描画用 = new CTexture(TJAPlayer3.app.Device, (int)this.framewidth, (int)this.frameheight);
 					}
 
 					#region[ リサイズ処理 ]
@@ -505,8 +505,8 @@ namespace TJAPlayer3
 				TJAPlayer3.t安全にDisposeする( ref this.tx描画用 );
 				TJAPlayer3.t安全にDisposeする( ref this.tx窓描画用 );
 
-				this.tx描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720, TJAPlayer3.app.GraphicsDeviceManager.CurrentSettings.BackBufferFormat, Pool.Managed );
-				this.tx窓描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720, TJAPlayer3.app.GraphicsDeviceManager.CurrentSettings.BackBufferFormat, Pool.Managed );
+				this.tx描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720 );
+				this.tx窓描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720 );
 			}
 			
 		}
@@ -529,8 +529,8 @@ namespace TJAPlayer3
 #if TEST_Direct3D9Ex
 				this.tx描画用 = new CTexture( CDTXMania.app.Device, 320, 355, CDTXMania.app.GraphicsDeviceManager.CurrentSettings.BackBufferFormat, Pool.Default, Usage.Dynamic );
 #else
-				this.tx描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720, TJAPlayer3.app.GraphicsDeviceManager.CurrentSettings.BackBufferFormat, Pool.Managed );
-				this.tx窓描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720, TJAPlayer3.app.GraphicsDeviceManager.CurrentSettings.BackBufferFormat, Pool.Managed );
+				this.tx描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720 );
+				this.tx窓描画用 = new CTexture( TJAPlayer3.app.Device, 1280, 720 );
 #endif
 				base.OnManagedリソースの作成();
 			}

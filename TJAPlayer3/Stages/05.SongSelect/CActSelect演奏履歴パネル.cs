@@ -87,7 +87,7 @@ namespace TJAPlayer3
 					{
 						this.tx文字列パネル.Dispose();
 					}
-					this.tx文字列パネル = new CTexture( TJAPlayer3.app.Device, image, TJAPlayer3.TextureFormat );
+					this.tx文字列パネル = new CTexture( TJAPlayer3.app.Device, image );
 					this.tx文字列パネル.vc拡大縮小倍率 = new Vector3( 0.5f, 0.5f, 1f );
 					image.Dispose();
 				}

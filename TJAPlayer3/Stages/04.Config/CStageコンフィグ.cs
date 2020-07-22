@@ -598,7 +598,7 @@ namespace TJAPlayer3
 				{
 					this.tx説明文パネル.Dispose();
 				}
-				this.tx説明文パネル = new CTexture( TJAPlayer3.app.Device, image, TJAPlayer3.TextureFormat );
+				this.tx説明文パネル = new CTexture( TJAPlayer3.app.Device, image );
 				image.Dispose();
 			}
 			catch( CTextureCreateFailedException e)
@@ -627,7 +627,7 @@ namespace TJAPlayer3
 				{
 					this.tx説明文パネル.Dispose();
 				}
-				this.tx説明文パネル = new CTexture( TJAPlayer3.app.Device, image, TJAPlayer3.TextureFormat );
+				this.tx説明文パネル = new CTexture( TJAPlayer3.app.Device, image );
 				image.Dispose();
 			}
 			catch( CTextureCreateFailedException e )
