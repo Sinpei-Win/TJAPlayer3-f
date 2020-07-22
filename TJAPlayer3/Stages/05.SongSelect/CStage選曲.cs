@@ -89,7 +89,6 @@ namespace TJAPlayer3
 			base.list子Activities.Add(this.actステータスパネル = new CActSelectステータスパネル());
 			base.list子Activities.Add(this.act演奏履歴パネル = new CActSelect演奏履歴パネル());
 			base.list子Activities.Add(this.actPresound = new CActSelectPresound());
-			base.list子Activities.Add(this.actArtistComment = new CActSelectArtistComment());
 			base.list子Activities.Add(this.actInformation = new CActSelectInformation());
 			base.list子Activities.Add(this.actSortSongs = new CActSortSongs());
 			base.list子Activities.Add(this.actQuickConfig = new CActSelectQuickConfig());
@@ -106,7 +105,6 @@ namespace TJAPlayer3
 			this.actPresound.t選択曲が変更された();
 			this.act演奏履歴パネル.t選択曲が変更された();
 			this.actステータスパネル.t選択曲が変更された();
-			this.actArtistComment.t選択曲が変更された();
 		}
 
 		// CStage 実装
@@ -1221,10 +1219,8 @@ namespace TJAPlayer3
 				}
 			}
 		}
-		private CActSelectArtistComment actArtistComment;
 		internal CActFIFOBlack actFIFO;
 		private CActFIFOBlack actFIfrom結果画面;
-		//private CActFIFOBlack actFOtoNowLoading;
 		private CActFIFOStart actFOtoNowLoading;
 		private CActSelectInformation actInformation;
 		public CActSelectPresound actPresound;
