@@ -468,6 +468,14 @@ namespace TJAPlayer3
 
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
+			Matrix4 modelView = Matrix4.LookAt(Vector3.UnitZ * 10, Vector3.Zero, Vector3.UnitY);
+			GL.MatrixMode(MatrixMode.Modelview);
+			GL.LoadMatrix(ref modelView);
+
+			Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)TJAPlayer3.Width / (float)this.Height, 1.0f, 64.0f);
+			GL.MatrixMode(MatrixMode.Projection);
+			GL.LoadMatrix(ref projection);
+
 			if (r現在のステージ != null)
 			{
 				this.n進行描画の戻り値 = (r現在のステージ != null) ? r現在のステージ.On進行描画() : 0;

@@ -1846,7 +1846,7 @@ namespace TJAPlayer3
 						}
 
 						float f減少するカラー = 1.0f - ((0.95f / 100) * pChip.RollEffectLevel);
-						var effectedColor = new Color4( f減少するカラー, f減少するカラー, 1.0f , 1f);
+						var effectedColor = new Color4(1.0f, f減少するカラー, f減少するカラー, 1f);
 						var normalColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
 						float f末端ノーツのテクスチャ位置調整 = 65f;
 
