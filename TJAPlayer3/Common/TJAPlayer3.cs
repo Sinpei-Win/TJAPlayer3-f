@@ -472,7 +472,7 @@ namespace TJAPlayer3
 			GL.MatrixMode(MatrixMode.Modelview);
 			GL.LoadMatrix(ref modelView);
 
-			Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)TJAPlayer3.Width / (float)this.Height, 1.0f, 64.0f);
+			Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.PiOver4, (float)this.Width / (float)this.Height, 1.0f, 64.0f);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref projection);
 
