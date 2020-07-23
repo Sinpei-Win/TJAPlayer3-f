@@ -218,8 +218,8 @@ namespace FDK
 			{
 				GL.BindTexture(TextureTarget.Texture2D, texture);
 
-				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
 				bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
@@ -332,11 +332,19 @@ namespace FDK
 
 			this.tレンダリングステートの設定(device);
 
-			Matrix4 matrix = Matrix4.Identity;
+			Matrix4 mat = Matrix4.Identity;
 			GL.MatrixMode(MatrixMode.Texture);
-			GL.LoadMatrix(ref matrix);
+			GL.LoadMatrix(ref mat);
+
+			float[,] vertex = new float[4, 2] { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } };
+			
 
 			GL.Color4(color4);
+			/*uint GLuint = 0;
+			GL.GenBuffers(1, out GLuint);
+			GL.BindBuffer(BufferTarget.ArrayBuffer, GLuint);
+			GL.BufferData(BufferTarget.ArrayBuffer, 4 * sizeof(vertex), vertex, BufferUsageHint.StaticDraw);*/
+
 			GL.Begin(BeginMode.Quads);
 			GL.TexCoord2(f右U値, f上V値);
 			GL.Vertex3((x + w - x差) / 100.0 * f補正値X, (y - y差) / 100.0 * f補正値Y, 0);
@@ -378,9 +386,9 @@ namespace FDK
 
 			this.tレンダリングステートの設定(device);
 
-			Matrix4 matrix = Matrix4.Identity;
+			Matrix4 mat = Matrix4.Identity;
 			GL.MatrixMode(MatrixMode.Texture);
-			GL.LoadMatrix(ref matrix);
+			GL.LoadMatrix(ref mat);
 
 			GL.Color4(color4);
 			GL.Begin(BeginMode.Quads);

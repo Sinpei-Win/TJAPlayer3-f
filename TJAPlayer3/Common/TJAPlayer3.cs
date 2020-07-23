@@ -1340,7 +1340,8 @@ namespace TJAPlayer3
 
 		private List<CActivity> listトップレベルActivities;
 		private int n進行描画の戻り値;
-		private MouseButtons mb = System.Windows.Forms.MouseButtons.Left;
+		private OpenTK.Input.MouseButton mb = OpenTK.Input.MouseButton.Left;
+		private Stopwatch sw = new Stopwatch();
 		public static long StartupTime
 		{
 			get;
@@ -1438,10 +1439,10 @@ namespace TJAPlayer3
 				currentClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);
 			}
 			base.Icon = global::TJAPlayer3.Properties.Resources.tjap3;
-			/*base.KeyDown += new KeyEventHandler(this.Window_KeyDown);
-			base.MouseUp += new MouseEventHandler(this.Window_MouseUp);
-			base.MouseDoubleClick += new MouseEventHandler(this.Window_MouseDoubleClick);    // #23510 2010.11.13 yyagi: to go fullscreen mode
-			base.ResizeEnd += new EventHandler(this.Window_ResizeEnd);                       // #23510 2010.11.20 yyagi: to set resized window size in Config.ini*/
+			base.KeyDown += this.Window_KeyDown;
+			base.MouseDown += this.Window_MouseDown;
+			base.Resize += this.Window_ResizeEnd;                       // #23510 2010.11.20 yyagi: to set resized window size in Config.ini*/
+			base.Move += this.Window_MoveEnd;
 			//---------------------
 			#endregion
 			#region [ Direct3D9 デバイスの生成 ]
@@ -2125,29 +2126,22 @@ namespace TJAPlayer3
 		}
 		#region [ Windowイベント処理 ]
 		//-----------------
-		private void Window_KeyDown( object sender, KeyEventArgs e )
+		private void Window_KeyDown( object sender, OpenTK.Input.KeyboardKeyEventArgs e )
 		{
-			if ( e.KeyCode == Keys.Menu )
-			{
-				e.Handled = true;
-				e.SuppressKeyPress = true;
-			}
-			else if ( ( e.KeyCode == Keys.Return ) && e.Alt )
+			if ( ( e.Key == OpenTK.Input.Key.Enter ) && e.Alt )
 			{
 				if ( ConfigIni != null )
 				{
 					ConfigIni.bウィンドウモード = !ConfigIni.bウィンドウモード;
 					this.t全画面_ウィンドウモード切り替え();
 				}
-				e.Handled = true;
-				e.SuppressKeyPress = true;
 			}
 			else
 			{
 				for ( int i = 0; i < 0x10; i++ )
 				{
-					if ( ConfigIni.KeyAssign.System.Capture[ i ].コード > 0 &&
-						 e.KeyCode == DeviceConstantConverter.KeyToKeyCode( (SlimDXKeys.Key) ConfigIni.KeyAssign.System.Capture[ i ].コード ) )
+					if (ConfigIni.KeyAssign.System.Capture[i].コード > 0 &&
+						 DeviceConstantConverter.TKKtoKey(e.Key) == (SlimDXKeys.Key)ConfigIni.KeyAssign.System.Capture[i].コード)
 					{
 						// Debug.WriteLine( "capture: " + string.Format( "{0:2x}", (int) e.KeyCode ) + " " + (int) e.KeyCode );
 						string strFullPath =
@@ -2158,29 +2152,35 @@ namespace TJAPlayer3
 				}
 			}
 		}
-		private void Window_MouseUp( object sender, MouseEventArgs e )
+		private void Window_MouseDown(object sender, OpenTK.Input.MouseButtonEventArgs e)
 		{
-			mb = e.Button;
-		}
-
-		private void Window_MouseDoubleClick( object sender, MouseEventArgs e)	// #23510 2010.11.13 yyagi: to go full screen mode
-		{
-			if ( mb.Equals(MouseButtons.Left) && ConfigIni.bIsAllowedDoubleClickFullscreen )	// #26752 2011.11.27 yyagi
+			sw.Stop();
+			if (mb.Equals(OpenTK.Input.MouseButton.Left) && ConfigIni.bIsAllowedDoubleClickFullscreen && sw.ElapsedMilliseconds <= 250 && sw.ElapsedMilliseconds > 0)//ダブルクリックイベントがないみたいなので、自力実装してごまかす
 			{
 				ConfigIni.bウィンドウモード = false;
 				this.t全画面_ウィンドウモード切り替え();
+				sw.Start();
+			}
+			else
+			{
+				mb = e.Button;
+				sw.Reset();
+				sw.Start();
 			}
 		}
 		private void Window_ResizeEnd(object sender, EventArgs e)				// #23510 2010.11.20 yyagi: to get resized window size
 		{
-			if ( ConfigIni.bウィンドウモード )
-			{
-				ConfigIni.n初期ウィンドウ開始位置X = base.X;	// #30675 2013.02.04 ikanick add
-				ConfigIni.n初期ウィンドウ開始位置Y = base.Y;	//
-			}
-
 			ConfigIni.nウインドウwidth = (ConfigIni.bウィンドウモード) ? base.ClientSize.Width : currentClientSize.Width;	// #23510 2010.10.31 yyagi add
 			ConfigIni.nウインドウheight = (ConfigIni.bウィンドウモード) ? base.ClientSize.Height : currentClientSize.Height;
+		}
+		private void Window_MoveEnd(object sender,EventArgs e)
+		{
+			if (ConfigIni.bウィンドウモード)
+			{
+				ConfigIni.n初期ウィンドウ開始位置X = base.X;   // #30675 2013.02.04 ikanick add
+				ConfigIni.n初期ウィンドウ開始位置Y = base.Y;   //
+			}
+
 		}
 		#endregion
 		#endregion
