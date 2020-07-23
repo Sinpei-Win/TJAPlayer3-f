@@ -327,6 +327,13 @@ namespace FDK
 			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
 			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
+			double r = Math.Sqrt(Math.Pow(w, 2) * Math.Pow(h, 2));
+
+			Vector3 右上座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0f);
+			Vector3 左上座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左下座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+			Vector3 右下座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+
 			//メインのポリゴン表示
 			GL.BindTexture(TextureTarget.Texture2D, this.texture);
 
@@ -336,24 +343,17 @@ namespace FDK
 			GL.MatrixMode(MatrixMode.Texture);
 			GL.LoadMatrix(ref mat);
 
-			float[,] vertex = new float[4, 2] { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } };
-			
-
 			GL.Color4(color4);
-			/*uint GLuint = 0;
-			GL.GenBuffers(1, out GLuint);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, GLuint);
-			GL.BufferData(BufferTarget.ArrayBuffer, 4 * sizeof(vertex), vertex, BufferUsageHint.StaticDraw);*/
 
 			GL.Begin(BeginMode.Quads);
 			GL.TexCoord2(f右U値, f上V値);
-			GL.Vertex3((x + w - x差) / 100.0 * f補正値X, (y - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(右上座標);
 			GL.TexCoord2(f左U値, f上V値);
-			GL.Vertex3((x - x差) / 100.0 * f補正値X, (y - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(左上座標);
 			GL.TexCoord2(f左U値, f下V値);
-			GL.Vertex3((x - x差) / 100.0 * f補正値X, (y + h - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(左下座標);
 			GL.TexCoord2(f右U値, f下V値);
-			GL.Vertex3((x + w - x差) / 100.0 * f補正値X, (y + h - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(右下座標);
 			GL.End();
 			#endregion
 		}
@@ -377,9 +377,16 @@ namespace FDK
 			float f下V値 = 1f - ((float)rc画像内の描画領域.Bottom) / ((float)this.szテクスチャサイズ.Height);
 			this.color4.A = ((float)this._opacity) / 255f;
 
-
+			
 			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
 			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
+
+			double r = Math.Sqrt(Math.Pow(w, 2) * Math.Pow(h, 2));
+
+			Vector3 右上座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0f);
+			Vector3 左上座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左下座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+			Vector3 右下座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
 
 			//メインのポリゴン表示
 			GL.BindTexture(TextureTarget.Texture2D, this.texture);
@@ -391,15 +398,16 @@ namespace FDK
 			GL.LoadMatrix(ref mat);
 
 			GL.Color4(color4);
+
 			GL.Begin(BeginMode.Quads);
 			GL.TexCoord2(f右U値, f下V値);
-			GL.Vertex3((x + w - x差) / 100.0 * f補正値X, (y - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(右上座標);
 			GL.TexCoord2(f左U値, f下V値);
-			GL.Vertex3((x - x差) / 100.0 * f補正値X, (y - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(左上座標);
 			GL.TexCoord2(f左U値, f上V値);
-			GL.Vertex3((x - x差) / 100.0 * f補正値X, (y + h - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(左下座標);
 			GL.TexCoord2(f右U値, f上V値);
-			GL.Vertex3((x + w - x差) / 100.0 * f補正値X, (y + h - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(右下座標);
 			GL.End();
 		}
 
@@ -427,24 +435,33 @@ namespace FDK
 			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
 			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
+			double r = Math.Sqrt(Math.Pow(w, 2) * Math.Pow(h, 2));
+
+			Vector3 右上座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0f);
+			Vector3 左上座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左下座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+			Vector3 右下座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+
 			//メインのポリゴン表示
 			GL.BindTexture(TextureTarget.Texture2D, this.texture);
 
 			this.tレンダリングステートの設定(device);
 
 			GL.MatrixMode(MatrixMode.Texture);
+
 			GL.LoadMatrix(ref mat);
 
 			GL.Color4(color4);
+
 			GL.Begin(BeginMode.Quads);
 			GL.TexCoord2(f右U値, f上V値);
-			GL.Vertex3((x + w - x差) / 100.0 * f補正値X, (y - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(右上座標);
 			GL.TexCoord2(f左U値, f上V値);
-			GL.Vertex3((x - x差) / 100.0 * f補正値X, (y - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(左上座標);
 			GL.TexCoord2(f左U値, f下V値);
-			GL.Vertex3((x - x差) / 100.0 * f補正値X, (y + h - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(左下座標);
 			GL.TexCoord2(f右U値, f下V値);
-			GL.Vertex3((x + w - x差) / 100.0 * f補正値X, (y + h - y差) / 100.0 * f補正値Y, 0);
+			GL.Vertex3(右下座標);
 			GL.End();
 		}
 
