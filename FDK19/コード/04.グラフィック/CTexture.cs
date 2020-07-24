@@ -108,25 +108,6 @@ namespace FDK
 		}
 
 		/// <summary>
-		/// <para>指定されたビットマップオブジェクトから Managed テクスチャを作成する。</para>
-		/// <para>テクスチャのサイズは、BITMAP画像のサイズ以上、かつ、D3D9デバイスで生成可能な最小のサイズに自動的に調節される。
-		/// その際、テクスチャの調節後のサイズにあわせた画像の拡大縮小は行わない。</para>
-		/// <para>その他、ミップマップ数は 1、Usage は None、Pool は Managed、イメージフィルタは Point、ミップマップフィルタは
-		/// None、カラーキーは 0xFFFFFFFF（完全なる黒を透過）になる。</para>
-		/// </summary>
-		/// <param name="device">Direct3D9 デバイス。</param>
-		/// <param name="bitmap">作成元のビットマップ。</param>
-		/// <param name="format">テクスチャのフォーマット。</param>
-		/// <exception cref="CTextureCreateFailedException">テクスチャの作成に失敗しました。</exception>
-		public CTexture(int device, Bitmap bitmap)
-			: this()
-		{
-			//投げる
-			MakeTexture(device, bitmap, true);
-		}
-
-
-		/// <summary>
 		/// <para>空のテクスチャを作成する。</para>
 		/// <para>テクスチャのサイズは、指定された希望サイズ以上、かつ、D3D9デバイスで生成可能な最小のサイズに自動的に調節される。
 		/// その際、テクスチャの調節後のサイズにあわせた画像の拡大縮小は行わない。</para>
@@ -166,6 +147,7 @@ namespace FDK
 					GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
 					bitmap.UnlockBits(data);
+					bitmap.Dispose();
 				}
 			}
 			catch
@@ -188,27 +170,27 @@ namespace FDK
 		/// <param name="b黒を透過する">画像の黒（0xFFFFFFFF）を透過させるなら true。</param>
 		/// <param name="pool">テクスチャの管理方法。</param>
 		/// <exception cref="CTextureCreateFailedException">テクスチャの作成に失敗しました。</exception>
-		public CTexture(int device, string strファイル名, bool b黒を透過する)
+		public CTexture(int device, string strファイル名)
 			: this()
 		{
-			MakeTexture(device, strファイル名, b黒を透過する);
+			MakeTexture(device, strファイル名);
 		}
-		public void MakeTexture(int device, string strファイル名, bool b黒を透過する)
+		public void MakeTexture(int device, string strファイル名)
 		{
 			if (!File.Exists(strファイル名))     // #27122 2012.1.13 from: ImageInformation では FileNotFound 例外は返ってこないので、ここで自分でチェックする。わかりやすいログのために。
 				throw new FileNotFoundException(string.Format("ファイルが存在しません。\n[{0}]", strファイル名));
-			using (Bitmap _txData = new Bitmap(strファイル名))
+			using (Bitmap bitmap = new Bitmap(strファイル名))
 			{
-				MakeTexture(device, _txData, b黒を透過する);
+				MakeTexture(device, bitmap);
 			}
 		}
 
-		public CTexture(int device, Bitmap bitmap, bool b黒を透過する)
+		public CTexture(int device, Bitmap bitmap)
 			: this()
 		{
-			MakeTexture(device, bitmap, b黒を透過する);
+			MakeTexture(device, bitmap);
 		}
-		public void MakeTexture(int device, Bitmap bitmap, bool b黒を透過する)
+		public void MakeTexture(int device, Bitmap bitmap)
 		{
 			this.texture = GL.GenTexture();
 			this.sz画像サイズ = new Size(bitmap.Width, bitmap.Height);
@@ -417,6 +399,7 @@ namespace FDK
 			Vector3 左上座標 = new Vector3((float)(x + 左上xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左上ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
 			Vector3 左下座標 = new Vector3((float)(x + 左下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
 			Vector3 右下座標 = new Vector3((float)(x + 右下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 右下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+
 
 			//メインのポリゴン表示
 			GL.BindTexture(TextureTarget.Texture2D, this.texture);

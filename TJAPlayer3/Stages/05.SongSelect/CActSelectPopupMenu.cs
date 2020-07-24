@@ -67,7 +67,7 @@ namespace TJAPlayer3
 			stqMenuTitle.cItem.str項目名 = title;
 			using (var bitmap = prvFont.DrawPrivateFont( title, Color.White, Color.Black ))
 			{
-				stqMenuTitle.txName = TJAPlayer3.tテクスチャの生成( bitmap, false );
+				stqMenuTitle.txName = TJAPlayer3.tテクスチャの生成( bitmap );
 				stqMenuTitle.rectName = prvFont.RectStrings;
 			}
 			lciMenuItems = new stQuickMenuItem[ menulist.Count ];
@@ -77,7 +77,7 @@ namespace TJAPlayer3
 				stqm.cItem = menulist[ i ];
 				using (var bitmap = prvFont.DrawPrivateFont( menulist[ i ].str項目名, Color.White, Color.Black ))
 				{
-					stqm.txName = TJAPlayer3.tテクスチャの生成( bitmap, false );
+					stqm.txName = TJAPlayer3.tテクスチャの生成( bitmap );
 					stqm.rectName = prvFont.RectStrings;
 				}
 				lciMenuItems[ i ] = stqm;
@@ -380,7 +380,7 @@ namespace TJAPlayer3
 							prvFont.DrawPrivateFont(s, Color.White, Color.Black, Color.Yellow, Color.OrangeRed) :
 							prvFont.DrawPrivateFont(s, Color.White, Color.Black))
 						{
-							using (var ctStr = TJAPlayer3.tテクスチャの生成(bmpStr, false))
+							using (var ctStr = TJAPlayer3.tテクスチャの生成(bmpStr))
 							{
 								ctStr.t2D描画(TJAPlayer3.app.Device, 330, 77 + i * 32);
 							}

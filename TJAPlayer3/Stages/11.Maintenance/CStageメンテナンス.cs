@@ -126,7 +126,7 @@ namespace TJAPlayer3
 			using (var bmp = new Bitmap(title.cPrivateFastFont.DrawPrivateFont(
 				title.str文字, title.forecolor, title.backcolor)))
 			{
-				CTexture tx文字テクスチャ = TJAPlayer3.tテクスチャの生成(bmp, false);
+				CTexture tx文字テクスチャ = TJAPlayer3.tテクスチャの生成(bmp);
 				return tx文字テクスチャ;
 			}
 		}

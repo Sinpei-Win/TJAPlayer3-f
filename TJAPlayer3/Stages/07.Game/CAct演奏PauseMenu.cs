@@ -129,7 +129,7 @@ namespace TJAPlayer3
 				string pathパネル本体 = CSkin.Path( @"Graphics\ScreenSelect popup auto settings.png" );
 				if ( File.Exists( pathパネル本体 ) )
 				{
-					this.txパネル本体 = TJAPlayer3.tテクスチャの生成( pathパネル本体, true );
+					this.txパネル本体 = TJAPlayer3.tテクスチャの生成( pathパネル本体 );
 				}
 
 				base.OnManagedリソースの作成();

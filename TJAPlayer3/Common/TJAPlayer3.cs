@@ -1133,17 +1133,13 @@ namespace TJAPlayer3
 		//-----------------
 		public static CTexture tテクスチャの生成(string fileName)
 		{
-			return tテクスチャの生成(fileName, false);
-		}
-		public static CTexture tテクスチャの生成(string fileName, bool b黒を透過する)
-		{
 			if (app == null)
 			{
 				return null;
 			}
 			try
 			{
-				return new CTexture(app.Device, fileName, b黒を透過する);
+				return new CTexture(app.Device, fileName);
 			}
 			catch (CTextureCreateFailedException e)
 			{
@@ -1163,10 +1159,6 @@ namespace TJAPlayer3
 		}
 		public static CTexture tテクスチャの生成(Bitmap bitmap)
 		{
-			return tテクスチャの生成(bitmap, false);
-		}
-		public static CTexture tテクスチャの生成(Bitmap bitmap, bool b黒を透過する)
-		{
 			if (app == null)
 			{
 				return null;
@@ -1178,7 +1170,7 @@ namespace TJAPlayer3
 			}
 			try
 			{
-				return new CTexture(app.Device, bitmap, b黒を透過する);
+				return new CTexture(app.Device, bitmap);
 			}
 			catch (CTextureCreateFailedException e)
 			{
