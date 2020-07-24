@@ -327,12 +327,27 @@ namespace FDK
 			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
 			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
-			double r = Math.Sqrt(Math.Pow(w, 2) * Math.Pow(h, 2));
+			double r = Math.Sqrt(Math.Pow(w / 2.0, 2) + Math.Pow(h / 2.0, 2));
 
-			Vector3 右上座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0f);
-			Vector3 左上座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0);
-			Vector3 左下座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
-			Vector3 右下座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+			double 右下angle = Math.Asin((h / 2.0) / r) - fZ軸中心回転;//三角関数を使用し、ごりごり計算
+			double 左下angle = Math.PI - Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+			double 左上angle = -Math.PI + Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+			double 右上angle = -Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+
+			double 右上xdiff = r * Math.Cos(右上angle);
+			double 左上xdiff = r * Math.Cos(左上angle);
+			double 左下xdiff = r * Math.Cos(左下angle);
+			double 右下xdiff = r * Math.Cos(右下angle);
+
+			double 右上ydiff = r * Math.Sin(右上angle);
+			double 左上ydiff = r * Math.Sin(左上angle);
+			double 左下ydiff = r * Math.Sin(左下angle);
+			double 右下ydiff = r * Math.Sin(右下angle);
+
+			Vector3 右上座標 = new Vector3((float)(x + 右上xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 右上ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左上座標 = new Vector3((float)(x + 左上xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左上ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左下座標 = new Vector3((float)(x + 左下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 右下座標 = new Vector3((float)(x + 右下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 右下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
 
 			//メインのポリゴン表示
 			GL.BindTexture(TextureTarget.Texture2D, this.texture);
@@ -381,12 +396,27 @@ namespace FDK
 			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
 			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
-			double r = Math.Sqrt(Math.Pow(w, 2) * Math.Pow(h, 2));
+			double r = Math.Sqrt(Math.Pow(w / 2.0, 2) + Math.Pow(h / 2.0, 2));
 
-			Vector3 右上座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0f);
-			Vector3 左上座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0);
-			Vector3 左下座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
-			Vector3 右下座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+			double 右下angle = Math.Asin((h / 2.0) / r) - fZ軸中心回転;//三角関数を使用し、ごりごり計算
+			double 左下angle = Math.PI - Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+			double 左上angle = -Math.PI + Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+			double 右上angle = -Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+
+			double 右上xdiff = r * Math.Cos(右上angle);
+			double 左上xdiff = r * Math.Cos(左上angle);
+			double 左下xdiff = r * Math.Cos(左下angle);
+			double 右下xdiff = r * Math.Cos(右下angle);
+
+			double 右上ydiff = r * Math.Sin(右上angle);
+			double 左上ydiff = r * Math.Sin(左上angle);
+			double 左下ydiff = r * Math.Sin(左下angle);
+			double 右下ydiff = r * Math.Sin(右下angle);
+
+			Vector3 右上座標 = new Vector3((float)(x + 右上xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 右上ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左上座標 = new Vector3((float)(x + 左上xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左上ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左下座標 = new Vector3((float)(x + 左下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 右下座標 = new Vector3((float)(x + 右下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 右下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
 
 			//メインのポリゴン表示
 			GL.BindTexture(TextureTarget.Texture2D, this.texture);
@@ -435,12 +465,27 @@ namespace FDK
 			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
 			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
-			double r = Math.Sqrt(Math.Pow(w, 2) * Math.Pow(h, 2));
+			double r = Math.Sqrt(Math.Pow(w / 2.0, 2) + Math.Pow(h / 2.0, 2));
 
-			Vector3 右上座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0f);
-			Vector3 左上座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y - y差) / 100.0f * f補正値Y, 0);
-			Vector3 左下座標 = new Vector3((x - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
-			Vector3 右下座標 = new Vector3((x + w - x差) / 100.0f * f補正値X, (y + h - y差) / 100.0f * f補正値Y, 0);
+			double 右下angle = Math.Asin((h / 2.0) / r) - fZ軸中心回転;//三角関数を使用し、ごりごり計算
+			double 左下angle = Math.PI - Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+			double 左上angle = -Math.PI + Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+			double 右上angle = -Math.Asin((h / 2.0) / r) - fZ軸中心回転;
+
+			double 右上xdiff = r * Math.Cos(右上angle);
+			double 左上xdiff = r * Math.Cos(左上angle);
+			double 左下xdiff = r * Math.Cos(左下angle);
+			double 右下xdiff = r * Math.Cos(右下angle);
+
+			double 右上ydiff = r * Math.Sin(右上angle);
+			double 左上ydiff = r * Math.Sin(左上angle);
+			double 左下ydiff = r * Math.Sin(左下angle);
+			double 右下ydiff = r * Math.Sin(右下angle);
+
+			Vector3 右上座標 = new Vector3((float)(x + 右上xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 右上ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左上座標 = new Vector3((float)(x + 左上xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左上ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 左下座標 = new Vector3((float)(x + 左下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 左下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
+			Vector3 右下座標 = new Vector3((float)(x + 右下xdiff + (w / 2.0) - x差) / 100.0f * f補正値X, (float)(y + 右下ydiff + (h / 2.0) - y差) / 100.0f * f補正値Y, 0);
 
 			//メインのポリゴン表示
 			GL.BindTexture(TextureTarget.Texture2D, this.texture);
