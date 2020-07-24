@@ -301,8 +301,8 @@ namespace FDK
 			float f下V値 = 1f -((float)rc画像内の描画領域.Bottom) / ((float)this.szテクスチャサイズ.Height);
 			this.color4.A = ((float)this._opacity) / 255f;
 
-			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
-			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
+			float x差 = (GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
+			float y差 = (GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
 			double r = Math.Sqrt(Math.Pow(w / 2.0, 2) + Math.Pow(h / 2.0, 2));
 
@@ -369,8 +369,8 @@ namespace FDK
 			this.color4.A = ((float)this._opacity) / 255f;
 
 			
-			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
-			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
+			float x差 = (GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
+			float y差 = (GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
 			double r = Math.Sqrt(Math.Pow(w / 2.0, 2) + Math.Pow(h / 2.0, 2));
 
@@ -439,8 +439,8 @@ namespace FDK
 			float f下V値 = 1f - ((float)rc画像内の描画領域.Bottom) / ((float)this.szテクスチャサイズ.Height);
 			this.color4.A = ((float)this._opacity) / 255f;
 
-			float x差 = (SampleFramework.GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
-			float y差 = (SampleFramework.GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
+			float x差 = (GameWindowSize.Width / 2);//中心軸がずれていることに対しての対策
+			float y差 = (GameWindowSize.Height / 2);//中心軸がずれていることに対しての対策
 
 			double r = Math.Sqrt(Math.Pow(w / 2.0, 2) + Math.Pow(h / 2.0, 2));
 

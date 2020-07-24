@@ -27,7 +27,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 
-namespace SampleFramework
+namespace FDK
 {
 	/// <summary>
 	/// Presents an easy to use wrapper for making games and samples.
