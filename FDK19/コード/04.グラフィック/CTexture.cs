@@ -12,6 +12,7 @@ using OpenTK.Graphics.OpenGL;
 using Rectangle = System.Drawing.Rectangle;
 using Point = System.Drawing.Point;
 using Color = System.Drawing.Color;
+using System.Windows.Markup;
 
 namespace FDK
 {
@@ -67,8 +68,10 @@ namespace FDK
 		}
 		public Size szテクスチャサイズ
 		{
-			get;
-			private set;
+			get 
+			{
+				return sz画像サイズ;
+			}
 		}
 		public Size sz画像サイズ
 		{
@@ -99,7 +102,6 @@ namespace FDK
 		public CTexture()
 		{
 			this.sz画像サイズ = new Size(0, 0);
-			this.szテクスチャサイズ = new Size(0, 0);
 			this._opacity = 0xff;
 			this.b加算合成 = false;
 			this.fZ軸中心回転 = 0f;
@@ -126,15 +128,10 @@ namespace FDK
 			{
 				this.texture = GL.GenTexture();
 				this.sz画像サイズ = new Size(n幅, n高さ);
-				this.szテクスチャサイズ = this.t指定されたサイズを超えない最適なテクスチャサイズを返す(device, this.sz画像サイズ);
 				this.rc全画像 = new Rectangle(0, 0, this.sz画像サイズ.Width, this.sz画像サイズ.Height);
 
 				using (var bitmap = new Bitmap(n幅, n高さ))
 				{
-					using (var graphics = Graphics.FromImage(bitmap))
-					{
-						graphics.FillRectangle(Brushes.Black, 0, 0, 1, 1);
-					}
 					GL.BindTexture(TextureTarget.Texture2D, texture);
 
 					GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
@@ -194,7 +191,6 @@ namespace FDK
 		{
 			this.texture = GL.GenTexture();
 			this.sz画像サイズ = new Size(bitmap.Width, bitmap.Height);
-			this.szテクスチャサイズ = this.t指定されたサイズを超えない最適なテクスチャサイズを返す(device, this.sz画像サイズ);
 			this.rc全画像 = new Rectangle(0, 0, this.sz画像サイズ.Width, this.sz画像サイズ.Height);
 			try
 			{
@@ -294,7 +290,6 @@ namespace FDK
 		{
 			this.tレンダリングステートの設定(device);
 
-			#region [ (A) 回転あってもなくても ]
 			//-----------------
 			float f補正値X = 1.15f;    // 1.15f は座標とピクセルの誤差を吸収するための座標補正値。
 			float f補正値Y = -1.15f;    //
@@ -352,7 +347,6 @@ namespace FDK
 			GL.TexCoord2(f右U値, f下V値);
 			GL.Vertex3(右下座標);
 			GL.End();
-			#endregion
 		}
 		public void t2D上下反転描画(int device, float x, float y)
 		{
@@ -476,7 +470,6 @@ namespace FDK
 			this.tレンダリングステートの設定(device);
 
 			GL.MatrixMode(MatrixMode.Texture);
-
 			GL.LoadMatrix(ref mat);
 
 			GL.Color4(color4);
@@ -546,11 +539,6 @@ namespace FDK
 				GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 			}
 		}
-		private Size t指定されたサイズを超えない最適なテクスチャサイズを返す(int device, Size sz指定サイズ)
-		{
-			return sz指定サイズ;
-		}
-
 
 		// 2012.3.21 さらなる new の省略作戦
 
