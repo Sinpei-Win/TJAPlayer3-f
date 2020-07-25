@@ -1,5 +1,3 @@
-using System;
-
 namespace FDK
 {
 	public static class GameWindowSize

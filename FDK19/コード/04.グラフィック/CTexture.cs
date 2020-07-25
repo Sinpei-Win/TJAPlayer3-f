@@ -144,7 +144,6 @@ namespace FDK
 					GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
 					bitmap.UnlockBits(data);
-					bitmap.Dispose();
 				}
 			}
 			catch
@@ -196,8 +195,8 @@ namespace FDK
 			{
 				GL.BindTexture(TextureTarget.Texture2D, texture);
 
-				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+				GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
 				bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
@@ -337,7 +336,7 @@ namespace FDK
 
 			GL.Color4(color4);
 
-			GL.Begin(BeginMode.Quads);
+			GL.Begin(PrimitiveType.Quads);
 			GL.TexCoord2(f右U値, f上V値);
 			GL.Vertex3(右上座標);
 			GL.TexCoord2(f左U値, f上V値);
@@ -406,7 +405,7 @@ namespace FDK
 
 			GL.Color4(color4);
 
-			GL.Begin(BeginMode.Quads);
+			GL.Begin(PrimitiveType.Quads);
 			GL.TexCoord2(f右U値, f下V値);
 			GL.Vertex3(右上座標);
 			GL.TexCoord2(f左U値, f下V値);
@@ -474,7 +473,7 @@ namespace FDK
 
 			GL.Color4(color4);
 
-			GL.Begin(BeginMode.Quads);
+			GL.Begin(PrimitiveType.Quads);
 			GL.TexCoord2(f右U値, f上V値);
 			GL.Vertex3(右上座標);
 			GL.TexCoord2(f左U値, f上V値);

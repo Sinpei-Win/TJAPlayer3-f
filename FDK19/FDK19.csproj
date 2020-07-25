@@ -85,8 +85,8 @@
     <Compile Include="コード\00.共通\C共通.cs" />
     <Compile Include="コード\00.共通\ExtensionMethods\DoubleExtensions.cs" />
     <Compile Include="コード\00.共通\ExtensionMethods\Int32Extensions.cs" />
-    <Compile Include="コード\01.フレームワーク\Core\GameWindowSize.cs" />
-    <Compile Include="コード\01.フレームワーク\Core\Game.cs" />
+    <Compile Include="コード\01.フレームワーク\GameWindowSize.cs" />
+    <Compile Include="コード\01.フレームワーク\Game.cs" />
     <Compile Include="コード\02.入力\CInputJoystick.cs" />
     <Compile Include="コード\02.入力\CInputKeyboard.cs" />
     <Compile Include="コード\02.入力\CInputMIDI.cs" />
@@ -117,10 +117,9 @@
     <Compile Include="コード\03.サウンド\SoundDecoder.cs" />
     <Compile Include="コード\03.サウンド\ISoundDevice.cs" />
     <Compile Include="コード\03.サウンド\SoundGroupLevelController.cs" />
-    <Compile Include="コード\03.サウンド\SoundStream.cs" />
+    <Compile Include="コード\03.サウンド\Format Encoding\SoundStream.cs" />
     <Compile Include="コード\03.サウンド\Format Encoding\WaveFormatEncoding.cs" />
     <Compile Include="コード\04.グラフィック\BitmapUtil.cs" />
-    <Compile Include="コード\04.グラフィック\CAero.cs" />
     <Compile Include="コード\04.グラフィック\CAvi.cs" />
     <Compile Include="コード\04.グラフィック\CTexture.cs" />
     <Compile Include="コード\04.グラフィック\CTextureCreateFailedException.cs" />
@@ -135,9 +134,6 @@
     <Compile Include="コード\05.DirectShow\CDirectShow.cs" />
     <Compile Include="コード\05.DirectShow\CDStoWAVFileImage.cs" />
     <Compile Include="コード\05.DirectShow\MemoryRenderer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="コード\01.フレームワーク\Resources\sdx_icon_black.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -298,12 +298,6 @@ namespace TJAPlayer3
 				return 0;
 			}
 		}
-		private static Size currentClientSize       // #23510 2010.10.27 add yyagi to keep current window size
-		{
-			get;
-			set;
-		}
-		//		public static CTimer ct;
 		public IntPtr WindowHandle                  // 2012.10.24 yyagi; to add ASIO support
 		{
 			get { return base.WindowInfo.Handle; }
@@ -321,7 +315,7 @@ namespace TJAPlayer3
 
 
 		// メソッド
-
+		
 		public void t全画面_ウィンドウモード切り替え()
 		{
 			if ((ConfigIni != null))
@@ -1110,6 +1104,7 @@ namespace TJAPlayer3
 			if (this.b次のタイミングで垂直帰線同期切り替えを行う)
 			{
 				bool bIsMaximized = (this.WindowState == WindowState.Maximized);// #23510 2010.11.3 yyagi: to backup current window mode before changing VSyncWait
+				bool bIsFullScreen = (this.WindowState == WindowState.Fullscreen);
 
 				if (ConfigIni.b垂直帰線待ちを行う)
 					base.VSync = VSyncMode.On;
@@ -1117,10 +1112,15 @@ namespace TJAPlayer3
 					base.VSync = VSyncMode.Off;
 
 				this.b次のタイミングで垂直帰線同期切り替えを行う = false;
-				base.ClientSize = new Size(currentClientSize.Width, currentClientSize.Height);// #23510 2010.11.3 yyagi: to resume window size after changing VSyncWait
+				base.Width = ConfigIni.bウィンドウモード ? ConfigIni.nウインドウwidth : GameWindowSize.Width;
+				base.Height = ConfigIni.bウィンドウモード ? ConfigIni.nウインドウheight : GameWindowSize.Height;
 				if (bIsMaximized)
 				{
 					this.WindowState = WindowState.Maximized;// #23510 2010.11.3 yyagi: to resume window mode after changing VSyncWait
+				}
+				else if (bIsFullScreen) 
+				{
+					this.WindowState = WindowState.Fullscreen;
 				}
 			}
 			#endregion
@@ -1427,11 +1427,7 @@ namespace TJAPlayer3
 			base.Title = "";
 
 			base.ClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);   // #34510 yyagi 2010.10.31 to change window size got from Config.ini
-
-			if (!ConfigIni.bウィンドウモード)                       // #23510 2010.11.02 yyagi: add; to recover window size in case bootup with fullscreen mode
-			{                                                       // #30666 2013.02.02 yyagi: currentClientSize should be always made
-				currentClientSize = new Size(ConfigIni.nウインドウwidth, ConfigIni.nウインドウheight);
-			}
+						
 			base.Icon = global::TJAPlayer3.Properties.Resources.tjap3;
 			base.KeyDown += this.Window_KeyDown;
 			base.MouseDown += this.Window_MouseDown;
@@ -2164,8 +2160,8 @@ namespace TJAPlayer3
 		}
 		private void Window_ResizeEnd(object sender, EventArgs e)				// #23510 2010.11.20 yyagi: to get resized window size
 		{
-			ConfigIni.nウインドウwidth = (ConfigIni.bウィンドウモード) ? base.ClientSize.Width : currentClientSize.Width;	// #23510 2010.10.31 yyagi add
-			ConfigIni.nウインドウheight = (ConfigIni.bウィンドウモード) ? base.ClientSize.Height : currentClientSize.Height;
+			ConfigIni.nウインドウwidth = (ConfigIni.bウィンドウモード) ? base.ClientSize.Width : GameWindowSize.Width;	// #23510 2010.10.31 yyagi add
+			ConfigIni.nウインドウheight = (ConfigIni.bウィンドウモード) ? base.ClientSize.Height : GameWindowSize.Height;
 		}
 		private void Window_MoveEnd(object sender,EventArgs e)
 		{
