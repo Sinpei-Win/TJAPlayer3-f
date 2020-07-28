@@ -1090,7 +1090,7 @@ namespace TJAPlayer3
 			}
 			else
 			{
-				if ( chip現在処理中の連打チップ[ nPlayer ] != null )
+				if (chip現在処理中の連打チップ[nPlayer] != null)
 					chip現在処理中の連打チップ[ nPlayer ].bHit = true;
 				this.b連打中[ nPlayer ] = false;
 				this.actChara.b風船連打中 = false;
@@ -3110,6 +3110,7 @@ namespace TJAPlayer3
 								if( chip現在処理中の連打チップ[ nPlayer ] != null )
 								{
 									chip現在処理中の連打チップ[ nPlayer ].bHit = true;
+									chip現在処理中の連打チップ[nPlayer].bShow = true;
 									if (nPlayer == 0 && chip現在処理中の連打チップ[nPlayer].nBalloon > chip現在処理中の連打チップ[nPlayer].nRollCount && chip現在処理中の連打チップ[nPlayer].nRollCount > 0 && actChara.CharaAction_Balloon_Miss != null)
 									{
 										if (TJAPlayer3.Skin.Game_Chara_Ptn_Balloon_Miss > 0)
@@ -3682,14 +3683,7 @@ namespace TJAPlayer3
 					case 0xE2:
 						if( !pChip.bHit && ( pChip.nバーからの距離dot.Drums < 0 ) )
 						{
-							if (nPlayer == 0)
-							{
-								TJAPlayer3.stage演奏ドラム画面.actLaneTaiko.t判定枠移動(dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].db移動時間, dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].n移動距離px, dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].n移動方向);
-							}
-							else
-							{
-								TJAPlayer3.stage演奏ドラム画面.actLaneTaiko.t判定枠移動2(dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].db移動時間, dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].n移動距離px, dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].n移動方向);
-							}
+							TJAPlayer3.stage演奏ドラム画面.actLaneTaiko.t判定枠移動(dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].db移動時間, dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].n移動距離px, dTX.listJPOSSCROLL[nJPOSSCROLL[nPlayer]].n移動方向, nPlayer);	
 							this.nJPOSSCROLL[ nPlayer ]++;
 							pChip.bHit = true;
 						}
