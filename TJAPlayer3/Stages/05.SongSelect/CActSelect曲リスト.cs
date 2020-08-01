@@ -217,14 +217,13 @@ namespace TJAPlayer3
 		}
 
 
-		public delegate void DGSortFunc(List<C曲リストノード> songList, E楽器パート eInst, int order, params object[] p);
+		public delegate void DGSortFunc(List<C曲リストノード> songList, int order, params object[] p);
 		/// <summary>
 		/// 主にCSong管理.cs内にあるソート機能を、delegateで呼び出す。
 		/// </summary>
 		/// <param name="sf">ソート用に呼び出すメソッド</param>
-		/// <param name="eInst">ソート基準とする楽器</param>
 		/// <param name="order">-1=降順, 1=昇順</param>
-		public void t曲リストのソート(DGSortFunc sf, E楽器パート eInst, int order, params object[] p)
+		public void t曲リストのソート(DGSortFunc sf, int order, params object[] p)
 		{
 			List<C曲リストノード> songList = GetSongListWithinMe(this.r現在選択中の曲);
 			if (songList == null)
@@ -234,7 +233,7 @@ namespace TJAPlayer3
 			else
 			{
 				//				CDTXMania.Songs管理.t曲リストのソート3_演奏回数の多い順( songList, eInst, order );
-				sf(songList, eInst, order, p);
+				sf(songList, order, p);
 				//				this.r現在選択中の曲 = CDTXMania
 				this.t現在選択中の曲を元に曲バーを再構成する();
 			}
@@ -353,7 +352,7 @@ namespace TJAPlayer3
 		{
 			if (this.r現在選択中の曲 != null)
 			{
-				for (int i = 0; i < 7; i++)
+				for (int i = 0; i < TJAPlayer3.ConfigIni.SongSelectSkipCount; i++)
 					this.r現在選択中の曲 = r次の曲(r現在選択中の曲);
 			}
 			this.t現在選択中の曲を元に曲バーを再構成する();
@@ -365,7 +364,7 @@ namespace TJAPlayer3
 		{
 			if (this.r現在選択中の曲 != null)
 			{
-				for (int i = 0; i < 7; i++)
+				for (int i = 0; i < TJAPlayer3.ConfigIni.SongSelectSkipCount; i++)
 					this.r現在選択中の曲 = r前の曲(r現在選択中の曲);
 			}
 			this.t現在選択中の曲を元に曲バーを再構成する();
@@ -544,7 +543,6 @@ namespace TJAPlayer3
 			_titleTextures.ItemRemoved += OnTitleTexturesOnItemRemoved;
 			_titleTextures.ItemUpdated += OnTitleTexturesOnItemUpdated;
 
-			this.e楽器パート = E楽器パート.DRUMS;
 			this.b登場アニメ全部完了 = false;
 			this.n目標のスクロールカウンタ = 0;
 			this.n現在のスクロールカウンタ = 0;
@@ -706,8 +704,8 @@ namespace TJAPlayer3
 			}
 
 			//CDTXMania.t安全にDisposeする( ref this.txスキル数字 );
-			TJAPlayer3.tテクスチャの解放(ref this.txEnumeratingSongs);
-			TJAPlayer3.tテクスチャの解放(ref this.txSongNotFound);
+			TJAPlayer3.t安全にDisposeする(ref this.txEnumeratingSongs);
+			TJAPlayer3.t安全にDisposeする(ref this.txSongNotFound);
 			//CDTXMania.t安全にDisposeする( ref this.tx曲名バー.Score );
 			//CDTXMania.t安全にDisposeする( ref this.tx曲名バー.Box );
 			//CDTXMania.t安全にDisposeする( ref this.tx曲名バー.Other );
@@ -715,31 +713,31 @@ namespace TJAPlayer3
 			//CDTXMania.t安全にDisposeする( ref this.tx選曲バー.Box );
 			//CDTXMania.t安全にDisposeする( ref this.tx選曲バー.Other );
 
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_JPOP );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_アニメ );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_ゲーム );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_ナムコ );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_クラシック );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_どうよう );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_バラエティ );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー_ボカロ );
-			//CDTXMania.tテクスチャの解放( ref this.tx曲バー );
-			//CDTXMania.tテクスチャの解放( ref this.tx譜面分岐曲バー用 );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_JPOP );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_アニメ );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_ゲーム );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_ナムコ );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_クラシック );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_どうよう );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_バラエティ );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー_ボカロ );
+			//CDTXMania.t安全にDisposeする( ref this.tx曲バー );
+			//CDTXMania.t安全にDisposeする( ref this.tx譜面分岐曲バー用 );
 
 			//for( int i = 0; i < 5; i++ )
 			//   {
-			//       CDTXMania.tテクスチャの解放( ref this.tx曲バー_難易度[ i ] );
+			//       CDTXMania.t安全にDisposeする( ref this.tx曲バー_難易度[ i ] );
 			//   }
 
-			//   CDTXMania.tテクスチャの解放( ref this.tx難易度パネル );
-			//   CDTXMania.tテクスチャの解放( ref this.txバー中央 );
-			//   CDTXMania.tテクスチャの解放( ref this.tx難易度星 );
-			//   CDTXMania.tテクスチャの解放( ref this.tx譜面分岐中央パネル用 );
-			//   CDTXMania.tテクスチャの解放( ref this.tx上部ジャンル名 );
-			//   CDTXMania.tテクスチャの解放( ref this.txレベル数字フォント );
+			//   CDTXMania.t安全にDisposeする( ref this.tx難易度パネル );
+			//   CDTXMania.t安全にDisposeする( ref this.txバー中央 );
+			//   CDTXMania.t安全にDisposeする( ref this.tx難易度星 );
+			//   CDTXMania.t安全にDisposeする( ref this.tx譜面分岐中央パネル用 );
+			//   CDTXMania.t安全にDisposeする( ref this.tx上部ジャンル名 );
+			//   CDTXMania.t安全にDisposeする( ref this.txレベル数字フォント );
 
-			//   CDTXMania.tテクスチャの解放( ref this.txカーソル左 );
-			//   CDTXMania.tテクスチャの解放( ref this.txカーソル右 );
+			//   CDTXMania.t安全にDisposeする( ref this.txカーソル左 );
+			//   CDTXMania.t安全にDisposeする( ref this.txカーソル右 );
 
 			base.OnManagedリソースの解放();
 		}
@@ -2239,7 +2237,6 @@ namespace TJAPlayer3
 		private readonly LurchTable<TitleTextureKey, CTexture> _titleTextures =
 			new LurchTable<TitleTextureKey, CTexture>(LurchTableOrder.Access, 2500);
 
-		private E楽器パート e楽器パート;
 		private Font ft曲リスト用フォント;
 		private long nスクロールタイマ;
 		private int n現在のスクロールカウンタ;

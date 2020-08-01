@@ -179,6 +179,7 @@
     <Compile Include="Stages\04.Config\CActConfigKeyAssign.cs" />
     <Compile Include="Stages\04.Config\CActConfigList.cs" />
     <Compile Include="Stages\04.Config\CStageコンフィグ.cs" />
+    <Compile Include="Stages\05.SongSelect\CActSelectChangeSE.cs" />
     <Compile Include="Stages\05.SongSelect\CActSelectPopupMenu.cs" />
     <Compile Include="Stages\05.SongSelect\CActSelectPresound.cs" />
     <Compile Include="Stages\05.SongSelect\CActSelectQuickConfig.cs" />
@@ -199,7 +200,6 @@
     <Compile Include="Stages\07.Game\CAct演奏ステージ失敗.cs" />
     <Compile Include="Stages\07.Game\CAct演奏ステータスパネル共通.cs" />
     <Compile Include="Stages\07.Game\CAct演奏パネル文字列.cs" />
-    <Compile Include="Stages\07.Game\CAct演奏レーンフラッシュGB共通.cs" />
     <Compile Include="Stages\07.Game\CAct演奏判定文字列共通.cs" />
     <Compile Include="Stages\07.Game\CAct演奏演奏情報.cs" />
     <Compile Include="Stages\07.Game\CLagLogger.cs" />
@@ -213,7 +213,6 @@
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsキャラクター.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsゲージ.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsゲームモード.cs" />
-    <Compile Include="Stages\07.Game\Taiko\CAct演奏DrumsコンボDGB.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsスコア.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsステータスパネル.cs" />
     <Compile Include="Stages\07.Game\Taiko\FireWorks.cs" />
@@ -229,7 +228,6 @@
     <Compile Include="Stages\07.Game\CAct演奏PauseMenu.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsレーン.cs" />
     <Compile Include="Stages\07.Game\Taiko\TaikoLaneFlash.cs" />
-    <Compile Include="Stages\07.Game\Taiko\CAct演奏DrumsレーンフラッシュGB.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drums判定文字列.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drums風船.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drums連打.cs" />

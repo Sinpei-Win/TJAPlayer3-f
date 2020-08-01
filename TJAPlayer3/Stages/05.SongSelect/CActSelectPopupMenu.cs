@@ -39,10 +39,9 @@ namespace TJAPlayer3
 			get;
 			private set;
 		}
-		public virtual void tActivatePopupMenu( E楽器パート einst ,int nPlayer)
+		public virtual void tActivatePopupMenu(int nPlayer)
 		{
-			nItemSelecting = -1;		// #24757 2011.4.1 yyagi: Clear sorting status in each stating menu.
-			this.eInst = einst;
+			nItemSelecting = -1;        // #24757 2011.4.1 yyagi: Clear sorting status in each stating menu.
 			this.bIsActivePopupMenu = true;
 			this.bIsSelectingIntItem = false;
 			this.bGotoDetailConfig = false;
@@ -213,8 +212,8 @@ namespace TJAPlayer3
 				this.font.On非活性化();
 				this.font = null;
 
-				//CDTXMania.tテクスチャの解放( ref this.txCursor );
-				//CDTXMania.tテクスチャの解放( ref this.txPopupMenuBackground );
+				//CDTXMania.t安全にDisposeする( ref this.txCursor );
+				//CDTXMania.t安全にDisposeする( ref this.txPopupMenuBackground );
 				for ( int i = 0; i < 4; i++ )
 				{
 					this.ctキー反復用[ i ] = null;
@@ -234,8 +233,8 @@ namespace TJAPlayer3
 		{
 			if ( !base.b活性化してない )
 			{
-				//CDTXMania.tテクスチャの解放( ref this.txPopupMenuBackground );
-				//CDTXMania.tテクスチャの解放( ref this.txCursor );
+				//CDTXMania.t安全にDisposeする( ref this.txPopupMenuBackground );
+				//CDTXMania.t安全にDisposeする( ref this.txCursor );
 				TJAPlayer3.t安全にDisposeする( ref this.prvFont );
 			}
 			base.OnManagedリソースの解放();
@@ -253,8 +252,7 @@ namespace TJAPlayer3
 				if ( this.bキー入力待ち )
 				{
 					#region [ キー入力: キャンセル ]
-					if ( ( TJAPlayer3.Input管理.Keyboard.bキーが押された( (int)SlimDXKeys.Key.Escape )
-						|| TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.FT ))
+					if ( ( TJAPlayer3.Input管理.Keyboard.bキーが押された( (int)SlimDXKeys.Key.Escape ))
 						&& this.bEsc有効 )
 					{	// キャンセル
 						TJAPlayer3.Skin.sound取消音.t再生する();
@@ -264,17 +262,12 @@ namespace TJAPlayer3
 					#endregion
 
 					#region [ キー入力: 決定 ]
-					// E楽器パート eInst = E楽器パート.UNKNOWN;
 					ESortAction eAction = ESortAction.END;
 					if (
-						TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.Decide )	// #24756 2011.4.1 yyagi: Add condition "Drum-Decide" to enable CY in Sort Menu.
-						|| TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.RD )
-						|| TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.LC )
-						|| TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.LRed )
-						|| TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.RRed )
+						TJAPlayer3.Pad.b押された(Eパッド.LRed )
+						|| TJAPlayer3.Pad.b押された( Eパッド.RRed )
 						|| ( TJAPlayer3.ConfigIni.bEnterがキー割り当てのどこにも使用されていない && TJAPlayer3.Input管理.Keyboard.bキーが押された( (int)SlimDXKeys.Key.Return ) ) )
 					{
-						eInst = E楽器パート.DRUMS;
 						eAction = ESortAction.Decide;
 					}
 					if ( eAction == ESortAction.Decide )	// 決定
@@ -284,14 +277,14 @@ namespace TJAPlayer3
 					#endregion
 					#region [ キー入力: 前に移動 ]
 					this.ctキー反復用.Up.tキー反復( TJAPlayer3.Input管理.Keyboard.bキーが押されている( (int)SlimDXKeys.Key.UpArrow ), new CCounter.DGキー処理( this.t前に移動 ) );
-					if ( TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.SD ) || TJAPlayer3.Pad.b押された(E楽器パート.DRUMS, Eパッド.LBlue))
+					if (TJAPlayer3.Pad.b押された(Eパッド.LBlue))
 					{
 						this.t前に移動();
 					}
 					#endregion
 					#region [ キー入力: 次に移動 ]
 					this.ctキー反復用.Down.tキー反復( TJAPlayer3.Input管理.Keyboard.bキーが押されている( (int)SlimDXKeys.Key.DownArrow ), new CCounter.DGキー処理( this.t次に移動 ) );
-					if ( TJAPlayer3.Pad.b押された( E楽器パート.DRUMS, Eパッド.LT) || TJAPlayer3.Pad.b押された(E楽器パート.DRUMS, Eパッド.RBlue))
+					if (TJAPlayer3.Pad.b押された( Eパッド.RBlue))
 					{
 						this.t次に移動();
 					}
@@ -385,7 +378,6 @@ namespace TJAPlayer3
 		protected bool bEsc有効;
 
 		internal int n現在の選択行;
-		internal E楽器パート eInst = E楽器パート.UNKNOWN;
 
 		//private CTexture txPopupMenuBackground;
 		//private CTexture txCursor;
