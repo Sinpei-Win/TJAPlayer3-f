@@ -4318,21 +4318,17 @@ namespace TJAPlayer3
 		private static readonly Regex BranchStartArgumentRegex =
 			new Regex(@"^([^,\s]+)\s*,\s*([^,\s]+)\s*,\s*([^,\s]+)$", RegexOptions.Compiled);
 
-		/// <summary>
-		/// 譜面読み込みメソッドV4で使用。
-		/// </summary>
-		/// <param name="InputText"></param>
-		private void t命令を挿入する(string InputText)
+		private string[] SplitComma(string input)
 		{
-			string[] SplitComma(string input)
+			var result = new List<string>();
+			var workingIndex = 0;
+			for (int i = 0; i < input.Length; i++)
 			{
-				var result = new List<string>();
-				var workingIndex = 0;
-				for (int i = 0; i < input.Length; i++)
+				if (input[i].Equals(',')) // カンマにぶち当たった
 				{
-					if (input[i] == ',') // カンマにぶち当たった
+					if (i - 1 >= 0)//2020.08.04 Mr-Ojii &&演算子でも、例外が起きるので...
 					{
-						if (input[i - 1] == '\\') // 1文字前がバックスラッシュ
+						if (input[i - 1].Equals('\\')) // 1文字前がバックスラッシュ
 						{
 							input = input.Remove(i - 1, 1);
 						}
@@ -4344,15 +4340,28 @@ namespace TJAPlayer3
 							workingIndex = i + 1;
 						}
 					}
-					if (i + 1 == input.Length) // 最後に
+					else
 					{
-						result.Add(input.Substring(workingIndex, input.Length - workingIndex));
+						// workingIndexから今の位置までをリストにブチ込む
+						result.Add(input.Substring(workingIndex, i - workingIndex));
+						// workingIndexに今の位置+1を代入
+						workingIndex = i + 1;
 					}
 				}
-				return result.ToArray();
+				if (i + 1 == input.Length) // 最後に
+				{
+					result.Add(input.Substring(workingIndex, input.Length - workingIndex));
+				}
 			}
+			return result.ToArray();
+		}
 
-
+		/// <summary>
+		/// 譜面読み込みメソッドV4で使用。
+		/// </summary>
+		/// <param name="InputText"></param>
+		private void t命令を挿入する(string InputText)
+		{
 			var match = CommandAndArgumentRegex.Match(InputText);
 			if (!match.Success)
 			{
@@ -6056,7 +6065,7 @@ namespace TJAPlayer3
 			{
 				if (!string.IsNullOrEmpty(strCommandParam))
 				{
-					string[] strFiles= strCommandParam.Split(',');
+					string[] strFiles = SplitComma(strCommandParam);
 					string[] strFilePath = new string[strFiles.Length];
 					for (int index = 0; index < strFiles.Length; index++)
 					{
