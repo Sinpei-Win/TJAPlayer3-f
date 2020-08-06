@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using DirectShowLib;
-using SharpDX.Direct3D9;
 using FDK;
-using SharpDX;
 using System.Drawing;
+using System.Drawing.Imaging;
+
+using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 namespace TJAPlayer3
 {
@@ -137,13 +140,20 @@ namespace TJAPlayer3
 
 		public void MakeBackTexture() {
 			TJAPlayer3.t安全にDisposeする(ref this.BackSurface);
-			using (Surface pSurface = TJAPlayer3.app.Device.GetRenderTarget(0))
-			{
-				using (DataStream datastream = Surface.ToStream(pSurface, ImageFileFormat.Bmp))
-				{
-					this.BackSurface = TJAPlayer3.tテクスチャの生成(new Bitmap(datastream));
-				}
-			}
+
+			if (GraphicsContext.CurrentContext == null)
+				throw new GraphicsContextException();
+
+			Bitmap bmp = new Bitmap(TJAPlayer3.app.ClientSize.Width, TJAPlayer3.app.ClientSize.Height);
+			System.Drawing.Imaging.BitmapData data =
+				bmp.LockBits(TJAPlayer3.app.ClientRectangle, System.Drawing.Imaging.ImageLockMode.WriteOnly,
+				System.Drawing.Imaging.PixelFormat.Format24bppRgb); ;
+			GL.ReadPixels(0, 0, TJAPlayer3.app.ClientSize.Width, TJAPlayer3.app.ClientSize.Height,
+				OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, data.Scan0);
+			bmp.UnlockBits(data);
+			bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
+			this.BackSurface = TJAPlayer3.tテクスチャの生成(bmp);
+			bmp.Dispose();
 		}
 
 
