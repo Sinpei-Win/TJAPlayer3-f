@@ -392,82 +392,12 @@ namespace TJAPlayer3
 			}
 		}
 
-		private CTexture GenerateTitleTexture(TitleTextureKey titleTextureKey)
-		{
-			using (var bmp = new Bitmap(titleTextureKey.cPrivateFastFont.DrawPrivateFont(
-				titleTextureKey.str文字, titleTextureKey.forecolor, titleTextureKey.backcolor, true)))
+		private CTexture 文字テクスチャを生成する(string str文字, Color forecolor, Color backcolor) {
+
+			using (var bmp = new CPrivateFastFont(new FontFamily(TJAPlayer3.ConfigIni.FontName), 28).DrawPrivateFont(str文字, forecolor, backcolor, true))
 			{
-				CTexture tx文字テクスチャ = TJAPlayer3.tテクスチャの生成(bmp, false);
-				if (tx文字テクスチャ.szテクスチャサイズ.Height > titleTextureKey.maxHeight)
-				{
-					tx文字テクスチャ.vc拡大縮小倍率.Y = (float)(((double)titleTextureKey.maxHeight) / tx文字テクスチャ.szテクスチャサイズ.Height);
-				}
-
-				return tx文字テクスチャ;
+				return TJAPlayer3.tテクスチャの生成(bmp);
 			}
-		}
-		
-
-
-		private sealed class TitleTextureKey
-		{
-			public readonly string str文字;
-			public readonly CPrivateFastFont cPrivateFastFont;
-			public readonly Color forecolor;
-			public readonly Color backcolor;
-			public readonly int maxHeight;
-
-			public TitleTextureKey(string str文字, CPrivateFastFont cPrivateFastFont, Color forecolor, Color backcolor, int maxHeight)
-			{
-				this.str文字 = str文字;
-				this.cPrivateFastFont = cPrivateFastFont;
-				this.forecolor = forecolor;
-				this.backcolor = backcolor;
-				this.maxHeight = maxHeight;
-			}
-
-			private bool Equals(TitleTextureKey other)
-			{
-				return string.Equals(str文字, other.str文字) &&
-					   cPrivateFastFont.Equals(other.cPrivateFastFont) &&
-					   forecolor.Equals(other.forecolor) &&
-					   backcolor.Equals(other.backcolor) &&
-					   maxHeight == other.maxHeight;
-			}
-
-			public override bool Equals(object obj)
-			{
-				if (ReferenceEquals(null, obj)) return false;
-				if (ReferenceEquals(this, obj)) return true;
-				return obj is TitleTextureKey other && Equals(other);
-			}
-
-			public override int GetHashCode()
-			{
-				unchecked
-				{
-					var hashCode = str文字.GetHashCode();
-					hashCode = (hashCode * 397) ^ cPrivateFastFont.GetHashCode();
-					hashCode = (hashCode * 397) ^ forecolor.GetHashCode();
-					hashCode = (hashCode * 397) ^ backcolor.GetHashCode();
-					hashCode = (hashCode * 397) ^ maxHeight;
-					return hashCode;
-				}
-			}
-
-			public static bool operator ==(TitleTextureKey left, TitleTextureKey right)
-			{
-				return Equals(left, right);
-			}
-
-			public static bool operator !=(TitleTextureKey left, TitleTextureKey right)
-			{
-				return !Equals(left, right);
-			}
-		}
-
-		private TitleTextureKey ttk曲名テクスチャを生成する(string str文字, Color forecolor, Color backcolor) {
-			return new TitleTextureKey(str文字, new CPrivateFastFont(new FontFamily(TJAPlayer3.ConfigIni.FontName), 28), forecolor, backcolor, 410);
 		}
 
 		CTexture[] texttexture = new CTexture[6];
