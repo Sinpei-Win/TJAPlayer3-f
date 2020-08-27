@@ -70,12 +70,12 @@ namespace TJAPlayer3
 		public override void OnManagedリソースの作成()
 		{
 			if( !base.b活性化してない) { 
-				texttexture[0] = this.GenerateTitleTexture(this.ttk曲名テクスチャを生成する("演奏ゲーム", Color.White, Color.SaddleBrown));
-				texttexture[1] = this.GenerateTitleTexture(this.ttk曲名テクスチャを生成する("コンフィグ", Color.White, Color.SaddleBrown));
-				texttexture[2] = this.GenerateTitleTexture(this.ttk曲名テクスチャを生成する("やめる", Color.White, Color.SaddleBrown));
-				texttexture[3] = this.GenerateTitleTexture(this.ttk曲名テクスチャを生成する("演奏ゲーム", Color.White, Color.Black));
-				texttexture[4] = this.GenerateTitleTexture(this.ttk曲名テクスチャを生成する("コンフィグ", Color.White, Color.Black));
-				texttexture[5] = this.GenerateTitleTexture(this.ttk曲名テクスチャを生成する("やめる", Color.White, Color.Black));
+				texttexture[0] = this.文字テクスチャを生成する("演奏ゲーム", Color.White, Color.SaddleBrown);
+				texttexture[1] = this.文字テクスチャを生成する("コンフィグ", Color.White, Color.SaddleBrown);
+				texttexture[2] = this.文字テクスチャを生成する("やめる", Color.White, Color.SaddleBrown);
+				texttexture[3] = this.文字テクスチャを生成する("演奏ゲーム", Color.White, Color.Black);
+				texttexture[4] = this.文字テクスチャを生成する("コンフィグ", Color.White, Color.Black);
+				texttexture[5] = this.文字テクスチャを生成する("やめる", Color.White, Color.Black);
 				base.OnManagedリソースの作成();
 			}
 		}
@@ -83,10 +83,7 @@ namespace TJAPlayer3
 		{
 			if( !base.b活性化してない )
 			{
-				for (int i = 0; i < texttexture.Length; i++)
-				{
-					TJAPlayer3.t安全にDisposeする(ref texttexture[i]);
-				}
+				TJAPlayer3.t安全にDisposeする(ref texttexture);
 				base.OnManagedリソースの解放();
 			}
 		}
@@ -184,7 +181,7 @@ namespace TJAPlayer3
 				string strCreator = "https://github.com/Mr-Ojii/TJAPlayer3";
 				AssemblyName asmApp = Assembly.GetExecutingAssembly().GetName();
 #if DEBUG
-				TJAPlayer3.act文字コンソール.tPrint(4, 44, C文字コンソール.Eフォント種別.白, "DEBUG BUILD?");
+				TJAPlayer3.act文字コンソール.tPrint(4, 44, C文字コンソール.Eフォント種別.白, "DEBUG BUILD");
 #endif
 				TJAPlayer3.act文字コンソール.tPrint(4, 4, C文字コンソール.Eフォント種別.白, asmApp.Name + " Ver." + TJAPlayer3.VERSION + " (" + strCreator + ")");
 				TJAPlayer3.act文字コンソール.tPrint(4, 24, C文字コンソール.Eフォント種別.白, "Skin:" + TJAPlayer3.Skin.Skin_Name + " Ver." + TJAPlayer3.Skin.Skin_Version + " (" + TJAPlayer3.Skin.Skin_Creator + ")");
@@ -400,7 +397,7 @@ namespace TJAPlayer3
 			using (var bmp = new Bitmap(titleTextureKey.cPrivateFastFont.DrawPrivateFont(
 				titleTextureKey.str文字, titleTextureKey.forecolor, titleTextureKey.backcolor, true)))
 			{
-				CTexture tx文字テクスチャ = TJAPlayer3.tテクスチャの生成(bmp);
+				CTexture tx文字テクスチャ = TJAPlayer3.tテクスチャの生成(bmp, false);
 				if (tx文字テクスチャ.szテクスチャサイズ.Height > titleTextureKey.maxHeight)
 				{
 					tx文字テクスチャ.vc拡大縮小倍率.Y = (float)(((double)titleTextureKey.maxHeight) / tx文字テクスチャ.szテクスチャサイズ.Height);
