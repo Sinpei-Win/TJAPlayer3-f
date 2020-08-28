@@ -198,7 +198,6 @@
     <Compile Include="Stages\07.Game\CAct演奏スクロール速度.cs" />
     <Compile Include="Stages\07.Game\CAct演奏スコア共通.cs" />
     <Compile Include="Stages\07.Game\CAct演奏ステージ失敗.cs" />
-    <Compile Include="Stages\07.Game\CAct演奏ステータスパネル共通.cs" />
     <Compile Include="Stages\07.Game\CAct演奏パネル文字列.cs" />
     <Compile Include="Stages\07.Game\CAct演奏判定文字列共通.cs" />
     <Compile Include="Stages\07.Game\CAct演奏演奏情報.cs" />
@@ -207,14 +206,12 @@
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drums特訓モード.cs" />
     <Compile Include="Stages\07.Game\Taiko\Dan_Cert.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏DrumsRunner.cs" />
-    <Compile Include="Stages\07.Game\Taiko\CAct演奏DrumsFooter.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏DrumsMob.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏DrumsDanger.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsキャラクター.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsゲージ.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsゲームモード.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsスコア.cs" />
-    <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsステータスパネル.cs" />
     <Compile Include="Stages\07.Game\Taiko\FireWorks.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drums背景.cs" />
     <Compile Include="Stages\07.Game\Taiko\CAct演奏Drumsコンボ吹き出し.cs" />
@@ -323,11 +320,11 @@ copy /y "$(SolutionDir)Readme.txt" "$(SolutionDir)Test\"
 call "$(DevEnvDir)..\Tools\VsDevCmd.bat"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('packages\SharpDX.2.6.3\build\SharpDX.targets')" />
-  <Import Project="..\packages\LargeAddressAware.1.0.4\build\LargeAddressAware.targets" Condition="Exists('..\packages\LargeAddressAware.1.0.4\build\LargeAddressAware.targets')" />
+  <Import Project="..\packages\LargeAddressAware.1.0.5\build\LargeAddressAware.targets" Condition="Exists('..\packages\LargeAddressAware.1.0.5\build\LargeAddressAware.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\LargeAddressAware.1.0.4\build\LargeAddressAware.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LargeAddressAware.1.0.4\build\LargeAddressAware.targets'))" />
+    <Error Condition="!Exists('..\packages\LargeAddressAware.1.0.5\build\LargeAddressAware.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LargeAddressAware.1.0.5\build\LargeAddressAware.targets'))" />
   </Target>
 </Project>
