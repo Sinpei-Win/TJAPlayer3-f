@@ -1495,9 +1495,9 @@ namespace TJAPlayer3
 
 									if( TJAPlayer3.Tx.Notes != null && pChip.bShow )
 									{
-										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 											TJAPlayer3.Tx.Notes.t2D描画( device, x, y, new Rectangle( 130, num9, 130, 130 ) );
-										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 											TJAPlayer3.Tx.SENotes.t2D描画( device, x - 2, y + nSenotesY, new Rectangle( 0, 30 * pChip.nSenote, 136, 30 ) );
 										//CDTXMania.act文字コンソール.tPrint( x + 60, y + 140, C文字コンソール.Eフォント種別.白, pChip.nSenote.ToString() );
 									}
@@ -1506,9 +1506,9 @@ namespace TJAPlayer3
 								case 0x12:
 									if( TJAPlayer3.Tx.Notes != null && pChip.bShow)
 									{
-										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 											TJAPlayer3.Tx.Notes.t2D描画( device, x, y, new Rectangle( 260, num9, 130, 130) );
-										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 											TJAPlayer3.Tx.SENotes.t2D描画( device, x - 2, y + nSenotesY, new Rectangle( 0, 30 * pChip.nSenote, 136, 30 ) );
 										//CDTXMania.act文字コンソール.tPrint( x + 60, y + 140, C文字コンソール.Eフォント種別.白, pChip.nSenote.ToString() );
 									}
@@ -1518,12 +1518,12 @@ namespace TJAPlayer3
 								case 0x13:
 									if( TJAPlayer3.Tx.Notes != null && pChip.bShow)
 									{
-										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 										{
 											TJAPlayer3.Tx.Notes.t2D描画( device, x, y, new Rectangle( 390, num9, 130, 130 ) );
 											//CDTXMania.Tx.Notes.t3D描画( device, mat, new Rectangle( 390, num9, 130, 130 ) );
 										}
-										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 											TJAPlayer3.Tx.SENotes.t2D描画( device, x - 2, y + nSenotesY, new Rectangle( 0, 30 * pChip.nSenote, 136, 30 ) );
 										//CDTXMania.act文字コンソール.tPrint( x + 60, y + 140, C文字コンソール.Eフォント種別.白, pChip.nSenote.ToString() );
 									}
@@ -1531,9 +1531,9 @@ namespace TJAPlayer3
 								case 0x14:
 									if( TJAPlayer3.Tx.Notes != null && pChip.bShow)
 									{
-										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 											TJAPlayer3.Tx.Notes.t2D描画( device, x, y, new Rectangle( 520, num9, 130, 130 ) );
-										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 											TJAPlayer3.Tx.SENotes.t2D描画( device, x - 2, y + nSenotesY, new Rectangle( 0, 30 * pChip.nSenote, 136, 30 ) );
 										//CDTXMania.act文字コンソール.tPrint( x + 60, y + 140, C文字コンソール.Eフォント種別.白, pChip.nSenote.ToString() );
 									}
@@ -1543,7 +1543,7 @@ namespace TJAPlayer3
 								case 0x1A:
 									if( TJAPlayer3.Tx.Notes != null )
 									{
-										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 										{
 											if( nPlayer == 0 )
 											{
@@ -1558,7 +1558,7 @@ namespace TJAPlayer3
 											TJAPlayer3.Tx.Notes.t2D描画( device, x, y, new Rectangle( 1690, num9, 130, 130 ) );
 											//CDTXMania.Tx.Notes.t3D描画( device, mat, new Rectangle( 390, num9, 130, 130 ) );
 										}
-										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 											TJAPlayer3.Tx.SENotes.t2D描画( device, x - 2, y + nSenotesY, new Rectangle( 0, 390, 136, 30 ) );
 									}
 									break;
@@ -1566,7 +1566,7 @@ namespace TJAPlayer3
 								case 0x1B:
 									if( TJAPlayer3.Tx.Notes != null )
 									{
-										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+										if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 										{
 											if( nPlayer == 0 )
 											{
@@ -1580,7 +1580,7 @@ namespace TJAPlayer3
 											}
 											TJAPlayer3.Tx.Notes.t2D描画( device, x, y, new Rectangle( 1820, num9, 130, 130 ) );
 										}
-										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+										if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 											TJAPlayer3.Tx.SENotes.t2D描画( device, x - 2, y + nSenotesY, new Rectangle( 0, 420, 136, 30 ) );
 									}
 									nLane = 1;
@@ -1795,7 +1795,7 @@ namespace TJAPlayer3
 						if ( pChip.nチャンネル番号 == 0x15 && pChip.bShow) //連打(小)
 						{
 							int index = x末端 - x; //連打の距離
-							if ( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+							if ( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 							{
 								#region[末端をテクスチャ側でつなげる場合の方式]
 
@@ -1816,7 +1816,7 @@ namespace TJAPlayer3
 								TJAPlayer3.Tx.Notes.color4 = normalColor;
 								#endregion
 							}
-							if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+							if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 							{
 								TJAPlayer3.Tx.SENotes.vc拡大縮小倍率.X = index - 44;
 								TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x + 90, y + nSenotesY, new Rectangle(60, 240, 1, 30));
@@ -1829,7 +1829,7 @@ namespace TJAPlayer3
 						{
 							int index = x末端 - x; //連打の距離
 
-							if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+							if( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 							{
 								#region[末端をテクスチャ側でつなげる場合の方式]
 
@@ -1852,7 +1852,7 @@ namespace TJAPlayer3
 								TJAPlayer3.Tx.Notes.color4 = normalColor;
 								#endregion
 							}
-							if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+							if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 							{
 								TJAPlayer3.Tx.SENotes.vc拡大縮小倍率.X = index - 70;
 								TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x + 116, y + nSenotesY, new Rectangle(60, 240, 1, 30));
@@ -1868,10 +1868,10 @@ namespace TJAPlayer3
 							else if ((long)(CSound管理.rc演奏用タイマ.n現在時刻ms * (((double)TJAPlayer3.ConfigIni.n演奏速度) / 20.0)) >= pChip.nノーツ終了時刻ms)
 								x = (TJAPlayer3.Skin.nScrollFieldX[nPlayer] + pChip.nバーからのノーツ末端距離dot - 55);
 
-							if ( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == Eステルスモード.OFF )
+							if ( TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] == EStealthMode.OFF )
 								TJAPlayer3.Tx.Notes.t2D描画( TJAPlayer3.app.Device, x, y, new Rectangle( 1430, num9, 260, 130 ) );
 
-							if(TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+							if(TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 								TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x - 2, y + nSenotesY, new Rectangle(0, 30 * pChip.nSenote, 136, 30));
 						}
 						if( pChip.nチャンネル番号 == 0x18 )
@@ -1881,9 +1881,9 @@ namespace TJAPlayer3
 
 							if( pChip.n連打音符State != 7 )
 							{
-								//if( CDTXMania.ConfigIni.eSTEALTH != Eステルスモード.DORON )
+								//if( CDTXMania.ConfigIni.eSTEALTH != EStealthMode.DORON )
 								//    CDTXMania.Tx.Notes.t2D描画( CDTXMania.app.Device, x, y, new Rectangle( n, num9, 130, 130 ) );//大音符:1170
-								if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != Eステルスモード.STEALTH)
+								if (TJAPlayer3.ConfigIni.eSTEALTH[nPlayer] != EStealthMode.STEALTH)
 									TJAPlayer3.Tx.SENotes.t2D描画(TJAPlayer3.app.Device, x + 56, y + nSenotesY, new Rectangle( 58, 270, 78, 30 ) );
 							}
 
